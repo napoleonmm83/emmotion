@@ -240,7 +240,7 @@ export function ProjectPageContent({
                 Bereit für Ihr Projekt?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Lassen Sie uns gemeinsam Ihre Geschichte erzählen. Kontaktieren
+                Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren
                 Sie mich für ein unverbindliches Erstgespräch.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

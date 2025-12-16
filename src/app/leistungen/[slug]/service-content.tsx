@@ -39,7 +39,14 @@ interface ServiceDetail {
   benefits: Array<{ title: string; description: string }>;
   process: Array<{ step: number; title: string; description: string }>;
   faq: Array<{ question: string; answer: string }>;
+  exampleVideos: Array<{ title: string; youtubeUrl: string; description?: string }>;
   relatedProjects: string[];
+}
+
+function getYouTubeId(url: string): string | null {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
 }
 
 interface ServicePageContentProps {
@@ -180,6 +187,54 @@ export function ServicePageContent({ service }: ServicePageContentProps) {
           </Container>
         </section>
 
+        {/* Example Videos Section */}
+        {service.exampleVideos && service.exampleVideos.length > 0 && (
+          <section className="py-16 md:py-24 border-t border-border">
+            <Container>
+              <SectionHeader
+                title="Beispielvideos"
+                subtitle="Schauen Sie sich an, was möglich ist."
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {service.exampleVideos.map((video, index) => {
+                  const videoId = getYouTubeId(video.youtubeUrl);
+                  if (!videoId) return null;
+
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="card-surface rounded-xl overflow-hidden"
+                    >
+                      <div className="aspect-video">
+                        <iframe
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                          title={video.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-medium text-foreground">{video.title}</h3>
+                        {video.description && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {video.description}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </Container>
+          </section>
+        )}
+
         {/* Process Section */}
         <section className="py-16 md:py-24 border-t border-border">
           <Container>
@@ -285,7 +340,7 @@ export function ServicePageContent({ service }: ServicePageContentProps) {
                 Bereit für Ihr {service.title}-Projekt?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Lassen Sie uns gemeinsam Ihr Projekt besprechen. Ich freue mich
+                Kontaktieren Sie mich, um Ihr Projekt zu besprechen. Ich freue mich
                 auf ein unverbindliches Erstgespräch.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

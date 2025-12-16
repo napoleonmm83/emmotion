@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Instagram, Linkedin, Youtube, Mail, MapPin } from "lucide-react";
 
 const navigation = [
   { name: "Leistungen", href: "/leistungen" },
@@ -75,25 +75,17 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-primary mt-0.5" />
                 <a
-                  href="mailto:info@emmotion.ch"
+                  href="mailto:hallo@emmotion.ch"
                   className="text-muted-foreground text-sm hover:text-foreground transition-colors duration-300"
                 >
-                  info@emmotion.ch
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-primary mt-0.5" />
-                <a
-                  href="tel:+41791234567"
-                  className="text-muted-foreground text-sm hover:text-foreground transition-colors duration-300"
-                >
-                  +41 79 XXX XX XX
+                  hallo@emmotion.ch
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-primary mt-0.5" />
                 <span className="text-muted-foreground text-sm">
-                  Rheintal, Schweiz
+                  Kerbelstrasse 6<br />
+                  9470 Buchs SG
                 </span>
               </li>
             </ul>
@@ -105,7 +97,7 @@ export function Footer() {
               Projekt starten
             </h4>
             <p className="text-muted-foreground text-sm mb-4">
-              Bereit für Ihr nächstes Videoprojekt? Lassen Sie uns sprechen.
+              Bereit für Ihr nächstes Videoprojekt? Ich freue mich auf Ihre Anfrage.
             </p>
             <Link
               href="/kontakt"

@@ -32,6 +32,42 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "contactForm",
+      title: "Kontaktformular Einstellungen",
+      type: "object",
+      fields: [
+        {
+          name: "recipientEmail",
+          type: "string",
+          title: "Empfänger E-Mail",
+          description: "An diese Adresse werden Kontaktanfragen gesendet",
+        },
+        {
+          name: "emailSubjectPrefix",
+          type: "string",
+          title: "Betreff-Präfix",
+          description: "z.B. '[emmotion.ch]' - wird vor den Betreff gesetzt",
+          initialValue: "[emmotion.ch]",
+        },
+        {
+          name: "successMessage",
+          type: "text",
+          title: "Erfolgsmeldung",
+          description: "Wird nach erfolgreicher Absendung angezeigt",
+          initialValue:
+            "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen.",
+        },
+        {
+          name: "enableEmailNotification",
+          type: "boolean",
+          title: "E-Mail-Benachrichtigung aktivieren",
+          description:
+            "Wenn deaktiviert, werden Anfragen nur in Sanity gespeichert",
+          initialValue: false,
+        },
+      ],
+    }),
+    defineField({
       name: "social",
       title: "Social Media",
       type: "object",

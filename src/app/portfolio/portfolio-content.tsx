@@ -319,7 +319,7 @@ export function PortfolioPageContent() {
                 Ihr Projekt könnte hier sein
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Lassen Sie uns gemeinsam Ihre Geschichte erzählen. Kontaktieren
+                Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren
                 Sie mich für ein unverbindliches Erstgespräch.
               </p>
               <Link

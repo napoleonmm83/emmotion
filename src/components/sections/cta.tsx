@@ -36,7 +36,7 @@ export function CTASection({ variant = "default" }: CTASectionProps) {
               Was kostet Ihr Video?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              Nutzen Sie unseren Video-Konfigurator für eine unverbindliche
+              Nutzen Sie meinen Video-Konfigurator für eine unverbindliche
               Preisschätzung in weniger als 2 Minuten.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -76,7 +76,7 @@ export function CTASection({ variant = "default" }: CTASectionProps) {
             Bereit für Ihr Video?
           </h2>
           <p className="text-muted-foreground text-lg mb-8">
-            Lassen Sie uns gemeinsam Ihre Geschichte erzählen.
+            Ich freue mich darauf, Ihre Geschichte zu erzählen.
             Kontaktieren Sie mich für ein unverbindliches Erstgespräch.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Tv, Award, Users, MapPin, type LucideIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Container, AnimatedCounter } from "@/components/shared";
 
 interface Stat {
@@ -12,7 +13,7 @@ interface Stat {
   label: string;
 }
 
-const stats: Stat[] = [
+const defaultStats: Stat[] = [
   { icon: Tv, value: 10, suffix: "+", label: "Jahre TV-Erfahrung" },
   { icon: Award, value: 100, suffix: "+", label: "Projekte umgesetzt" },
   { icon: Users, value: 50, suffix: "+", label: "Zufriedene Kunden" },
@@ -39,15 +40,27 @@ const itemVariants = {
   },
 };
 
-export function AboutSection() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const top = element.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  };
+interface AboutSectionProps {
+  data?: {
+    name?: string;
+    profileImage?: string;
+    heroText?: string;
+    description?: string;
+  } | null;
+}
+
+export function AboutSection({ data }: AboutSectionProps) {
+  const name = data?.name || "Über mich";
+  const profileImage = data?.profileImage || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80";
+
+  // Use custom description paragraphs if provided, otherwise use defaults
+  const descriptionParagraphs = data?.description
+    ? [data.description]
+    : [
+        "Mit über zehn Jahren Erfahrung in der TV-Branche bringe ich professionelle Produktionsstandards in jedes Projekt. Von der Konzeption bis zur finalen Postproduktion – bei mir bekommen Sie alles aus einer Hand.",
+        "Meine Leidenschaft ist es, Geschichten visuell zu erzählen. Dabei verbinde ich technische Expertise mit kreativem Gespür, um Videos zu produzieren, die nicht nur professionell aussehen, sondern auch emotional berühren.",
+        "Als gebürtiger Rheintaler kenne ich die Region und ihre Unternehmen bestens. Ob lokaler Handwerksbetrieb oder internationales Unternehmen in Liechtenstein – ich verstehe die individuellen Bedürfnisse und setze sie gekonnt um.",
+      ];
 
   return (
     <section id="ueber-mich" className="py-24 md:py-32 border-t border-border">
@@ -62,8 +75,8 @@ export function AboutSection() {
           >
             <div className="aspect-[4/5] rounded-xl overflow-hidden card-surface relative">
               <Image
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
-                alt="Portrait"
+                src={profileImage}
+                alt={name}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -80,34 +93,19 @@ export function AboutSection() {
             className="order-1 lg:order-2"
           >
             <h2 className="text-4xl md:text-5xl font-display text-foreground mb-6 tracking-wide">
-              Über mich
+              {name === "Über mich" ? name : `Über ${name.split(" ")[0]}`}
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed text-sm lg:text-base">
-              <p>
-                Mit über zehn Jahren Erfahrung in der TV-Branche bringe ich
-                professionelle Produktionsstandards in jedes Projekt. Von der
-                Konzeption bis zur finalen Postproduktion – bei mir bekommen Sie
-                alles aus einer Hand.
-              </p>
-              <p>
-                Meine Leidenschaft ist es, Geschichten visuell zu erzählen.
-                Dabei verbinde ich technische Expertise mit kreativem Gespür, um
-                Videos zu produzieren, die nicht nur professionell aussehen,
-                sondern auch emotional berühren.
-              </p>
-              <p>
-                Als gebürtiger Rheintaler kenne ich die Region und ihre
-                Unternehmen bestens. Ob lokaler Handwerksbetrieb oder
-                internationales Unternehmen in Liechtenstein – ich verstehe die
-                individuellen Bedürfnisse und setze sie gekonnt um.
-              </p>
+              {descriptionParagraphs.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
             </div>
-            <button
-              onClick={() => scrollToSection("kontakt")}
+            <Link
+              href="/ueber-mich"
               className="inline-block mt-8 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
             >
-              Kontakt aufnehmen
-            </button>
+              Mehr erfahren
+            </Link>
           </motion.div>
         </div>
 
@@ -118,7 +116,7 @@ export function AboutSection() {
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-16 lg:mt-24"
         >
-          {stats.map((stat) => (
+          {defaultStats.map((stat) => (
             <motion.div
               key={stat.label}
               variants={itemVariants}

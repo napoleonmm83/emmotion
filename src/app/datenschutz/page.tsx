@@ -1,0 +1,260 @@
+import type { Metadata } from "next";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { LegalPageContent } from "@/components/legal";
+import { client } from "@sanity/lib/client";
+import { legalPageBySlugQuery } from "@sanity/lib/queries";
+
+export const metadata: Metadata = {
+  title: "Datenschutz | emmotion.ch",
+  description:
+    "Datenschutzerklärung von emmotion.ch - Informationen zum Umgang mit Ihren personenbezogenen Daten.",
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+async function getDatenschutzData() {
+  try {
+    const data = await client.fetch(legalPageBySlugQuery, { slug: "datenschutz" });
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Placeholder content while CMS data is not yet available
+function DatenschutzFallback() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          1. Datenschutz auf einen Blick
+        </h2>
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 tracking-wide">
+          Allgemeine Hinweise
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
+          personenbezogenen Daten passiert, wenn Sie diese Website besuchen.
+          Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert
+          werden können.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          2. Verantwortliche Stelle
+        </h2>
+        <div className="text-muted-foreground space-y-1 mb-4">
+          <p className="font-medium text-foreground">emmotion.ch</p>
+          <p className="text-sm text-muted-foreground mb-2">
+            Ein Brand von martini.digital
+          </p>
+          <p>Marcus Martini</p>
+          <p>Kerbelstrasse 6</p>
+          <p>9470 Buchs SG</p>
+          <p>Schweiz</p>
+          <p className="mt-2">UID: CHE-387.768.205</p>
+          <p className="mt-2">
+            E-Mail:{" "}
+            <a href="mailto:hallo@emmotion.ch" className="text-primary hover:underline">
+              hallo@emmotion.ch
+            </a>
+          </p>
+        </div>
+        <p className="text-muted-foreground">
+          Verantwortliche Stelle ist die natürliche oder juristische Person, die allein
+          oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von
+          personenbezogenen Daten entscheidet.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          3. Datenerfassung auf dieser Website
+        </h2>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          Kontaktformular
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Wenn Sie mir per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben
+          aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten
+          zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei mir
+          gespeichert. Diese Daten gebe ich nicht ohne Ihre Einwilligung weiter.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Die Verarbeitung dieser Daten erfolgt auf Grundlage Ihrer Einwilligung
+          (Art. 6 Abs. 1 lit. a DSGVO / Art. 13 DSG). Sie können diese Einwilligung
+          jederzeit widerrufen.
+        </p>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          Video-Konfigurator
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Bei Nutzung unseres Video-Konfigurators werden die von Ihnen eingegebenen Daten
+          (Konfiguration, Kontaktdaten) zwecks Bearbeitung Ihrer Anfrage gespeichert.
+          Diese Daten werden ausschliesslich zur Erstellung eines Angebots verwendet.
+        </p>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">Server-Log-Dateien</h3>
+        <p className="text-muted-foreground mb-4">
+          Der Provider der Seiten erhebt und speichert automatisch Informationen in
+          sogenannten Server-Log-Dateien, die Ihr Browser automatisch übermittelt.
+          Dies sind:
+        </p>
+        <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-1">
+          <li>Browsertyp und Browserversion</li>
+          <li>Verwendetes Betriebssystem</li>
+          <li>Referrer URL</li>
+          <li>Hostname des zugreifenden Rechners</li>
+          <li>Uhrzeit der Serveranfrage</li>
+          <li>IP-Adresse</li>
+        </ul>
+        <p className="text-muted-foreground mb-4">
+          Diese Daten werden nicht mit anderen Datenquellen zusammengeführt. Die
+          Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          4. Hosting
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789,
+          USA gehostet. Vercel verarbeitet die erhobenen Daten im Auftrag und ist
+          vertraglich verpflichtet, geeignete technische und organisatorische
+          Massnahmen zum Schutz der Daten zu treffen.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Weitere Informationen finden Sie in der Datenschutzerklärung von Vercel:{" "}
+          <a
+            href="https://vercel.com/legal/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            https://vercel.com/legal/privacy-policy
+          </a>
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          5. Ihre Rechte
+        </h2>
+        <p className="text-muted-foreground mb-4">Sie haben jederzeit das Recht:</p>
+        <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-2">
+          <li>
+            <strong>Auskunft</strong> über Ihre bei mir gespeicherten personenbezogenen
+            Daten zu erhalten
+          </li>
+          <li>
+            <strong>Berichtigung</strong> unrichtiger personenbezogener Daten zu
+            verlangen
+          </li>
+          <li>
+            <strong>Löschung</strong> Ihrer bei mir gespeicherten personenbezogenen
+            Daten zu verlangen
+          </li>
+          <li>
+            <strong>Einschränkung</strong> der Verarbeitung zu verlangen
+          </li>
+          <li>
+            <strong>Widerspruch</strong> gegen die Verarbeitung einzulegen
+          </li>
+          <li>
+            <strong>Datenübertragbarkeit</strong> Ihrer Daten zu verlangen
+          </li>
+        </ul>
+        <p className="text-muted-foreground mb-4">
+          Wenn Sie der Meinung sind, dass die Verarbeitung Ihrer Daten gegen das
+          Datenschutzrecht verstösst, haben Sie das Recht, sich bei der zuständigen
+          Aufsichtsbehörde zu beschweren.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          6. E-Mail-Kommunikation
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Wenn Sie mit mir per E-Mail kommunizieren, werden Ihre E-Mail-Adresse und der
+          Inhalt Ihrer Nachricht gespeichert, um Ihre Anfrage bearbeiten zu können.
+          Diese Daten werden ohne Ihre Einwilligung nicht an Dritte weitergegeben.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          7. Cookies
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Diese Website verwendet keine Tracking-Cookies. Es werden nur technisch
+          notwendige Cookies verwendet, die für den Betrieb der Website erforderlich
+          sind.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          8. Analyse-Tools
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Diese Website verwendet derzeit keine Analyse-Tools. Sollte in Zukunft ein
+          datenschutzfreundliches Analyse-Tool wie Plausible Analytics eingesetzt werden,
+          wird diese Datenschutzerklärung entsprechend aktualisiert.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          9. SSL-/TLS-Verschlüsselung
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung
+          vertraulicher Inhalte eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte
+          Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von
+          &quot;http://&quot; auf &quot;https://&quot; wechselt und an dem Schloss-Symbol
+          in Ihrer Browserzeile.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
+          10. Änderungen dieser Datenschutzerklärung
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          Ich behalte mir vor, diese Datenschutzerklärung anzupassen, damit sie stets
+          den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen meiner
+          Leistungen in der Datenschutzerklärung umzusetzen. Für Ihren erneuten Besuch
+          gilt dann die neue Datenschutzerklärung.
+        </p>
+      </div>
+
+    </div>
+  );
+}
+
+export default async function DatenschutzPage() {
+  const pageData = await getDatenschutzData();
+
+  return (
+    <>
+      <Header />
+      <main className="pt-20 pb-16">
+        <LegalPageContent
+          title={pageData?.title || "Datenschutzerklärung"}
+          content={pageData?.content || null}
+          lastUpdated={pageData?.lastUpdated}
+          fallbackContent={<DatenschutzFallback />}
+        />
+      </main>
+      <Footer />
+    </>
+  );
+}

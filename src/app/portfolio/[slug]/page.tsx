@@ -18,7 +18,7 @@ const projects = [
     challenge:
       "TechVision AG benötigte einen Imagefilm, der ihre innovative Unternehmenskultur und technische Expertise authentisch darstellt, um qualifizierte Fachkräfte anzuziehen.",
     solution:
-      "Wir entwickelten ein Konzept, das die Mitarbeiter in den Mittelpunkt stellt und die moderne Arbeitsumgebung sowie spannende Projekte zeigt. Durch Interviews und B-Roll-Material entstand ein authentisches Porträt des Unternehmens.",
+      "Ich entwickelte ein Konzept, das die Mitarbeiter in den Mittelpunkt stellt und die moderne Arbeitsumgebung sowie spannende Projekte zeigt. Durch Interviews und B-Roll-Material entstand ein authentisches Porträt des Unternehmens.",
     result:
       "Der Imagefilm wird erfolgreich im Recruiting eingesetzt und hat die Bewerberquote um 40% gesteigert. Auf LinkedIn erreichte das Video über 50.000 Views.",
     testimonial: {
@@ -43,7 +43,7 @@ const projects = [
     challenge:
       "Das Swiss Business Forum wollte ihren jährlichen Summit dokumentieren und ein Highlight-Video für Social Media und die Website erstellen.",
     solution:
-      "Mit einem Mehrkamera-Setup haben wir die wichtigsten Keynotes, Networking-Momente und die Atmosphäre eingefangen. Schnelle Schnitte und dynamische Musik sorgen für einen packenden Gesamteindruck.",
+      "Mit einem Mehrkamera-Setup habe ich die wichtigsten Keynotes, Networking-Momente und die Atmosphäre eingefangen. Schnelle Schnitte und dynamische Musik sorgen für einen packenden Gesamteindruck.",
     result:
       "Das Eventvideo wurde auf allen Kanälen geteilt und half, die Anmeldungen für das nächste Jahr zu steigern.",
   },
@@ -61,7 +61,7 @@ const projects = [
     challenge:
       "InnoTech GmbH brachte ein neues Industrieprodukt auf den Markt und benötigte ein Video, das die technischen Vorteile klar kommuniziert.",
     solution:
-      "Wir kombinierten Produktaufnahmen mit 3D-Animationen, um die inneren Funktionen zu visualisieren. Klare Grafiken und ein professioneller Sprecher ergänzen das Video.",
+      "Ich kombinierte Produktaufnahmen mit 3D-Animationen, um die inneren Funktionen zu visualisieren. Klare Grafiken und ein professioneller Sprecher ergänzen das Video.",
     result:
       "Das Produktvideo wird auf Messen und der Website eingesetzt und hat die Anfragen um 25% gesteigert.",
   },
@@ -79,7 +79,7 @@ const projects = [
     challenge:
       "Die Region wollte ihre atemberaubende Landschaft in einem Imagevideo präsentieren, das Touristen anzieht.",
     solution:
-      "Mit professionellen Drohnenaufnahmen haben wir die schönsten Orte der Region aus der Luft eingefangen. Unterschiedliche Tageszeiten und Jahreszeiten sorgen für Abwechslung.",
+      "Mit professionellen Drohnenaufnahmen habe ich die schönsten Orte der Region aus der Luft eingefangen. Unterschiedliche Tageszeiten und Jahreszeiten sorgen für Abwechslung.",
     result:
       "Das Video wird auf allen Tourismuskanälen eingesetzt und hat zu einer Steigerung der Website-Besuche geführt.",
   },
@@ -97,7 +97,7 @@ const projects = [
     challenge:
       "Die Schreinerei Müller wollte ihre Handwerkskunst und Leidenschaft für Holz auf Social Media präsentieren.",
     solution:
-      "Wir erstellten eine Serie von kurzen, authentischen Videos, die den Arbeitsprozess und die fertigen Produkte zeigen. Der persönliche Touch des Inhabers steht im Mittelpunkt.",
+      "Ich erstellte eine Serie von kurzen, authentischen Videos, die den Arbeitsprozess und die fertigen Produkte zeigen. Der persönliche Touch des Inhabers steht im Mittelpunkt.",
     result:
       "Die Social Media Reichweite hat sich verdreifacht und mehrere neue Aufträge konnten direkt auf die Videos zurückgeführt werden.",
   },
@@ -115,7 +115,7 @@ const projects = [
     challenge:
       "Consulting Partners wollte ihre Expertise und Unternehmenskultur durch authentische Mitarbeiter-Interviews vermitteln.",
     solution:
-      "Wir führten ausführliche Interviews mit Mitarbeitern aus verschiedenen Abteilungen und ergänzten diese mit Aufnahmen aus dem Arbeitsalltag.",
+      "Ich führte ausführliche Interviews mit Mitarbeitern aus verschiedenen Abteilungen und ergänzte diese mit Aufnahmen aus dem Arbeitsalltag.",
     result:
       "Die Interviewserie wird erfolgreich für Employer Branding und die Unternehmenswebsite eingesetzt.",
   },
@@ -133,7 +133,7 @@ const projects = [
     challenge:
       "Das Restaurant Rheinblick wollte die Atmosphäre und kulinarische Qualität in einem stimmungsvollen Video einfangen.",
     solution:
-      "Wir filmten während des Abendbetriebs und fingen die Zubereitung der Gerichte, das Ambiente und die zufriedenen Gäste ein.",
+      "Ich filmte während des Abendbetriebs und fing die Zubereitung der Gerichte, das Ambiente und die zufriedenen Gäste ein.",
     result:
       "Das Video wird auf der Website und Social Media eingesetzt und hat die Reservierungsanfragen gesteigert.",
   },
@@ -151,7 +151,7 @@ const projects = [
     challenge:
       "Metallbau Rheintal wollte ihre Produktionsanlagen und Fertigungsqualität potenziellen Kunden präsentieren.",
     solution:
-      "Wir erstellten eine virtuelle Werkstour mit beeindruckenden Aufnahmen der Maschinen und des Fertigungsprozesses.",
+      "Ich erstellte eine virtuelle Werkstour mit beeindruckenden Aufnahmen der Maschinen und des Fertigungsprozesses.",
     result:
       "Das Video wird bei Kundenbesuchen und auf der Website eingesetzt und vermittelt sofort Kompetenz und Qualität.",
   },
@@ -169,7 +169,7 @@ const projects = [
     challenge:
       "Corporate Events AG wollte ihr Team-Building-Event dokumentieren, um es für Marketingzwecke zu nutzen.",
     solution:
-      "Wir begleiteten das Event den ganzen Tag und fingen die besten Momente, Aktivitäten und Emotionen ein.",
+      "Ich begleitete das Event den ganzen Tag und fing die besten Momente, Aktivitäten und Emotionen ein.",
     result:
       "Das Highlight-Video wird erfolgreich für die Vermarktung ähnlicher Events eingesetzt.",
   },

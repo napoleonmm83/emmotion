@@ -1,8 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageContent } from "./service-content";
+import { client } from "@sanity/lib/client";
+import { serviceBySlugQuery, servicesQuery } from "@sanity/lib/queries";
+import { urlFor } from "@sanity/lib/image";
 
-interface ServiceDetail {
+export interface ServiceDetail {
   iconName: string;
   title: string;
   slug: string;
@@ -14,10 +17,12 @@ interface ServiceDetail {
   benefits: Array<{ title: string; description: string }>;
   process: Array<{ step: number; title: string; description: string }>;
   faq: Array<{ question: string; answer: string }>;
+  exampleVideos: Array<{ title: string; youtubeUrl: string; description?: string }>;
   relatedProjects: string[];
 }
 
-const services: ServiceDetail[] = [
+// Default fallback services for when Sanity has no data
+const defaultServices: ServiceDetail[] = [
   {
     iconName: "Film",
     title: "Imagefilme",
@@ -62,7 +67,7 @@ const services: ServiceDetail[] = [
         step: 1,
         title: "Briefing & Konzept",
         description:
-          "Wir besprechen Ihre Ziele, Zielgruppe und Kernbotschaften. Ich entwickle ein massgeschneidertes Konzept.",
+          "Ich bespreche mit Ihnen Ihre Ziele, Zielgruppe und Kernbotschaften und entwickle ein massgeschneidertes Konzept.",
       },
       {
         step: 2,
@@ -100,6 +105,7 @@ const services: ServiceDetail[] = [
           "Ja, gegen einen Aufpreis produziere ich gerne zusätzliche Schnitte in verschiedenen Formaten (16:9, 9:16, 1:1).",
       },
     ],
+    exampleVideos: [],
     relatedProjects: ["corporate-vision", "interview-series"],
   },
   {
@@ -146,7 +152,7 @@ const services: ServiceDetail[] = [
         step: 1,
         title: "Vorbesprechung",
         description:
-          "Wir besprechen den Ablauf, wichtige Programmpunkte und Ihre Erwartungen an das Video.",
+          "Ich bespreche mit Ihnen den Ablauf, wichtige Programmpunkte und Ihre Erwartungen an das Video.",
       },
       {
         step: 2,
@@ -179,6 +185,7 @@ const services: ServiceDetail[] = [
           "Ja, kurze Testimonials oder Statements von Teilnehmern und Speakern können das Video aufwerten.",
       },
     ],
+    exampleVideos: [],
     relatedProjects: ["summit-2024", "team-building-event"],
   },
   {
@@ -225,13 +232,13 @@ const services: ServiceDetail[] = [
         step: 1,
         title: "Content-Planung",
         description:
-          "Wir definieren Themen, Formate und einen Content-Kalender für die kommenden Wochen.",
+          "Gemeinsam definieren wir Themen, Formate und einen Content-Kalender für die kommenden Wochen.",
       },
       {
         step: 2,
         title: "Batch-Produktion",
         description:
-          "An einem Drehtag produzieren wir mehrere Videos auf einmal – effizient und konsistent.",
+          "An einem Drehtag produziere ich mehrere Videos auf einmal – effizient und konsistent.",
       },
       {
         step: 3,
@@ -243,7 +250,7 @@ const services: ServiceDetail[] = [
         step: 4,
         title: "Optimierung",
         description:
-          "Nach Analyse der Performance passen wir die Strategie für zukünftigen Content an.",
+          "Nach Analyse der Performance passe ich die Strategie für zukünftigen Content an.",
       },
     ],
     faq: [
@@ -258,6 +265,7 @@ const services: ServiceDetail[] = [
           "Ja, ich kann längere Videos in Social-Media-taugliche Kurzformate umwandeln.",
       },
     ],
+    exampleVideos: [],
     relatedProjects: ["brand-story"],
   },
   {
@@ -334,9 +342,10 @@ const services: ServiceDetail[] = [
       {
         question: "Was passiert bei schlechtem Wetter?",
         answer:
-          "Bei Regen, starkem Wind oder schlechter Sicht verschieben wir den Termin kostenfrei.",
+          "Bei Regen, starkem Wind oder schlechter Sicht wird der Termin kostenfrei verschoben.",
       },
     ],
+    exampleVideos: [],
     relatedProjects: ["alpine-views"],
   },
   {
@@ -416,6 +425,7 @@ const services: ServiceDetail[] = [
           "Bei ähnlichen Produkten können an einem Drehtag 5-10 Videos entstehen.",
       },
     ],
+    exampleVideos: [],
     relatedProjects: ["product-launch"],
   },
   {
@@ -495,6 +505,7 @@ const services: ServiceDetail[] = [
           "Standardmässig sind 2 Korrekturschleifen inklusive. Weitere Änderungen werden nach Aufwand berechnet.",
       },
     ],
+    exampleVideos: [],
     relatedProjects: [],
   },
 ];
@@ -503,9 +514,59 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+interface SanityService {
+  _id: string;
+  title: string;
+  slug: string;
+  shortDescription?: string;
+  description?: string;
+  icon?: string;
+  idealFor?: string[];
+  priceFrom?: number;
+  featuredImage?: { asset: { _ref: string } };
+  benefits?: Array<{ title: string; description: string }>;
+  process?: Array<{ step: number; title: string; description: string }>;
+  faq?: Array<{ question: string; answer: string }>;
+  exampleVideos?: Array<{ title: string; youtubeUrl: string; description?: string }>;
+  relatedProjects?: Array<{ _id: string; title: string; slug: string }>;
+  seo?: { metaTitle?: string; metaDescription?: string };
+}
+
+async function getServiceBySlug(slug: string): Promise<ServiceDetail | null> {
+  try {
+    const sanityService = await client.fetch<SanityService>(serviceBySlugQuery, { slug });
+
+    if (!sanityService) {
+      // Fall back to default services
+      return defaultServices.find((s) => s.slug === slug) || null;
+    }
+
+    return {
+      iconName: sanityService.icon || "Film",
+      title: sanityService.title,
+      slug: sanityService.slug,
+      shortDescription: sanityService.shortDescription || "",
+      description: sanityService.description || sanityService.shortDescription || "",
+      image: sanityService.featuredImage?.asset
+        ? urlFor(sanityService.featuredImage).width(1200).height(800).url()
+        : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
+      priceFrom: sanityService.priceFrom || 0,
+      idealFor: sanityService.idealFor || [],
+      benefits: sanityService.benefits || [],
+      process: sanityService.process || [],
+      faq: sanityService.faq || [],
+      exampleVideos: sanityService.exampleVideos || [],
+      relatedProjects: sanityService.relatedProjects?.map((p) => p.slug) || [],
+    };
+  } catch {
+    // Fall back to default services on error
+    return defaultServices.find((s) => s.slug === slug) || null;
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+  const service = await getServiceBySlug(slug);
 
   if (!service) {
     return {
@@ -525,14 +586,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  return services.map((service) => ({
+  try {
+    const sanityServices = await client.fetch<Array<{ slug: string }>>(servicesQuery);
+    if (sanityServices && sanityServices.length > 0) {
+      return sanityServices.map((service) => ({
+        slug: service.slug,
+      }));
+    }
+  } catch {
+    // Fall back to default services
+  }
+
+  return defaultServices.map((service) => ({
     slug: service.slug,
   }));
 }
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = services.find((s) => s.slug === slug);
+  const service = await getServiceBySlug(slug);
 
   if (!service) {
     notFound();

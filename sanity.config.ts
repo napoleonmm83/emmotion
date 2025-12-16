@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
+import { media } from "sanity-plugin-media";
 import { schemaTypes } from "./sanity/schemas";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
@@ -12,7 +13,7 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: "/studio",
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool(), media(), visionTool()],
   schema: {
     types: schemaTypes,
   },

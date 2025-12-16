@@ -18,6 +18,26 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
 
+// Icon mapping for dynamic icons from Sanity
+const iconMap: Record<string, LucideIcon> = {
+  Film,
+  Video,
+  Camera,
+  Plane,
+  Clapperboard,
+  Sparkles,
+};
+
+interface ServiceFromSanity {
+  title: string;
+  slug: string;
+  shortDescription: string;
+  icon: string;
+  priceFrom: number;
+  image: string | null;
+  idealFor: string[];
+}
+
 interface Service {
   icon: LucideIcon;
   title: string;
@@ -28,7 +48,8 @@ interface Service {
   idealFor: string[];
 }
 
-const services: Service[] = [
+// Default fallback services (used when Sanity has no data)
+const defaultServices: Service[] = [
   {
     icon: Film,
     title: "Imagefilme",
@@ -117,7 +138,24 @@ const itemVariants = {
   },
 };
 
-export function LeistungenPageContent() {
+interface LeistungenPageContentProps {
+  services: ServiceFromSanity[] | null;
+}
+
+export function LeistungenPageContent({ services: sanityServices }: LeistungenPageContentProps) {
+  // Convert Sanity services to component format or use defaults
+  const services: Service[] = sanityServices
+    ? sanityServices.map((s) => ({
+        icon: iconMap[s.icon] || Film,
+        title: s.title,
+        slug: s.slug,
+        shortDescription: s.shortDescription,
+        image: s.image || "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80",
+        priceFrom: s.priceFrom,
+        idealFor: s.idealFor,
+      }))
+    : defaultServices;
+
   return (
     <>
       <Header />
@@ -230,7 +268,7 @@ export function LeistungenPageContent() {
                 Nicht sicher, was Sie brauchen?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Nutzen Sie unseren Video-Konfigurator für eine unverbindliche
+                Nutzen Sie meinen Video-Konfigurator für eine unverbindliche
                 Preisschätzung oder kontaktieren Sie mich direkt.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

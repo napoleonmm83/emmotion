@@ -10,14 +10,15 @@ import { Menu, X } from "lucide-react";
 const homeNavItems = [
   { name: "Leistungen", href: "/leistungen" },
   { name: "Portfolio", href: "#portfolio" },
-  { name: "Über mich", href: "#ueber-mich" },
-  { name: "Kontakt", href: "#kontakt" },
+  { name: "Über mich", href: "/ueber-mich" },
+  { name: "Kontakt", href: "/kontakt" },
 ];
 
 // Navigation für Unterseiten (Links)
 const pageNavItems = [
   { name: "Leistungen", href: "/leistungen" },
   { name: "Portfolio", href: "/portfolio" },
+  { name: "Über mich", href: "/ueber-mich" },
   { name: "Konfigurator", href: "/konfigurator" },
   { name: "Kontakt", href: "/kontakt" },
 ];

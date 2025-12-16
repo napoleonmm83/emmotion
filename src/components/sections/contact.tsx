@@ -186,7 +186,7 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground mb-1">
                         Telefon
                       </p>
-                      <p className="text-foreground">+41 79 XXX XX XX</p>
+                      <p className="text-foreground">+41 79 723 29 24</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">

@@ -5,11 +5,12 @@ export const servicesQuery = groq`
   *[_type == "service"] | order(order asc) {
     _id,
     title,
-    slug,
+    "slug": slug.current,
     shortDescription,
     icon,
     priceFrom,
     featuredImage,
+    idealFor,
     "featuredVideoUrl": featuredVideo
   }
 `;
@@ -18,7 +19,7 @@ export const serviceBySlugQuery = groq`
   *[_type == "service" && slug.current == $slug][0] {
     _id,
     title,
-    slug,
+    "slug": slug.current,
     shortDescription,
     description,
     icon,
@@ -26,7 +27,29 @@ export const serviceBySlugQuery = groq`
     priceFrom,
     featuredVideo,
     featuredImage,
-    benefits,
+    benefits[] {
+      title,
+      description
+    },
+    process[] {
+      step,
+      title,
+      description
+    },
+    faq[] {
+      question,
+      answer
+    },
+    exampleVideos[] {
+      title,
+      youtubeUrl,
+      description
+    },
+    relatedProjects[]-> {
+      _id,
+      title,
+      "slug": slug.current
+    },
     seo
   }
 `;
@@ -136,5 +159,34 @@ export const settingsQuery = groq`
     contact,
     social,
     defaultSeo
+  }
+`;
+
+// Legal Pages (Impressum, Datenschutz)
+export const legalPageBySlugQuery = groq`
+  *[_type == "legalPage" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    content,
+    lastUpdated,
+    seo
+  }
+`;
+
+// About Page
+export const aboutPageQuery = groq`
+  *[_type == "aboutPage"][0] {
+    _id,
+    name,
+    subtitle,
+    profileImage,
+    heroText,
+    description,
+    stats,
+    values,
+    timeline,
+    whyWorkWithMe,
+    seo
   }
 `;

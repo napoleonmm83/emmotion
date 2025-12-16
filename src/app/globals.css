@@ -98,18 +98,38 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    letter-spacing: 0.01em;
+    line-height: 1.7;
   }
 
   html {
     scroll-behavior: smooth;
   }
 
-  h1, h2 {
-    @apply font-display tracking-wide;
+  /* Headings */
+  h1 {
+    @apply font-display uppercase;
+    letter-spacing: 0.08em;
   }
 
-  h3, h4, h5, h6 {
+  h2 {
+    @apply font-display uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  h3 {
+    @apply font-sans font-semibold;
+    letter-spacing: 0.02em;
+  }
+
+  h4, h5, h6 {
     @apply font-sans font-medium;
+    letter-spacing: 0.01em;
+  }
+
+  /* Improve paragraph readability */
+  p {
+    line-height: 1.75;
   }
 }
 

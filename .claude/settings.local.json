@@ -26,7 +26,20 @@
       "Bash(findstr:*)",
       "Bash(cmd.exe //c \"taskkill /F /PID 56204\")",
       "Bash(cmd.exe //c \"for /f \"\"tokens=5\"\" %a in (''netstat -ano ^| findstr :3000 ^| findstr LISTENING'') do taskkill /F /PID %a\")",
-      "Bash(cmd.exe //c \"taskkill /F /IM node.exe\")"
+      "Bash(cmd.exe //c \"taskkill /F /IM node.exe\")",
+      "Bash(curl:*)",
+      "mcp__archon__find_projects",
+      "Bash(npm run start:*)",
+      "Bash(npx next start -p 3005)",
+      "Bash(powershell -Command:*)",
+      "Bash(find:*)",
+      "Bash(cmd.exe /c \"for /f \"\"tokens=5\"\" %a in (''netstat -ano ^| findstr :3000 ^| findstr LISTENING'') do taskkill /F /PID %a\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr :3000 | findstr LISTENING\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr :3000\")",
+      "Bash(cmd.exe /c \"taskkill /F /IM node.exe 2>nul & ping -n 3 127.0.0.1 >nul\")",
+      "Bash(cmd.exe /c \"taskkill /F /IM node.exe\")",
+      "Bash(cmd.exe /c \"taskkill /F /IM node.exe 2>nul\")",
+      "Bash(npx next dev:*)"
     ]
   }
 }
