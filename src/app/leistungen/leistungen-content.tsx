@@ -194,7 +194,7 @@ export function LeistungenPageContent({ services: sanityServices }: LeistungenPa
                 <motion.div key={service.slug} variants={itemVariants}>
                   <Link href={`/leistungen/${service.slug}`}>
                     <div
-                      className={`card-surface rounded-xl overflow-hidden group hover:border-primary/50 transition-all duration-400 ${
+                      className={`card-surface rounded-xl overflow-hidden group hover:border-primary/50 transition-colors duration-400 ${
                         index % 2 === 0 ? "" : "md:flex-row-reverse"
                       } md:flex`}
                     >

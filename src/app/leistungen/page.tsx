@@ -1,3 +1,6 @@
+// Seite alle 60 Sekunden revalidieren für CMS-Updates
+export const revalidate = 60;
+
 import { Metadata } from "next";
 import { LeistungenPageContent } from "./leistungen-content";
 import { client } from "@sanity/lib/client";

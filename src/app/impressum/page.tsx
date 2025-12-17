@@ -1,9 +1,12 @@
+// Seite alle 60 Sekunden revalidieren für CMS-Updates
+export const revalidate = 60;
+
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LegalPageContent } from "@/components/legal";
 import { client } from "@sanity/lib/client";
-import { legalPageBySlugQuery } from "@sanity/lib/queries";
+import { legalPageBySlugQuery, settingsQuery } from "@sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "Impressum | emmotion.ch",
@@ -15,6 +18,26 @@ export const metadata: Metadata = {
   },
 };
 
+// Fallback Kontaktdaten
+const defaultContact = {
+  email: "hallo@emmotion.ch",
+  phone: "+41 79 723 29 24",
+  street: "Kerbelstrasse 6",
+  city: "9470 Buchs SG",
+  uid: "CHE-387.768.205",
+};
+
+interface Settings {
+  siteName?: string;
+  contact?: {
+    email?: string;
+    phone?: string;
+    street?: string;
+    city?: string;
+    uid?: string;
+  };
+}
+
 async function getImpressumData() {
   try {
     const data = await client.fetch(legalPageBySlugQuery, { slug: "impressum" });
@@ -24,7 +47,25 @@ async function getImpressumData() {
   }
 }
 
-function ImpressumFallback() {
+async function getSettings(): Promise<Settings | null> {
+  try {
+    const data = await client.fetch(settingsQuery);
+    return data || null;
+  } catch {
+    return null;
+  }
+}
+
+function ImpressumFallback({ settings }: { settings: Settings | null }) {
+  const contact = {
+    email: settings?.contact?.email || defaultContact.email,
+    phone: settings?.contact?.phone || defaultContact.phone,
+    street: settings?.contact?.street || defaultContact.street,
+    city: settings?.contact?.city || defaultContact.city,
+    uid: settings?.contact?.uid || defaultContact.uid,
+  };
+  const siteName = settings?.siteName || "emmotion.ch";
+
   return (
     <div className="space-y-8">
       <div>
@@ -32,13 +73,13 @@ function ImpressumFallback() {
           Angaben gemäss Schweizer Recht
         </h2>
         <div className="text-muted-foreground space-y-1">
-          <p className="font-medium text-foreground">emmotion.ch</p>
+          <p className="font-medium text-foreground">{siteName}</p>
           <p className="text-sm text-muted-foreground mb-2">
             Ein Brand von martini.digital
           </p>
           <p>Marcus Martini</p>
-          <p>Kerbelstrasse 6</p>
-          <p>9470 Buchs SG</p>
+          <p>{contact.street}</p>
+          <p>{contact.city}</p>
           <p>Schweiz</p>
         </div>
       </div>
@@ -50,7 +91,7 @@ function ImpressumFallback() {
         <div className="text-muted-foreground space-y-1">
           <p>Rechtsform: Einzelunternehmen</p>
           <p>Sitz: Buchs (SG)</p>
-          <p>UID: CHE-387.768.205</p>
+          <p>UID: {contact.uid}</p>
         </div>
       </div>
 
@@ -59,8 +100,14 @@ function ImpressumFallback() {
         <div className="text-muted-foreground space-y-1">
           <p>
             E-Mail:{" "}
-            <a href="mailto:hallo@emmotion.ch" className="text-primary hover:underline">
-              hallo@emmotion.ch
+            <a href={`mailto:${contact.email}`} className="text-primary hover:underline">
+              {contact.email}
+            </a>
+          </p>
+          <p>
+            Telefon:{" "}
+            <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-primary hover:underline">
+              {contact.phone}
             </a>
           </p>
         </div>
@@ -72,8 +119,8 @@ function ImpressumFallback() {
         </h2>
         <div className="text-muted-foreground space-y-1">
           <p>Marcus Martini</p>
-          <p>Kerbelstrasse 6</p>
-          <p>9470 Buchs SG</p>
+          <p>{contact.street}</p>
+          <p>{contact.city}</p>
         </div>
       </div>
 
@@ -125,7 +172,10 @@ function ImpressumFallback() {
 }
 
 export default async function ImpressumPage() {
-  const pageData = await getImpressumData();
+  const [pageData, settings] = await Promise.all([
+    getImpressumData(),
+    getSettings(),
+  ]);
 
   return (
     <>
@@ -135,10 +185,10 @@ export default async function ImpressumPage() {
           title={pageData?.title || "Impressum"}
           content={pageData?.content || null}
           lastUpdated={pageData?.lastUpdated}
-          fallbackContent={<ImpressumFallback />}
+          fallbackContent={<ImpressumFallback settings={settings} />}
         />
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

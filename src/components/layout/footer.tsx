@@ -10,13 +10,71 @@ const navigation = [
   { name: "Kontakt", href: "/kontakt" },
 ];
 
-const socialLinks = [
+// Fallback Social Links
+const defaultSocialLinks = [
   { name: "Instagram", href: "https://instagram.com/emmotion.ch", icon: Instagram },
-  { name: "LinkedIn", href: "https://linkedin.com/in/emmotion", icon: Linkedin },
+  { name: "LinkedIn", href: "https://linkedin.com/in/marcusmartini", icon: Linkedin },
   { name: "YouTube", href: "https://youtube.com/@emmotion", icon: Youtube },
 ];
 
-export function Footer() {
+// Fallback Kontaktdaten
+const defaultContact = {
+  email: "hallo@emmotion.ch",
+  street: "Kerbelstrasse 6",
+  city: "9470 Buchs SG",
+};
+
+// Fallback Footer-Texte
+const defaultFooter = {
+  tagline: "Videoproduktion mit TV-Erfahrung für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.",
+  ctaText: "Bereit für Ihr nächstes Videoprojekt? Ich freue mich auf Ihre Anfrage.",
+  copyrightName: "emmotion",
+};
+
+interface FooterProps {
+  settings?: {
+    siteName?: string;
+    contact?: {
+      email?: string;
+      phone?: string;
+      street?: string;
+      city?: string;
+    };
+    social?: {
+      instagram?: string;
+      linkedin?: string;
+      youtube?: string;
+    };
+    footer?: {
+      tagline?: string;
+      ctaText?: string;
+      copyrightName?: string;
+    };
+  } | null;
+}
+
+export function Footer({ settings }: FooterProps) {
+  // CMS-Daten oder Fallbacks verwenden
+  const contact = {
+    email: settings?.contact?.email || defaultContact.email,
+    street: settings?.contact?.street || defaultContact.street,
+    city: settings?.contact?.city || defaultContact.city,
+  };
+
+  const footer = {
+    tagline: settings?.footer?.tagline || defaultFooter.tagline,
+    ctaText: settings?.footer?.ctaText || defaultFooter.ctaText,
+    copyrightName: settings?.footer?.copyrightName || defaultFooter.copyrightName,
+  };
+
+  // Social Links aus CMS oder Fallback
+  const socialLinks = settings?.social
+    ? [
+        settings.social.instagram && { name: "Instagram", href: settings.social.instagram, icon: Instagram },
+        settings.social.linkedin && { name: "LinkedIn", href: settings.social.linkedin, icon: Linkedin },
+        settings.social.youtube && { name: "YouTube", href: settings.social.youtube, icon: Youtube },
+      ].filter(Boolean) as { name: string; href: string; icon: typeof Instagram }[]
+    : defaultSocialLinks;
   return (
     <footer className="border-t border-border bg-background py-16">
       <div className="container mx-auto px-6">
@@ -24,11 +82,10 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="text-2xl font-light text-foreground tracking-wide">
-              emmotion
+              {settings?.siteName || "emmotion"}
             </Link>
             <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-              Videoproduktion mit TV-Erfahrung für Unternehmen im Rheintal,
-              Liechtenstein und der Ostschweiz.
+              {footer.tagline}
             </p>
             {/* Social Links */}
             <div className="flex gap-4 mt-6">
@@ -75,17 +132,17 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-primary mt-0.5" />
                 <a
-                  href="mailto:hallo@emmotion.ch"
+                  href={`mailto:${contact.email}`}
                   className="text-muted-foreground text-sm hover:text-foreground transition-colors duration-300"
                 >
-                  hallo@emmotion.ch
+                  {contact.email}
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-primary mt-0.5" />
                 <span className="text-muted-foreground text-sm">
-                  Kerbelstrasse 6<br />
-                  9470 Buchs SG
+                  {contact.street}<br />
+                  {contact.city}
                 </span>
               </li>
             </ul>
@@ -97,7 +154,7 @@ export function Footer() {
               Projekt starten
             </h4>
             <p className="text-muted-foreground text-sm mb-4">
-              Bereit für Ihr nächstes Videoprojekt? Ich freue mich auf Ihre Anfrage.
+              {footer.ctaText}
             </p>
             <Link
               href="/kontakt"
@@ -111,7 +168,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} emmotion. Alle Rechte vorbehalten.
+            © {new Date().getFullYear()} {footer.copyrightName}. Alle Rechte vorbehalten.
           </p>
           <div className="flex gap-6">
             <Link

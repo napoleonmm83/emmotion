@@ -166,7 +166,7 @@ export function ServicePageContent({ service }: ServicePageContentProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="card-surface rounded-xl p-6 lg:p-8 group hover:border-primary/30 transition-all duration-400"
+                  className="card-surface rounded-xl p-6 lg:p-8 group hover:border-primary/30 transition-colors duration-400"
                 >
                   <div className="flex items-start gap-4">
                     <div className="p-2 rounded-lg bg-primary/10 mt-1">

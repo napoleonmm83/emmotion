@@ -120,17 +120,17 @@ export function Header() {
                 <button
                   key={item.href}
                   onClick={() => handleNavClick(item.href)}
-                  className={`relative text-sm font-light tracking-wide transition-colors duration-300 ${
+                  className={`relative text-sm font-semibold uppercase tracking-widest transition-colors duration-300 ${
                     isActive(item.href)
                       ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-foreground/60 hover:text-foreground"
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
                       layoutId="underline"
-                      className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
                     />
                   )}
                 </button>
@@ -138,17 +138,17 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative text-sm font-light tracking-wide transition-colors duration-300 ${
+                  className={`relative text-sm font-semibold uppercase tracking-widest transition-colors duration-300 ${
                     isActive(item.href)
                       ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-foreground/60 hover:text-foreground"
                   }`}
                 >
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
                       layoutId="underline"
-                      className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
                     />
                   )}
                 </Link>
@@ -188,10 +188,10 @@ export function Header() {
                   {item.href.startsWith("#") ? (
                     <button
                       onClick={() => handleNavClick(item.href)}
-                      className={`text-2xl font-light tracking-wide transition-colors duration-300 ${
+                      className={`text-xl font-semibold uppercase tracking-widest transition-colors duration-300 ${
                         isActive(item.href)
                           ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
+                          : "text-foreground/60 hover:text-foreground"
                       }`}
                     >
                       {item.name}
@@ -200,10 +200,10 @@ export function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`text-2xl font-light tracking-wide transition-colors duration-300 ${
+                      className={`text-xl font-semibold uppercase tracking-widest transition-colors duration-300 ${
                         isActive(item.href)
                           ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
+                          : "text-foreground/60 hover:text-foreground"
                       }`}
                     >
                       {item.name}

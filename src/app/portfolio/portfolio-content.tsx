@@ -18,7 +18,13 @@ interface Project {
   year: string;
 }
 
-const categories = [
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
+// Fallback Kategorien
+const defaultCategories: FilterOption[] = [
   { value: "all", label: "Alle" },
   { value: "imagefilm", label: "Imagefilme" },
   { value: "eventvideo", label: "Eventvideos" },
@@ -27,7 +33,8 @@ const categories = [
   { value: "drohnenaufnahmen", label: "Drohnenaufnahmen" },
 ];
 
-const industries = [
+// Fallback Branchen
+const defaultIndustries: FilterOption[] = [
   { value: "all", label: "Alle Branchen" },
   { value: "gastronomie", label: "Gastronomie" },
   { value: "industrie", label: "Industrie" },
@@ -36,8 +43,29 @@ const industries = [
   { value: "tourismus", label: "Tourismus" },
 ];
 
-// Demo projects - will be replaced with Sanity data
-const projects: Project[] = [
+// Fallback Hero
+const defaultHero = {
+  title: "Portfolio",
+  subtitle:
+    "Eine Auswahl meiner Videoprojekte – jedes Video erzählt eine einzigartige Geschichte. Von Imagefilmen über Eventvideos bis hin zu Social Media Content.",
+};
+
+// Fallback CTA
+const defaultCta = {
+  title: "Ihr Projekt könnte hier sein",
+  description:
+    "Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren Sie mich für ein unverbindliches Erstgespräch.",
+  buttonText: "Projekt anfragen",
+};
+
+// Fallback Empty State
+const defaultEmptyState = {
+  message: "Keine Projekte für diese Filter gefunden.",
+  resetText: "Filter zurücksetzen",
+};
+
+// Fallback Demo-Projekte wenn keine CMS-Daten vorhanden
+const fallbackProjects: Project[] = [
   {
     title: "Corporate Vision",
     slug: "corporate-vision",
@@ -74,78 +102,6 @@ const projects: Project[] = [
     client: "InnoTech GmbH",
     year: "2024",
   },
-  {
-    title: "Alpine Views",
-    slug: "alpine-views",
-    category: "drohnenaufnahmen",
-    industry: "tourismus",
-    thumbnail:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    client: "Tourismus Rheintal",
-    year: "2024",
-  },
-  {
-    title: "Brand Story",
-    slug: "brand-story",
-    category: "social-media",
-    industry: "handwerk",
-    thumbnail:
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-    client: "Schreinerei Müller",
-    year: "2023",
-  },
-  {
-    title: "Interview Series",
-    slug: "interview-series",
-    category: "imagefilm",
-    industry: "dienstleistung",
-    thumbnail:
-      "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-    client: "Consulting Partners",
-    year: "2023",
-  },
-  {
-    title: "Restaurant Ambiance",
-    slug: "restaurant-ambiance",
-    category: "imagefilm",
-    industry: "gastronomie",
-    thumbnail:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    client: "Restaurant Rheinblick",
-    year: "2023",
-  },
-  {
-    title: "Factory Tour",
-    slug: "factory-tour",
-    category: "imagefilm",
-    industry: "industrie",
-    thumbnail:
-      "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    client: "Metallbau Rheintal",
-    year: "2023",
-  },
-  {
-    title: "Team Building Event",
-    slug: "team-building-event",
-    category: "eventvideo",
-    industry: "dienstleistung",
-    thumbnail:
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    client: "Corporate Events AG",
-    year: "2023",
-  },
 ];
 
 const containerVariants = {
@@ -168,11 +124,109 @@ const itemVariants = {
   },
 };
 
-export function PortfolioPageContent() {
+interface PortfolioPageContentProps {
+  projects?: Project[] | null;
+  pageData?: {
+    hero?: {
+      title?: string;
+      subtitle?: string;
+    };
+    categories?: Array<{
+      value?: string;
+      label?: string;
+    }>;
+    industries?: Array<{
+      value?: string;
+      label?: string;
+    }>;
+    cta?: {
+      title?: string;
+      description?: string;
+      buttonText?: string;
+    };
+    emptyState?: {
+      message?: string;
+      resetText?: string;
+    };
+  } | null;
+  settings?: {
+    siteName?: string;
+    contact?: {
+      email?: string;
+      phone?: string;
+      street?: string;
+      city?: string;
+      uid?: string;
+      region?: string;
+    };
+    social?: {
+      linkedin?: string;
+      instagram?: string;
+      youtube?: string;
+    };
+    footer?: {
+      tagline?: string;
+      ctaText?: string;
+      copyrightName?: string;
+    };
+  } | null;
+}
+
+export function PortfolioPageContent({
+  projects,
+  pageData,
+  settings,
+}: PortfolioPageContentProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedIndustry, setSelectedIndustry] = useState("all");
 
-  const filteredProjects = projects.filter((project) => {
+  // CMS-Daten oder Fallback verwenden
+  const projectList =
+    projects && projects.length > 0 ? projects : fallbackProjects;
+
+  // Filter-Optionen aus CMS oder Fallback
+  const categories: FilterOption[] =
+    pageData?.categories && pageData.categories.length > 0
+      ? [
+          { value: "all", label: "Alle" },
+          ...pageData.categories.map((c) => ({
+            value: c.value || "",
+            label: c.label || "",
+          })),
+        ]
+      : defaultCategories;
+
+  const industries: FilterOption[] =
+    pageData?.industries && pageData.industries.length > 0
+      ? [
+          { value: "all", label: "Alle Branchen" },
+          ...pageData.industries.map((i) => ({
+            value: i.value || "",
+            label: i.label || "",
+          })),
+        ]
+      : defaultIndustries;
+
+  // Hero-Texte
+  const hero = {
+    title: pageData?.hero?.title || defaultHero.title,
+    subtitle: pageData?.hero?.subtitle || defaultHero.subtitle,
+  };
+
+  // CTA-Texte
+  const cta = {
+    title: pageData?.cta?.title || defaultCta.title,
+    description: pageData?.cta?.description || defaultCta.description,
+    buttonText: pageData?.cta?.buttonText || defaultCta.buttonText,
+  };
+
+  // Empty State-Texte
+  const emptyState = {
+    message: pageData?.emptyState?.message || defaultEmptyState.message,
+    resetText: pageData?.emptyState?.resetText || defaultEmptyState.resetText,
+  };
+
+  const filteredProjects = projectList.filter((project) => {
     const categoryMatch =
       selectedCategory === "all" || project.category === selectedCategory;
     const industryMatch =
@@ -194,13 +248,9 @@ export function PortfolioPageContent() {
               className="text-center max-w-3xl mx-auto"
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-foreground mb-6 tracking-wide">
-                Portfolio
+                {hero.title}
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Eine Auswahl meiner Videoprojekte – jedes Video erzählt eine
-                einzigartige Geschichte. Von Imagefilmen über Eventvideos bis
-                hin zu Social Media Content.
-              </p>
+              <p className="text-muted-foreground text-lg">{hero.subtitle}</p>
             </motion.div>
           </Container>
         </section>
@@ -289,7 +339,7 @@ export function PortfolioPageContent() {
                 className="text-center py-16"
               >
                 <p className="text-muted-foreground text-lg">
-                  Keine Projekte für diese Filter gefunden.
+                  {emptyState.message}
                 </p>
                 <button
                   onClick={() => {
@@ -298,7 +348,7 @@ export function PortfolioPageContent() {
                   }}
                   className="mt-4 text-primary hover:text-primary/80 transition-colors"
                 >
-                  Filter zurücksetzen
+                  {emptyState.resetText}
                 </button>
               </motion.div>
             )}
@@ -316,23 +366,22 @@ export function PortfolioPageContent() {
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 tracking-wide">
-                Ihr Projekt könnte hier sein
+                {cta.title}
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren
-                Sie mich für ein unverbindliches Erstgespräch.
+                {cta.description}
               </p>
               <Link
                 href="/#kontakt"
                 className="inline-flex items-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
               >
-                Projekt anfragen
+                {cta.buttonText}
               </Link>
             </motion.div>
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

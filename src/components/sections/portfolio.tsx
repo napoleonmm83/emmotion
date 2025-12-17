@@ -14,7 +14,8 @@ interface Project {
   videoUrl: string;
 }
 
-const projects: Project[] = [
+// Fallback-Projekte wenn keine CMS-Daten vorhanden
+const fallbackProjects: Project[] = [
   {
     title: "Corporate Vision",
     slug: "corporate-vision",
@@ -70,6 +71,10 @@ const projects: Project[] = [
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
   },
 ];
+
+interface PortfolioSectionProps {
+  data?: Project[] | null;
+}
 
 function VideoLightbox({
   isOpen,
@@ -141,8 +146,11 @@ const itemVariants = {
   },
 };
 
-export function PortfolioSection() {
+export function PortfolioSection({ data }: PortfolioSectionProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  // CMS-Daten oder Fallback verwenden
+  const projects = data && data.length > 0 ? data : fallbackProjects;
 
   return (
     <section id="portfolio" className="py-24 md:py-32 border-t border-border">

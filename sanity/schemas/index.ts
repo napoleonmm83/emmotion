@@ -6,6 +6,11 @@ import settings from "./settings";
 import contactSubmission from "./contact-submission";
 import legalPage from "./legal-page";
 import aboutPage from "./about-page";
+import homePage from "./home-page";
+import konfiguratorPage from "./konfigurator-page";
+import portfolioPage from "./portfolio-page";
+import contactPage from "./contact-page";
+import emailSettings from "./email-settings";
 
 export const schemaTypes = [
   service,
@@ -16,4 +21,9 @@ export const schemaTypes = [
   contactSubmission,
   legalPage,
   aboutPage,
+  homePage,
+  konfiguratorPage,
+  portfolioPage,
+  contactPage,
+  emailSettings,
 ];

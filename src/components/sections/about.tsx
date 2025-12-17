@@ -6,6 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container, AnimatedCounter } from "@/components/shared";
 
+interface StatFromCMS {
+  value: string;
+  label: string;
+}
+
 interface Stat {
   icon: LucideIcon;
   value: number;
@@ -13,12 +18,25 @@ interface Stat {
   label: string;
 }
 
+// Icon mapping für Stats
+const statIcons: LucideIcon[] = [Tv, Award, Users, MapPin];
+
 const defaultStats: Stat[] = [
   { icon: Tv, value: 10, suffix: "+", label: "Jahre TV-Erfahrung" },
   { icon: Award, value: 100, suffix: "+", label: "Projekte umgesetzt" },
   { icon: Users, value: 50, suffix: "+", label: "Zufriedene Kunden" },
   { icon: MapPin, value: 3, suffix: "", label: "Regionen abgedeckt" },
 ];
+
+// Parse CMS stats (z.B. "10+" -> { value: 10, suffix: "+" })
+function parseStatValue(valueStr: string): { value: number; suffix: string } {
+  const match = valueStr.match(/^(\d+)(.*)$/);
+  if (match) {
+    return { value: parseInt(match[1], 10), suffix: match[2] || "" };
+  }
+  // Fallback für nicht-numerische Werte wie "TV"
+  return { value: 0, suffix: valueStr };
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -46,6 +64,7 @@ interface AboutSectionProps {
     profileImage?: string;
     heroText?: string;
     description?: string;
+    stats?: StatFromCMS[];
   } | null;
 }
 
@@ -61,6 +80,19 @@ export function AboutSection({ data }: AboutSectionProps) {
         "Meine Leidenschaft ist es, Geschichten visuell zu erzählen. Dabei verbinde ich technische Expertise mit kreativem Gespür, um Videos zu produzieren, die nicht nur professionell aussehen, sondern auch emotional berühren.",
         "Als gebürtiger Rheintaler kenne ich die Region und ihre Unternehmen bestens. Ob lokaler Handwerksbetrieb oder internationales Unternehmen in Liechtenstein – ich verstehe die individuellen Bedürfnisse und setze sie gekonnt um.",
       ];
+
+  // Stats aus CMS oder Fallback
+  const stats: Stat[] = data?.stats?.length
+    ? data.stats.map((stat, index) => {
+        const parsed = parseStatValue(stat.value);
+        return {
+          icon: statIcons[index % statIcons.length],
+          value: parsed.value,
+          suffix: parsed.suffix,
+          label: stat.label,
+        };
+      })
+    : defaultStats;
 
   return (
     <section id="ueber-mich" className="py-24 md:py-32 border-t border-border">
@@ -116,18 +148,24 @@ export function AboutSection({ data }: AboutSectionProps) {
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-16 lg:mt-24"
         >
-          {defaultStats.map((stat) => (
+          {stats.map((stat) => (
             <motion.div
               key={stat.label}
               variants={itemVariants}
-              className="card-surface rounded-xl p-5 lg:p-6 text-center group hover:border-primary/30 transition-all duration-400"
+              className="card-surface rounded-xl p-5 lg:p-6 text-center group hover:border-primary/30 transition-colors duration-400"
             >
               <stat.icon className="w-7 h-7 lg:w-8 lg:h-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform duration-400" />
-              <AnimatedCounter
-                value={stat.value}
-                suffix={stat.suffix}
-                className="text-2xl lg:text-3xl font-display text-foreground mb-1 block"
-              />
+              {stat.value > 0 ? (
+                <AnimatedCounter
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  className="text-2xl lg:text-3xl font-display text-foreground mb-1 block"
+                />
+              ) : (
+                <span className="text-2xl lg:text-3xl font-display text-foreground mb-1 block">
+                  {stat.suffix}
+                </span>
+              )}
               <p className="text-xs lg:text-sm text-muted-foreground">{stat.label}</p>
             </motion.div>
           ))}

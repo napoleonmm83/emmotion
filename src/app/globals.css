@@ -102,6 +102,28 @@
     line-height: 1.7;
   }
 
+  /* Custom cursor - hide default cursor on desktop */
+  @media (pointer: fine) {
+    *,
+    *::before,
+    *::after {
+      cursor: none !important;
+    }
+
+    /* Keep text cursor for inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="number"],
+    textarea,
+    [contenteditable="true"] {
+      cursor: text !important;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
   }

@@ -5,6 +5,23 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { Container, SectionHeader } from "@/components/shared";
 
+// Fallback Kontaktdaten
+const defaultContact = {
+  email: "hallo@emmotion.ch",
+  phone: "+41 79 723 29 24",
+  region: "Rheintal, Liechtenstein, Ostschweiz",
+};
+
+interface ContactSectionProps {
+  settings?: {
+    contact?: {
+      email?: string;
+      phone?: string;
+      region?: string;
+    };
+  } | null;
+}
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -25,7 +42,13 @@ const itemVariants = {
   },
 };
 
-export function ContactSection() {
+export function ContactSection({ settings }: ContactSectionProps) {
+  // CMS-Daten oder Fallback verwenden
+  const contact = {
+    email: settings?.contact?.email || defaultContact.email,
+    phone: settings?.contact?.phone || defaultContact.phone,
+    region: settings?.contact?.region || defaultContact.region,
+  };
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -175,7 +198,9 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground mb-1">
                         E-Mail
                       </p>
-                      <p className="text-foreground">info@emmotion.ch</p>
+                      <a href={`mailto:${contact.email}`} className="text-foreground hover:text-primary transition-colors">
+                        {contact.email}
+                      </a>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -186,7 +211,9 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground mb-1">
                         Telefon
                       </p>
-                      <p className="text-foreground">+41 79 723 29 24</p>
+                      <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary transition-colors">
+                        {contact.phone}
+                      </a>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -198,7 +225,7 @@ export function ContactSection() {
                         Region
                       </p>
                       <p className="text-foreground">
-                        Rheintal, Liechtenstein, Ostschweiz
+                        {contact.region}
                       </p>
                     </div>
                   </div>

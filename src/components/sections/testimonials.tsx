@@ -11,7 +11,8 @@ interface Testimonial {
   company: string;
 }
 
-const testimonials: Testimonial[] = [
+// Fallback Testimonials wenn keine CMS-Daten vorhanden
+const fallbackTestimonials: Testimonial[] = [
   {
     quote:
       "Die Zusammenarbeit war von Anfang an professionell und unkompliziert. Das Ergebnis hat unsere Erwartungen übertroffen.",
@@ -35,6 +36,10 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+interface TestimonialsSectionProps {
+  data?: Testimonial[] | null;
+}
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -55,7 +60,10 @@ const itemVariants = {
   },
 };
 
-export function TestimonialsSection() {
+export function TestimonialsSection({ data }: TestimonialsSectionProps) {
+  // CMS-Daten oder Fallback verwenden
+  const testimonials = data && data.length > 0 ? data : fallbackTestimonials;
+
   return (
     <section className="py-24 md:py-32 border-t border-border">
       <Container>
@@ -75,7 +83,7 @@ export function TestimonialsSection() {
             <motion.div
               key={testimonial.name}
               variants={itemVariants}
-              className="card-surface rounded-xl p-6 lg:p-8 relative group hover:border-primary/30 transition-all duration-400"
+              className="card-surface rounded-xl p-6 lg:p-8 relative group hover:border-primary/30 transition-colors duration-400"
             >
               <div className="absolute -top-3 -left-1 opacity-10 group-hover:opacity-20 transition-opacity duration-400">
                 <Quote className="w-12 h-12 lg:w-16 lg:h-16 text-primary" />

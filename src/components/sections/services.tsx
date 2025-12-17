@@ -14,6 +14,23 @@ import {
 import Link from "next/link";
 import { Container, SectionHeader } from "@/components/shared";
 
+// Icon-Mapping von CMS-Namen zu Lucide-Icons
+const iconMap: Record<string, LucideIcon> = {
+  film: Film,
+  video: Video,
+  camera: Camera,
+  plane: Plane,
+  clapperboard: Clapperboard,
+  sparkles: Sparkles,
+  // Slug-basiertes Mapping als Fallback
+  imagefilm: Film,
+  eventvideo: Video,
+  "social-media": Camera,
+  drohnenaufnahmen: Plane,
+  produktvideo: Clapperboard,
+  postproduktion: Sparkles,
+};
+
 interface Service {
   icon: LucideIcon;
   title: string;
@@ -22,7 +39,16 @@ interface Service {
   features: string[];
 }
 
-const services: Service[] = [
+interface ServiceFromCMS {
+  title: string;
+  slug: string;
+  shortDescription?: string;
+  icon?: string;
+  idealFor?: string[];
+}
+
+// Fallback-Services wenn keine CMS-Daten vorhanden
+const fallbackServices: Service[] = [
   {
     icon: Film,
     title: "Imagefilme",
@@ -83,6 +109,22 @@ const services: Service[] = [
   },
 ];
 
+interface ServicesSectionProps {
+  data?: ServiceFromCMS[] | null;
+}
+
+// CMS-Daten zu Service-Format konvertieren
+function mapCMSToService(cmsService: ServiceFromCMS): Service {
+  const iconKey = cmsService.icon?.toLowerCase() || cmsService.slug;
+  return {
+    icon: iconMap[iconKey] || Film,
+    title: cmsService.title,
+    slug: cmsService.slug,
+    description: cmsService.shortDescription || "",
+    features: cmsService.idealFor || [],
+  };
+}
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -103,7 +145,12 @@ const itemVariants = {
   },
 };
 
-export function ServicesSection() {
+export function ServicesSection({ data }: ServicesSectionProps) {
+  // CMS-Daten oder Fallback verwenden
+  const services = data && data.length > 0
+    ? data.map(mapCMSToService)
+    : fallbackServices;
+
   return (
     <section id="leistungen" className="py-24 md:py-32">
       <Container>

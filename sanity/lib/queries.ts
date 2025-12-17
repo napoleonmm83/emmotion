@@ -150,15 +150,92 @@ export const faqsByCategoryQuery = groq`
   }
 `;
 
-// Settings
+// Settings (Singleton mit fester ID)
 export const settingsQuery = groq`
-  *[_type == "settings"][0] {
+  *[_id == "siteSettings"][0] {
     siteName,
     siteDescription,
     logo,
-    contact,
-    social,
-    defaultSeo
+    contact {
+      email,
+      phone,
+      street,
+      city,
+      uid,
+      region
+    },
+    contactForm {
+      recipientEmail,
+      emailSubjectPrefix,
+      successMessage,
+      enableEmailNotification,
+      subjectOptions[] {
+        value,
+        label
+      },
+      placeholders {
+        name,
+        email,
+        phone,
+        company,
+        message
+      },
+      submitButtonText,
+      privacyText
+    },
+    social {
+      linkedin,
+      instagram,
+      youtube
+    },
+    footer {
+      tagline,
+      ctaText,
+      copyrightName
+    },
+    seo {
+      allowIndexing,
+      metaTitle,
+      metaDescription,
+      ogImage
+    }
+  }
+`;
+
+// SEO Settings (Singleton mit fester ID)
+export const seoSettingsQuery = groq`
+  *[_id == "siteSettings"][0] {
+    siteName,
+    siteDescription,
+    contact {
+      email,
+      phone,
+      street,
+      city,
+      region
+    },
+    social {
+      linkedin,
+      instagram,
+      youtube
+    },
+    seo {
+      allowIndexing,
+      metaTitle,
+      metaDescription,
+      ogImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height
+            }
+          }
+        }
+      }
+    }
   }
 `;
 
@@ -174,9 +251,92 @@ export const legalPageBySlugQuery = groq`
   }
 `;
 
-// About Page
+// Home Page (Singleton mit fester ID)
+export const homePageQuery = groq`
+  *[_id == "homePage"][0] {
+    hero {
+      titleLine1,
+      titleHighlight,
+      subtitle,
+      ctaPrimaryText,
+      ctaPrimaryLink,
+      ctaSecondaryText,
+      ctaSecondaryLink,
+      backgroundVideo,
+      backgroundImage {
+        asset->{
+          _id,
+          url
+        }
+      }
+    },
+    sections {
+      showServices,
+      showPortfolio,
+      showTestimonials,
+      showCTA,
+      showAbout,
+      showContact
+    },
+    seo
+  }
+`;
+
+// Konfigurator Page (Singleton mit fester ID)
+export const konfiguratorPageQuery = groq`
+  *[_id == "konfiguratorPage"][0] {
+    hero {
+      title,
+      subtitle
+    },
+    benefits[] {
+      icon,
+      title,
+      description
+    },
+    infoSection {
+      title,
+      description
+    },
+    steps[] {
+      title,
+      description
+    },
+    seo
+  }
+`;
+
+// Portfolio Page (Singleton mit fester ID)
+export const portfolioPageQuery = groq`
+  *[_id == "portfolioPage"][0] {
+    hero {
+      title,
+      subtitle
+    },
+    categories[] {
+      value,
+      label
+    },
+    industries[] {
+      value,
+      label
+    },
+    cta {
+      title,
+      description,
+      buttonText
+    },
+    emptyState {
+      message,
+      resetText
+    },
+    seo
+  }
+`;
+
+// About Page (Singleton mit fester ID)
 export const aboutPageQuery = groq`
-  *[_type == "aboutPage"][0] {
+  *[_id == "aboutPage"][0] {
     _id,
     name,
     subtitle,
@@ -221,5 +381,70 @@ export const aboutPageQuery = groq`
       }
     },
     seo
+  }
+`;
+
+// Contact Page (Singleton mit fester ID)
+export const contactPageQuery = groq`
+  *[_id == "contactPage"][0] {
+    hero {
+      title,
+      titleHighlight,
+      subtitle
+    },
+    form {
+      title,
+      subjectOptions[] {
+        value,
+        label
+      },
+      placeholders {
+        name,
+        email,
+        phone,
+        company,
+        message
+      },
+      submitButtonText,
+      successMessage,
+      privacyText
+    },
+    sidebar {
+      contactTitle,
+      responseTime,
+      whyTitle,
+      whyPoints,
+      quickResponseTitle,
+      quickResponseText
+    },
+    regions {
+      title,
+      subtitle,
+      regionList,
+      footerText
+    },
+    seo
+  }
+`;
+
+// Email Settings (Singleton mit fester ID)
+export const emailSettingsQuery = groq`
+  *[_id == "emailSettings"][0] {
+    enabled,
+    recipientEmail,
+    senderName,
+    subjectPrefix,
+    smtp {
+      host,
+      port,
+      secure,
+      user,
+      password
+    },
+    testEmail {
+      testRecipient,
+      lastTestResult,
+      lastTestDate
+    }
   }
 `;

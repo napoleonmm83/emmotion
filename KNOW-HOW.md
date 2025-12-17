@@ -18,6 +18,42 @@
 
 ## Sanity CMS Patterns
 
+### ⚠️ Wichtige Regel: Bestehende Texte übernehmen
+
+**Bei allen CMS-editierbaren Feldern müssen bestehende Texte aus dem Code übernommen werden!**
+
+Wenn Inhalte vom Code ins CMS verschoben werden:
+
+1. **Bestehende Texte als Default-Werte** im Schema setzen (`initialValue`)
+2. **Oder** initiale Sanity-Dokumente mit den bestehenden Texten erstellen
+3. **Niemals** Inhalte verlieren oder mit Platzhaltern ersetzen
+
+**Beispiel:**
+```typescript
+// FALSCH - Text geht verloren
+defineField({
+  name: "heroTitle",
+  title: "Hero Titel",
+  type: "string",
+})
+
+// RICHTIG - Bestehender Text als Default
+defineField({
+  name: "heroTitle",
+  title: "Hero Titel",
+  type: "string",
+  initialValue: "Videoproduktion mit TV-Erfahrung", // <- aus bestehendem Code
+})
+```
+
+**Gilt für:**
+- Startseiten-Inhalte (Hero, CTAs, Sektions-Titel)
+- Seiten-spezifische Texte
+- Formulare und Buttons
+- Alle Inhalte, die vorher hardcoded waren
+
+---
+
 ### Dynamische Bild-Aspect-Ratios
 
 Portrait vs. Landscape Bilder automatisch erkennen und Layout anpassen.

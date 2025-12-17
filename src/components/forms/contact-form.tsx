@@ -3,9 +3,25 @@
 import { useState, useEffect } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
+// CMS Contact Form Settings Interface
+interface ContactFormSettings {
+  subjectOptions?: Array<{ value: string; label: string }>;
+  placeholders?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    company?: string;
+    message?: string;
+  };
+  submitButtonText?: string;
+  successMessage?: string;
+  privacyText?: string;
+}
+
 interface ContactFormProps {
   className?: string;
   variant?: "default" | "compact";
+  settings?: ContactFormSettings;
 }
 
 interface FormData {
@@ -23,7 +39,8 @@ interface FormData {
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-const SUBJECT_OPTIONS = [
+// Default subject options as fallback
+const DEFAULT_SUBJECT_OPTIONS = [
   { value: "", label: "Bitte auswählen" },
   { value: "general", label: "Allgemeine Anfrage" },
   { value: "project", label: "Projektanfrage" },
@@ -32,7 +49,37 @@ const SUBJECT_OPTIONS = [
   { value: "other", label: "Sonstiges" },
 ];
 
-export function ContactForm({ className = "", variant = "default" }: ContactFormProps) {
+// Default placeholders as fallback
+const DEFAULT_PLACEHOLDERS = {
+  name: "Ihr Name",
+  email: "ihre@email.ch",
+  phone: "+41 79 123 45 67",
+  company: "Ihre Firma",
+  message: "Erzählen Sie mir von Ihrem Projekt...",
+};
+
+const DEFAULT_SUCCESS_MESSAGE = "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen.";
+const DEFAULT_SUBMIT_TEXT = "Nachricht senden";
+const DEFAULT_PRIVACY_TEXT = "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer Datenschutzerklärung zu.";
+
+export function ContactForm({ className = "", variant = "default", settings }: ContactFormProps) {
+  // Merge CMS settings with defaults
+  const subjectOptions = settings?.subjectOptions?.length
+    ? [{ value: "", label: "Bitte auswählen" }, ...settings.subjectOptions]
+    : DEFAULT_SUBJECT_OPTIONS;
+
+  const placeholders = {
+    name: settings?.placeholders?.name || DEFAULT_PLACEHOLDERS.name,
+    email: settings?.placeholders?.email || DEFAULT_PLACEHOLDERS.email,
+    phone: settings?.placeholders?.phone || DEFAULT_PLACEHOLDERS.phone,
+    company: settings?.placeholders?.company || DEFAULT_PLACEHOLDERS.company,
+    message: settings?.placeholders?.message || DEFAULT_PLACEHOLDERS.message,
+  };
+
+  const submitButtonText = settings?.submitButtonText || DEFAULT_SUBMIT_TEXT;
+  const configuredSuccessMessage = settings?.successMessage || DEFAULT_SUCCESS_MESSAGE;
+  const privacyText = settings?.privacyText || DEFAULT_PRIVACY_TEXT;
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -80,8 +127,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
 
       setStatus("success");
       setSuccessMessage(
-        result.message ||
-          "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen."
+        result.message || configuredSuccessMessage
       );
 
       // Reset form
@@ -156,7 +202,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
             onChange={handleChange}
             required
             className={inputClasses}
-            placeholder="Ihr Name"
+            placeholder={placeholders.name}
           />
         </div>
         <div>
@@ -174,7 +220,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
             onChange={handleChange}
             required
             className={inputClasses}
-            placeholder="ihre@email.ch"
+            placeholder={placeholders.email}
           />
         </div>
       </div>
@@ -195,7 +241,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
               value={formData.phone}
               onChange={handleChange}
               className={inputClasses}
-              placeholder="+41 79 123 45 67"
+              placeholder={placeholders.phone}
             />
           </div>
           <div>
@@ -212,7 +258,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
               value={formData.company}
               onChange={handleChange}
               className={inputClasses}
-              placeholder="Ihre Firma"
+              placeholder={placeholders.company}
             />
           </div>
         </div>
@@ -233,7 +279,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
           required
           className={inputClasses}
         >
-          {SUBJECT_OPTIONS.map((option) => (
+          {subjectOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -256,7 +302,7 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
           required
           rows={variant === "compact" ? 4 : 6}
           className={`${inputClasses} resize-none`}
-          placeholder="Erzählen Sie mir von Ihrem Projekt..."
+          placeholder={placeholders.message}
         />
       </div>
 
@@ -280,17 +326,28 @@ export function ContactForm({ className = "", variant = "default" }: ContactForm
         ) : (
           <>
             <Send className="w-5 h-5" />
-            Nachricht senden
+            {submitButtonText}
           </>
         )}
       </button>
 
       <p className="text-xs text-muted-foreground text-center">
-        Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer{" "}
-        <a href="/datenschutz" className="text-primary hover:underline">
-          Datenschutzerklärung
-        </a>{" "}
-        zu.
+        {privacyText.includes("Datenschutzerklärung") ? (
+          <>
+            {privacyText.split("Datenschutzerklärung")[0]}
+            <a href="/datenschutz" className="text-primary hover:underline">
+              Datenschutzerklärung
+            </a>
+            {privacyText.split("Datenschutzerklärung")[1]}
+          </>
+        ) : (
+          <>
+            {privacyText}{" "}
+            <a href="/datenschutz" className="text-primary hover:underline">
+              Datenschutzerklärung
+            </a>
+          </>
+        )}
       </p>
     </form>
   );

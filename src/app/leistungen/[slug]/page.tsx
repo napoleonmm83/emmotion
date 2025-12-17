@@ -1,3 +1,6 @@
+// Seite alle 60 Sekunden revalidieren für CMS-Updates
+export const revalidate = 60;
+
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageContent } from "./service-content";

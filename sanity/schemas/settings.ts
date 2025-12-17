@@ -28,7 +28,10 @@ export default defineType({
       fields: [
         { name: "email", type: "string", title: "E-Mail" },
         { name: "phone", type: "string", title: "Telefon" },
-        { name: "address", type: "text", title: "Adresse" },
+        { name: "street", type: "string", title: "Strasse" },
+        { name: "city", type: "string", title: "PLZ & Ort" },
+        { name: "uid", type: "string", title: "UID-Nummer", description: "z.B. CHE-387.768.205" },
+        { name: "region", type: "string", title: "Region / Einsatzgebiet", description: "z.B. Rheintal, Liechtenstein, Ostschweiz" },
       ],
     }),
     defineField({
@@ -65,6 +68,49 @@ export default defineType({
             "Wenn deaktiviert, werden Anfragen nur in Sanity gespeichert",
           initialValue: false,
         },
+        {
+          name: "subjectOptions",
+          type: "array",
+          title: "Betreff-Optionen",
+          description: "Auswahlmöglichkeiten im Dropdown",
+          of: [
+            {
+              type: "object",
+              fields: [
+                { name: "value", type: "string", title: "Wert (intern)" },
+                { name: "label", type: "string", title: "Anzeigename" },
+              ],
+              preview: {
+                select: { title: "label", subtitle: "value" },
+              },
+            },
+          ],
+        },
+        {
+          name: "placeholders",
+          type: "object",
+          title: "Platzhalter-Texte",
+          fields: [
+            { name: "name", type: "string", title: "Name", initialValue: "Ihr Name" },
+            { name: "email", type: "string", title: "E-Mail", initialValue: "ihre@email.ch" },
+            { name: "phone", type: "string", title: "Telefon", initialValue: "+41 79 123 45 67" },
+            { name: "company", type: "string", title: "Firma", initialValue: "Ihre Firma" },
+            { name: "message", type: "string", title: "Nachricht", initialValue: "Erzählen Sie mir von Ihrem Projekt..." },
+          ],
+        },
+        {
+          name: "submitButtonText",
+          type: "string",
+          title: "Button-Text",
+          initialValue: "Nachricht senden",
+        },
+        {
+          name: "privacyText",
+          type: "text",
+          title: "Datenschutz-Hinweis",
+          description: "Text unter dem Formular",
+          initialValue: "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer Datenschutzerklärung zu.",
+        },
       ],
     }),
     defineField({
@@ -78,10 +124,43 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "defaultSeo",
-      title: "Default SEO",
+      name: "footer",
+      title: "Footer",
       type: "object",
       fields: [
+        {
+          name: "tagline",
+          type: "text",
+          title: "Tagline",
+          description: "Kurzer Text unter dem Logo im Footer",
+        },
+        {
+          name: "ctaText",
+          type: "text",
+          title: "CTA Text",
+          description: "Call-to-Action Text im Footer",
+        },
+        {
+          name: "copyrightName",
+          type: "string",
+          title: "Copyright Name",
+          description: "z.B. emmotion",
+        },
+      ],
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Einstellungen",
+      type: "object",
+      fields: [
+        {
+          name: "allowIndexing",
+          type: "boolean",
+          title: "Suchmaschinen-Indexierung erlauben",
+          description:
+            "Wenn deaktiviert, wird die Website nicht von Google & Co. indexiert. Für Go-Live aktivieren!",
+          initialValue: false,
+        },
         { name: "metaTitle", type: "string", title: "Default Meta Title" },
         {
           name: "metaDescription",

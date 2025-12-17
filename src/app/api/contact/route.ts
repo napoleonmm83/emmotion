@@ -11,19 +11,58 @@ const sanityClient = createClient({
   token: process.env.SANITY_API_TOKEN,
 });
 
-// SMTP Transporter (nur erstellen wenn konfiguriert)
-function createMailTransporter() {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+// Email Settings Interface
+interface EmailSettings {
+  enabled: boolean;
+  recipientEmail: string;
+  senderName: string;
+  subjectPrefix: string;
+  smtp: {
+    host: string;
+    port: number;
+    secure: boolean;
+    user: string;
+    password: string;
+  };
+}
+
+// Fetch email settings from CMS
+async function getEmailSettings(): Promise<EmailSettings | null> {
+  try {
+    const settings = await sanityClient.fetch(
+      `*[_id == "emailSettings"][0] {
+        enabled,
+        recipientEmail,
+        senderName,
+        subjectPrefix,
+        smtp {
+          host,
+          port,
+          secure,
+          user,
+          password
+        }
+      }`
+    );
+    return settings;
+  } catch {
+    return null;
+  }
+}
+
+// SMTP Transporter from CMS settings
+function createMailTransporter(settings: EmailSettings) {
+  if (!settings.smtp?.host || !settings.smtp?.user || !settings.smtp?.password) {
     return null;
   }
 
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_PORT === "465", // true für 465, false für andere
+    host: settings.smtp.host,
+    port: settings.smtp.port || 587,
+    secure: settings.smtp.secure || false,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: settings.smtp.user,
+      pass: settings.smtp.password,
     },
   });
 }
@@ -256,29 +295,39 @@ export async function POST(request: NextRequest) {
 
     let emailSent = false;
 
-    // Send email notification via SMTP
-    const transporter = createMailTransporter();
-    if (transporter) {
-      try {
-        const subjectLabel = SUBJECT_LABELS[sanitizedData.subject] || sanitizedData.subject;
+    // Fetch email settings from CMS
+    const emailSettings = await getEmailSettings();
 
-        await transporter.sendMail({
-          from: `"emmotion.ch" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-          to: process.env.SMTP_TO || process.env.SMTP_USER,
-          replyTo: sanitizedData.email,
-          subject: `[emmotion.ch] ${subjectLabel} von ${sanitizedData.name}`,
-          text: createEmailText(sanitizedData),
-          html: createEmailHtml(sanitizedData),
-        });
+    // Send email notification via SMTP if enabled
+    if (emailSettings?.enabled) {
+      const transporter = createMailTransporter(emailSettings);
+      if (transporter) {
+        try {
+          const subjectLabel = SUBJECT_LABELS[sanitizedData.subject] || sanitizedData.subject;
+          const subjectPrefix = emailSettings.subjectPrefix || "[emmotion.ch]";
+          const senderName = emailSettings.senderName || "emmotion.ch";
+          const recipientEmail = emailSettings.recipientEmail || emailSettings.smtp.user;
 
-        emailSent = true;
-        console.log("Email notification sent successfully");
-      } catch (emailError) {
-        console.error("Failed to send email notification:", emailError);
-        // Continue without email - still save to Sanity
+          await transporter.sendMail({
+            from: `"${senderName}" <${emailSettings.smtp.user}>`,
+            to: recipientEmail,
+            replyTo: sanitizedData.email,
+            subject: `${subjectPrefix} ${subjectLabel} von ${sanitizedData.name}`,
+            text: createEmailText(sanitizedData),
+            html: createEmailHtml(sanitizedData),
+          });
+
+          emailSent = true;
+          console.log("Email notification sent successfully");
+        } catch (emailError) {
+          console.error("Failed to send email notification:", emailError);
+          // Continue without email - still save to Sanity
+        }
+      } else {
+        console.log("SMTP not properly configured - skipping email notification");
       }
     } else {
-      console.log("SMTP not configured - skipping email notification");
+      console.log("Email disabled in CMS - skipping email notification");
     }
 
     // Save to Sanity
@@ -302,17 +351,17 @@ export async function POST(request: NextRequest) {
       console.warn("SANITY_API_TOKEN not set - submission not saved");
     }
 
-    // Fetch success message from settings
+    // Fetch success message from contact page settings
     let successMessage =
       "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen.";
 
     try {
       if (process.env.SANITY_API_TOKEN) {
-        const settings = await sanityClient.fetch(
-          `*[_type == "settings"][0]{contactForm}`
+        const contactPage = await sanityClient.fetch(
+          `*[_id == "contactPage"][0]{form}`
         );
-        if (settings?.contactForm?.successMessage) {
-          successMessage = settings.contactForm.successMessage;
+        if (contactPage?.form?.successMessage) {
+          successMessage = contactPage.form.successMessage;
         }
       }
     } catch {

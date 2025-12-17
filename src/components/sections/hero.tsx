@@ -4,11 +4,38 @@ import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Play, Pause, Volume2, VolumeX, ChevronDown } from "lucide-react";
 
-export function HeroSection() {
+interface HeroData {
+  titleLine1?: string;
+  titleHighlight?: string;
+  subtitle?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+  backgroundVideo?: string;
+  backgroundImage?: string;
+}
+
+interface HeroSectionProps {
+  data?: HeroData | null;
+}
+
+export function HeroSection({ data }: HeroSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
+
+  // Default values (bestehende Texte als Fallback)
+  const titleLine1 = data?.titleLine1 || "Videos, die";
+  const titleHighlight = data?.titleHighlight || "wirken.";
+  const subtitle = data?.subtitle || "Videoproduktion mit TV-Erfahrung – für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.";
+  const ctaPrimaryText = data?.ctaPrimaryText || "Projekt anfragen";
+  const ctaPrimaryLink = data?.ctaPrimaryLink || "#kontakt";
+  const ctaSecondaryText = data?.ctaSecondaryText || "Portfolio ansehen";
+  const ctaSecondaryLink = data?.ctaSecondaryLink || "#portfolio";
+  const backgroundVideo = data?.backgroundVideo || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+  const posterImage = data?.backgroundImage || "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80";
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -47,6 +74,16 @@ export function HeroSection() {
     }
   };
 
+  const handleButtonClick = (link: string) => {
+    if (link.startsWith("#")) {
+      // Anchor link - scroll to section
+      scrollToSection(link.substring(1));
+    } else {
+      // Page link - navigate
+      window.location.href = link;
+    }
+  };
+
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: backgroundY, scale }}>
@@ -56,10 +93,10 @@ export function HeroSection() {
           loop
           muted={isMuted}
           playsInline
-          poster="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80"
+          poster={posterImage}
         >
           <source
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            src={backgroundVideo}
             type="video/mp4"
           />
         </video>
@@ -77,8 +114,8 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase"
         >
-          Videos, die{" "}
-          <span className="gradient-text">wirken.</span>
+          {titleLine1}{" "}
+          <span className="gradient-text">{titleHighlight}</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 30 }}
@@ -86,8 +123,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal"
         >
-          Videoproduktion mit TV-Erfahrung – für Unternehmen im Rheintal,
-          Liechtenstein und der Ostschweiz.
+          {subtitle}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -96,16 +132,16 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row gap-4"
         >
           <button
-            onClick={() => scrollToSection("kontakt")}
+            onClick={() => handleButtonClick(ctaPrimaryLink)}
             className="px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
           >
-            Projekt anfragen
+            {ctaPrimaryText}
           </button>
           <button
-            onClick={() => scrollToSection("portfolio")}
+            onClick={() => handleButtonClick(ctaSecondaryLink)}
             className="px-8 py-4 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-400"
           >
-            Portfolio ansehen
+            {ctaSecondaryText}
           </button>
         </motion.div>
       </motion.div>
