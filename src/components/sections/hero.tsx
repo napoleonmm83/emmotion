@@ -35,7 +35,7 @@ export function HeroSection({ data }: HeroSectionProps) {
   const ctaSecondaryText = data?.ctaSecondaryText || "Portfolio ansehen";
   const ctaSecondaryLink = data?.ctaSecondaryLink || "#portfolio";
   const backgroundVideo = data?.backgroundVideo || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
-  const posterImage = data?.backgroundImage || "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80";
+  const posterImage = data?.backgroundImage || "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1280&q=60";
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
