@@ -109,23 +109,13 @@ export function HeroSection({ data }: HeroSectionProps) {
         className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center"
         style={{ y: contentY, opacity: contentOpacity }}
       >
-        <motion.h1
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase"
-        >
+        <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
           {titleLine1}{" "}
           <span className="gradient-text">{titleHighlight}</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal"
-        >
+        </h1>
+        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal">
           {subtitle}
-        </motion.p>
+        </p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
