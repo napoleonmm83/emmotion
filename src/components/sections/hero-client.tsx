@@ -216,13 +216,22 @@ export function HeroContentAnimated({
   if (!useAnimations) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center bg-transparent"
-    >
-      <motion.h1
+    <>
+      {/* Background overlay to cover static content */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="absolute inset-0 z-[15] bg-background/60"
+      />
+      {/* Animated content */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center"
+      >
+        <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -258,6 +267,7 @@ export function HeroContentAnimated({
           {ctaSecondaryText}
         </button>
       </motion.div>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }
