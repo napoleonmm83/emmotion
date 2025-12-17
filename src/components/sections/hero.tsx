@@ -155,12 +155,14 @@ export function HeroSection({ data }: HeroSectionProps) {
       >
         <button
           onClick={togglePlay}
+          aria-label={isPlaying ? "Video pausieren" : "Video abspielen"}
           className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
         >
           {isPlaying ? <Pause size={18} /> : <Play size={18} />}
         </button>
         <button
           onClick={toggleMute}
+          aria-label={isMuted ? "Ton einschalten" : "Ton ausschalten"}
           className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
         >
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -172,6 +174,7 @@ export function HeroSection({ data }: HeroSectionProps) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.2 }}
         onClick={() => scrollToSection("leistungen")}
+        aria-label="Zu Leistungen scrollen"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-foreground/60 hover:text-foreground transition-colors duration-400"
       >
         <ChevronDown size={32} className="animate-scroll-bounce" />
