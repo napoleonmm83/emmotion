@@ -55,7 +55,9 @@
       "Bash(npx vercel pull:*)",
       "WebFetch(domain:pagespeed.web.dev)",
       "Bash(npm i:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(npm show:*)",
+      "Bash(pnpm list:*)"
     ]
   }
 }
