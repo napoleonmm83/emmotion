@@ -23,6 +23,7 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-toast": "^1.2.14",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@sanity/client": "^7.13.2",
     "@sanity/image-url": "^2.0.2",
     "@sanity/ui": "^3.1.11",
     "@sanity/vision": "^3.85.0",
