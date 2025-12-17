@@ -103,14 +103,35 @@ const FALLBACK_WHY_WORK = {
   ],
 };
 
+interface ImageWithMetadata {
+  asset?: {
+    _id?: string;
+    _ref?: string;
+    url?: string;
+    metadata?: {
+      dimensions?: {
+        width: number;
+        height: number;
+        aspectRatio: number;
+      };
+    };
+  };
+  hotspot?: {
+    x: number;
+    y: number;
+  };
+  crop?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
+}
+
 interface AboutData {
   name?: string;
   subtitle?: string;
-  profileImage?: {
-    asset?: {
-      _ref: string;
-    };
-  };
+  profileImage?: ImageWithMetadata;
   heroText?: string;
   description?: PortableTextBlock[];
   stats?: Array<{ value: string; label: string }>;
@@ -120,11 +141,7 @@ interface AboutData {
     title?: string;
     description?: string;
     points?: string[];
-    image?: {
-      asset?: {
-        _ref: string;
-      };
-    };
+    image?: ImageWithMetadata;
   };
 }
 
@@ -168,8 +185,17 @@ export function UeberMichContent({ data }: UeberMichContentProps) {
     ? urlFor(data.profileImage).width(800).height(1000).url()
     : "https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&w=800&q=80";
 
+  // Get image dimensions for dynamic aspect ratio
+  const whyWorkImageDimensions = data?.whyWorkWithMe?.image?.asset?.metadata?.dimensions;
+  const isWhyWorkImagePortrait = whyWorkImageDimensions
+    ? whyWorkImageDimensions.aspectRatio < 1
+    : false;
+
   const whyWorkImageUrl = data?.whyWorkWithMe?.image?.asset
-    ? urlFor(data.whyWorkWithMe.image).width(1200).height(800).url()
+    ? urlFor(data.whyWorkWithMe.image)
+        .width(isWhyWorkImagePortrait ? 800 : 1200)
+        .height(isWhyWorkImagePortrait ? 1200 : 800)
+        .url()
     : "https://images.unsplash.com/photo-1579965342575-16428a7c8881?auto=format&fit=crop&w=1200&q=80";
 
   return (
@@ -432,7 +458,11 @@ export function UeberMichContent({ data }: UeberMichContentProps) {
                 transition={{ duration: 0.7 }}
                 className="relative"
               >
-                <div className="relative aspect-video rounded-xl overflow-hidden">
+                <div
+                  className={`relative rounded-xl overflow-hidden ${
+                    isWhyWorkImagePortrait ? "aspect-[3/4]" : "aspect-video"
+                  }`}
+                >
                   <Image
                     src={whyWorkImageUrl}
                     alt="Videoproduktion im Einsatz"

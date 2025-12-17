@@ -180,13 +180,46 @@ export const aboutPageQuery = groq`
     _id,
     name,
     subtitle,
-    profileImage,
+    profileImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      hotspot,
+      crop
+    },
     heroText,
     description,
     stats,
     values,
     timeline,
-    whyWorkWithMe,
+    whyWorkWithMe {
+      title,
+      description,
+      points,
+      image {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        hotspot,
+        crop
+      }
+    },
     seo
   }
 `;
