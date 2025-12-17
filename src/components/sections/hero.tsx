@@ -43,8 +43,6 @@ export function HeroSection({ data }: HeroSectionProps) {
   });
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   const togglePlay = () => {
@@ -105,10 +103,7 @@ export function HeroSection({ data }: HeroSectionProps) {
         <div className="absolute inset-0 bg-background/60" />
       </motion.div>
 
-      <motion.div
-        className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center"
-        style={{ y: contentY, opacity: contentOpacity }}
-      >
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
         <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
           {titleLine1}{" "}
           <span className="gradient-text">{titleHighlight}</span>
@@ -116,12 +111,7 @@ export function HeroSection({ data }: HeroSectionProps) {
         <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal">
           {subtitle}
         </p>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4"
-        >
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={() => handleButtonClick(ctaPrimaryLink)}
             className="px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
@@ -134,8 +124,8 @@ export function HeroSection({ data }: HeroSectionProps) {
           >
             {ctaSecondaryText}
           </button>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
