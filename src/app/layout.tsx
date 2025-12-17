@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Bebas_Neue } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BackToTop, CustomCursor } from "@/components/shared";
 import { client } from "@sanity/lib/client";
 import { seoSettingsQuery } from "@sanity/lib/queries";
@@ -272,6 +273,7 @@ export default async function RootLayout({
         <CustomCursor />
         {children}
         <BackToTop />
+        <SpeedInsights />
       </body>
     </html>
   );
