@@ -37,8 +37,8 @@ export function HeroSection({ data }: HeroSectionProps) {
         posterImage={posterImage}
       />
 
-      {/* Static server-rendered content - immediate LCP */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+      {/* Static server-rendered content - MOBILE ONLY for fast LCP */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center md:hidden">
         <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
           {titleLine1}{" "}
           <span className="gradient-text">{titleHighlight}</span>
