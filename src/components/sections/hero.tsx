@@ -128,29 +128,76 @@ export function HeroSection({ data }: HeroSectionProps) {
         </div>
       )}
 
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
-          {titleLine1}{" "}
-          <span className="gradient-text">{titleHighlight}</span>
-        </h1>
-        <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal">
-          {subtitle}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button
-            onClick={() => handleButtonClick(ctaPrimaryLink)}
-            className="px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+      {/* Hero content - animated on desktop, static on mobile for better LCP */}
+      {isDesktop ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center"
+        >
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase"
           >
-            {ctaPrimaryText}
-          </button>
-          <button
-            onClick={() => handleButtonClick(ctaSecondaryLink)}
-            className="px-8 py-4 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-400"
+            {titleLine1}{" "}
+            <span className="gradient-text">{titleHighlight}</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal"
           >
-            {ctaSecondaryText}
-          </button>
+            {subtitle}
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <button
+              onClick={() => handleButtonClick(ctaPrimaryLink)}
+              className="px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+            >
+              {ctaPrimaryText}
+            </button>
+            <button
+              onClick={() => handleButtonClick(ctaSecondaryLink)}
+              className="px-8 py-4 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-400"
+            >
+              {ctaSecondaryText}
+            </button>
+          </motion.div>
+        </motion.div>
+      ) : (
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
+            {titleLine1}{" "}
+            <span className="gradient-text">{titleHighlight}</span>
+          </h1>
+          <p className="text-lg md:text-xl text-foreground/70 max-w-2xl mb-12 font-normal">
+            {subtitle}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={() => handleButtonClick(ctaPrimaryLink)}
+              className="px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+            >
+              {ctaPrimaryText}
+            </button>
+            <button
+              onClick={() => handleButtonClick(ctaSecondaryLink)}
+              className="px-8 py-4 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-400"
+            >
+              {ctaSecondaryText}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {isDesktop ? (
         <motion.div
