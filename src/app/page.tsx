@@ -31,7 +31,9 @@ async function getHomePageData() {
         ctaSecondaryText: data.hero?.ctaSecondaryText,
         ctaSecondaryLink: data.hero?.ctaSecondaryLink,
         backgroundVideo: data.hero?.backgroundVideo,
-        backgroundImage: data.hero?.backgroundImage?.asset?.url,
+        backgroundImage: data.hero?.backgroundImage
+          ? urlFor(data.hero.backgroundImage).width(1920).quality(75).format("webp").url()
+          : undefined,
       },
       sections: {
         showServices: data.sections?.showServices ?? true,
