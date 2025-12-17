@@ -72,7 +72,8 @@ export function VideoThumbnail({
           initial={{ scale: 0.8, opacity: 0 }}
           animate={isHovered ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="p-4 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30"
+          className="p-4 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 will-change-transform"
+          style={{ transform: "translateZ(0)" }}
         >
           <Play className="w-8 h-8 text-foreground fill-foreground" />
         </motion.div>

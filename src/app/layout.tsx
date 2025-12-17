@@ -256,11 +256,6 @@ export default async function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`}>
       <head>
-        {/* Preconnect to external origins for faster resource loading */}
-        <link rel="preconnect" href="https://cdn.sanity.io" />
-        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
         {/* Preload LCP image for faster loading */}
         <link
           rel="preload"
