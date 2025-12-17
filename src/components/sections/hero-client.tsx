@@ -103,7 +103,7 @@ export function HeroClient({ backgroundVideo, posterImage }: HeroClientProps) {
         muted={isMuted}
         playsInline
         poster={posterImage}
-        preload="auto"
+        preload={isDesktop ? "auto" : "metadata"}
       >
         <source src={backgroundVideo} type="video/mp4" />
       </video>
