@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Play, Pause, Volume2, VolumeX, ChevronDown } from "lucide-react";
 
@@ -23,8 +23,19 @@ interface HeroSectionProps {
 export function HeroSection({ data }: HeroSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
+
+  // Detect desktop for conditional animations (mobile gets no animations for better LCP)
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   // Default values (bestehende Texte als Fallback)
   const titleLine1 = data?.titleLine1 || "Videos, die";
@@ -82,26 +93,40 @@ export function HeroSection({ data }: HeroSectionProps) {
     }
   };
 
+  // Video background content (shared between mobile and desktop)
+  const videoBackground = (
+    <>
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover"
+        loop
+        muted={isMuted}
+        playsInline
+        poster={posterImage}
+        preload="none"
+      >
+        <source
+          src={backgroundVideo}
+          type="video/mp4"
+        />
+      </video>
+      <div className="absolute inset-0 vignette" />
+      <div className="absolute inset-0 bg-background/60" />
+    </>
+  );
+
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
-      <motion.div className="absolute inset-0" style={{ y: backgroundY, scale }}>
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          loop
-          muted={isMuted}
-          playsInline
-          poster={posterImage}
-          preload="none"
-        >
-          <source
-            src={backgroundVideo}
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 vignette" />
-        <div className="absolute inset-0 bg-background/60" />
-      </motion.div>
+      {/* Background - parallax on desktop, static on mobile for better LCP */}
+      {isDesktop ? (
+        <motion.div className="absolute inset-0" style={{ y: backgroundY, scale }}>
+          {videoBackground}
+        </motion.div>
+      ) : (
+        <div className="absolute inset-0">
+          {videoBackground}
+        </div>
+      )}
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
         <h1 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-display text-foreground tracking-wider mb-6 uppercase">
@@ -127,38 +152,67 @@ export function HeroSection({ data }: HeroSectionProps) {
         </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="absolute bottom-8 right-8 z-20 flex gap-2"
-      >
-        <button
-          onClick={togglePlay}
-          aria-label={isPlaying ? "Video pausieren" : "Video abspielen"}
-          className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
+      {isDesktop ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="absolute bottom-8 right-8 z-20 flex gap-2"
         >
-          {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-        </button>
-        <button
-          onClick={toggleMute}
-          aria-label={isMuted ? "Ton einschalten" : "Ton ausschalten"}
-          className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
-        >
-          {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-        </button>
-      </motion.div>
+          <button
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Video pausieren" : "Video abspielen"}
+            className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
+          >
+            {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+          </button>
+          <button
+            onClick={toggleMute}
+            aria-label={isMuted ? "Ton einschalten" : "Ton ausschalten"}
+            className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
+          >
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+        </motion.div>
+      ) : (
+        <div className="absolute bottom-8 right-8 z-20 flex gap-2">
+          <button
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Video pausieren" : "Video abspielen"}
+            className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
+          >
+            {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+          </button>
+          <button
+            onClick={toggleMute}
+            aria-label={isMuted ? "Ton einschalten" : "Ton ausschalten"}
+            className="p-3 rounded-full bg-foreground/10 backdrop-blur-sm border border-foreground/20 text-foreground hover:bg-foreground/20 transition-all duration-400"
+          >
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+        </div>
+      )}
 
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-        onClick={() => scrollToSection("leistungen")}
-        aria-label="Zu Leistungen scrollen"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-foreground/60 hover:text-foreground transition-colors duration-400"
-      >
-        <ChevronDown size={32} className="animate-scroll-bounce" />
-      </motion.button>
+      {isDesktop ? (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          onClick={() => scrollToSection("leistungen")}
+          aria-label="Zu Leistungen scrollen"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-foreground/60 hover:text-foreground transition-colors duration-400"
+        >
+          <ChevronDown size={32} className="animate-scroll-bounce" />
+        </motion.button>
+      ) : (
+        <button
+          onClick={() => scrollToSection("leistungen")}
+          aria-label="Zu Leistungen scrollen"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-foreground/60 hover:text-foreground transition-colors duration-400"
+        >
+          <ChevronDown size={32} className="animate-scroll-bounce" />
+        </button>
+      )}
     </section>
   );
 }
