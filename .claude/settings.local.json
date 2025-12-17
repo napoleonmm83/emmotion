@@ -52,7 +52,8 @@
       "Bash(npx vercel build)",
       "Bash(npx vercel link)",
       "Bash(npx vercel link --yes)",
-      "Bash(npx vercel pull:*)"
+      "Bash(npx vercel pull:*)",
+      "WebFetch(domain:pagespeed.web.dev)"
     ]
   }
 }

@@ -94,6 +94,7 @@ export function HeroSection({ data }: HeroSectionProps) {
           muted={isMuted}
           playsInline
           poster={posterImage}
+          preload="none"
         >
           <source
             src={backgroundVideo}

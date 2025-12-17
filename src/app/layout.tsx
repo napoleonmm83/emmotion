@@ -254,6 +254,13 @@ export default async function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`}>
       <head>
+        {/* Preload LCP image for faster loading */}
+        <link
+          rel="preload"
+          as="image"
+          href="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80"
+          fetchPriority="high"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
