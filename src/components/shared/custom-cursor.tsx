@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor() {
+  const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(true); // Default true to avoid flash
 
   // Mouse position
   const cursorX = useMotionValue(-100);
@@ -44,17 +45,17 @@ export function CustomCursor() {
   }, []);
 
   useEffect(() => {
-    // Check for touch device
-    const checkTouch = () => {
-      setIsTouchDevice(
-        "ontouchstart" in window ||
-          navigator.maxTouchPoints > 0 ||
-          window.matchMedia("(pointer: coarse)").matches
-      );
-    };
-    checkTouch();
+    setIsMounted(true);
 
-    if (isTouchDevice) return;
+    // Check for touch device
+    const isTouch =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches;
+
+    setIsTouchDevice(isTouch);
+
+    if (isTouch) return;
 
     // Add event listeners
     document.addEventListener("mousemove", handleMouseMove);
@@ -106,7 +107,6 @@ export function CustomCursor() {
       observer.disconnect();
     };
   }, [
-    isTouchDevice,
     handleMouseMove,
     handleMouseEnter,
     handleMouseLeave,
@@ -114,8 +114,8 @@ export function CustomCursor() {
     handleMouseUp,
   ]);
 
-  // Don't render on touch devices
-  if (isTouchDevice) return null;
+  // Don't render until mounted or on touch devices
+  if (!isMounted || isTouchDevice) return null;
 
   return (
     <>
