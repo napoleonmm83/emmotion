@@ -10,7 +10,7 @@ interface HeroClientProps {
 }
 
 export function HeroClient({ backgroundVideo, posterImage }: HeroClientProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -25,6 +25,35 @@ export function HeroClient({ backgroundVideo, posterImage }: HeroClientProps) {
     checkDesktop();
     window.addEventListener("resize", checkDesktop);
     return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
+
+  // Autoplay video and pause when hero is not visible
+  useEffect(() => {
+    const video = videoRef.current;
+    const hero = heroRef.current;
+    if (!video || !hero) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+            setIsPlaying(true);
+          } else {
+            video.pause();
+            setIsPlaying(false);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(hero);
+
+    // Initial autoplay
+    video.play().catch(() => {});
+
+    return () => observer.disconnect();
   }, []);
 
   const useAnimations = isMounted && isDesktop;
@@ -69,11 +98,12 @@ export function HeroClient({ backgroundVideo, posterImage }: HeroClientProps) {
       <video
         ref={videoRef}
         className="w-full h-full object-cover"
+        autoPlay
         loop
         muted={isMuted}
         playsInline
         poster={posterImage}
-        preload="none"
+        preload="auto"
       >
         <source src={backgroundVideo} type="video/mp4" />
       </video>
