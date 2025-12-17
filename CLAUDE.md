@@ -4,6 +4,22 @@
 
 ---
 
+## WICHTIG: Know-how Dokumentation
+
+**Beziehe immer `KNOW-HOW.md` mit ein!**
+
+Die Datei `KNOW-HOW.md` enthält alle wichtigen Patterns und Lösungen:
+- Sanity CMS Patterns (dynamische Bilder, YouTube Embeds, Schemas)
+- Next.js 15 Patterns (Server/Client Split, Dynamic Routes, Fallbacks)
+- Konfigurator-Logik und Multi-Step Forms
+- API Routes und Form Handling
+- Styling Patterns und CSS Custom Properties
+- Projektstruktur und Design System
+
+Bei Implementierungen zuerst in `KNOW-HOW.md` nachschauen, ob bereits ein Pattern existiert.
+
+---
+
 ## PROJEKTÜBERSICHT
 
 **Projekt:** emmotion.ch – Website für Videoproduktion
