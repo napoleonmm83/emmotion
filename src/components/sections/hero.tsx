@@ -23,12 +23,14 @@ interface HeroSectionProps {
 export function HeroSection({ data }: HeroSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
 
-  // Detect desktop for conditional animations (mobile gets no animations for better LCP)
+  // Wait for mount to avoid hydration mismatch, then detect desktop
   useEffect(() => {
+    setIsMounted(true);
     const checkDesktop = () => {
       setIsDesktop(window.innerWidth >= 768);
     };
@@ -36,6 +38,9 @@ export function HeroSection({ data }: HeroSectionProps) {
     window.addEventListener("resize", checkDesktop);
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
+
+  // Use animations only after mount AND on desktop
+  const useAnimations = isMounted && isDesktop;
 
   // Default values (bestehende Texte als Fallback)
   const titleLine1 = data?.titleLine1 || "Videos, die";
@@ -118,7 +123,7 @@ export function HeroSection({ data }: HeroSectionProps) {
   return (
     <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
       {/* Background - parallax on desktop, static on mobile for better LCP */}
-      {isDesktop ? (
+      {useAnimations ? (
         <motion.div className="absolute inset-0" style={{ y: backgroundY, scale }}>
           {videoBackground}
         </motion.div>
@@ -129,7 +134,7 @@ export function HeroSection({ data }: HeroSectionProps) {
       )}
 
       {/* Hero content - animated on desktop, static on mobile for better LCP */}
-      {isDesktop ? (
+      {useAnimations ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -199,7 +204,7 @@ export function HeroSection({ data }: HeroSectionProps) {
         </div>
       )}
 
-      {isDesktop ? (
+      {useAnimations ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -240,7 +245,7 @@ export function HeroSection({ data }: HeroSectionProps) {
         </div>
       )}
 
-      {isDesktop ? (
+      {useAnimations ? (
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
