@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { set, unset, StringInputProps } from "sanity";
 import { Stack, Button, Text, Card, Flex, Spinner } from "@sanity/ui";
-import { UploadIcon, TrashIcon, PlayIcon } from "@sanity/icons";
+import { TrashIcon, PlayIcon } from "@sanity/icons";
+import { upload } from "@vercel/blob/client";
 
 export function VideoUploadInput(props: StringInputProps) {
   const { value, onChange } = props;
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,20 +36,14 @@ export function VideoUploadInput(props: StringInputProps) {
       setProgress(0);
 
       try {
-        const response = await fetch(
-          `/api/blob/upload?filename=${encodeURIComponent(file.name)}`,
-          {
-            method: "POST",
-            body: file,
-          }
-        );
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/blob/upload",
+          onUploadProgress: (progressEvent) => {
+            setProgress(Math.round(progressEvent.percentage));
+          },
+        });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Upload fehlgeschlagen");
-        }
-
-        const blob = await response.json();
         onChange(set(blob.url));
         setProgress(100);
       } catch (err) {
@@ -57,6 +53,10 @@ export function VideoUploadInput(props: StringInputProps) {
         );
       } finally {
         setIsUploading(false);
+        // Reset input
+        if (inputRef.current) {
+          inputRef.current.value = "";
+        }
       }
     },
     [onChange]
@@ -114,8 +114,26 @@ export function VideoUploadInput(props: StringInputProps) {
                     <Spinner />
                   </Flex>
                   <Text size={1} muted>
-                    Video wird hochgeladen...
+                    Video wird hochgeladen... {progress}%
                   </Text>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "4px",
+                      backgroundColor: "var(--card-border-color)",
+                      borderRadius: "2px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${progress}%`,
+                        height: "100%",
+                        backgroundColor: "var(--card-focus-ring-color)",
+                        transition: "width 0.2s ease",
+                      }}
+                    />
+                  </div>
                 </>
               ) : (
                 <>
@@ -125,7 +143,7 @@ export function VideoUploadInput(props: StringInputProps) {
                     />
                   </Flex>
                   <Text size={1} muted>
-                    Video hierher ziehen oder klicken zum Auswählen
+                    Klicken zum Auswählen
                   </Text>
                   <Text size={0} muted>
                     MP4, WebM • Max. 500MB
@@ -135,6 +153,7 @@ export function VideoUploadInput(props: StringInputProps) {
             </Stack>
           </Card>
           <input
+            ref={inputRef}
             type="file"
             accept="video/*"
             onChange={handleUpload}
@@ -156,8 +175,7 @@ export function VideoUploadInput(props: StringInputProps) {
       )}
 
       <Text size={0} muted>
-        Videos werden auf Vercel Blob gespeichert und automatisch über CDN
-        ausgeliefert.
+        Videos werden auf Vercel Blob gespeichert und über CDN ausgeliefert.
       </Text>
     </Stack>
   );

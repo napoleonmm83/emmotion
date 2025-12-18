@@ -57,7 +57,10 @@
       "Bash(npm i:*)",
       "Bash(pnpm install:*)",
       "Bash(npm show:*)",
-      "Bash(pnpm list:*)"
+      "Bash(pnpm list:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(tasklist:*)",
+      "Bash(start cmd /k \"pnpm run dev\")"
     ]
   }
 }

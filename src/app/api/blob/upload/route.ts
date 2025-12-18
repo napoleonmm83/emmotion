@@ -1,30 +1,27 @@
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
+// Client upload handler - no body size limit
 export async function POST(request: Request): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url);
-  const filename = searchParams.get("filename");
-
-  if (!filename) {
-    return NextResponse.json(
-      { error: "Filename is required" },
-      { status: 400 }
-    );
-  }
-
-  if (!request.body) {
-    return NextResponse.json(
-      { error: "Request body is required" },
-      { status: 400 }
-    );
-  }
+  const body = (await request.json()) as HandleUploadBody;
 
   try {
-    const blob = await put(filename, request.body, {
-      access: "public",
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => {
+        // Hier könnte Auth-Check stattfinden
+        return {
+          allowedContentTypes: ["video/mp4", "video/webm", "video/quicktime", "video/x-msvideo"],
+          maximumSizeInBytes: 500 * 1024 * 1024, // 500MB
+        };
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log("Video uploaded:", blob.url);
+      },
     });
 
-    return NextResponse.json(blob);
+    return NextResponse.json(jsonResponse);
   } catch (error) {
     console.error("Blob upload error:", error);
     return NextResponse.json(
