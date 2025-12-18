@@ -4,6 +4,7 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { put } from "@vercel/blob";
 import { resend } from "@/lib/resend";
 import { ContractPDF } from "@/lib/contract-pdf";
+import { ContractCorrectionEmail } from "@/emails/contract-correction";
 import type { PricingResult } from "@/lib/onboarding-logic";
 
 // Sanity client with write access
@@ -222,17 +223,15 @@ export async function POST(request: NextRequest) {
     if (process.env.RESEND_API_KEY && newPdfUrl) {
       try {
         await resend.emails.send({
-          from: "emmotion.ch <noreply@emmotion.ch>",
+          from: `${companyInfo?.name || "emmotion.ch"} <noreply@emmotion.ch>`,
           to: project.clientInfo.email,
           subject: `Aktualisierter Vertrag - ${project.projectDetails.projectName}`,
-          html: `
-            <p>Guten Tag ${project.clientInfo.name},</p>
-            <p>Ihr Vertrag für das Projekt "${project.projectDetails.projectName}" wurde aktualisiert.</p>
-            <p>Den aktualisierten Vertrag finden Sie hier:</p>
-            <p><a href="${newPdfUrl}">Vertrag herunterladen (PDF)</a></p>
-            <p>Bei Fragen stehe ich Ihnen gerne zur Verfügung.</p>
-            <p>Freundliche Grüsse<br>Marcus Martini<br>emmotion.ch</p>
-          `,
+          react: ContractCorrectionEmail({
+            clientName: project.clientInfo.name,
+            projectName: project.projectDetails.projectName,
+            pdfUrl: newPdfUrl,
+            companyInfo: companyInfo || undefined,
+          }),
         });
         console.log("Correction notification sent to:", project.clientInfo.email);
       } catch (emailError) {
