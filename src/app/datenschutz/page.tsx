@@ -141,6 +141,37 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           Diese Daten werden ausschliesslich zur Erstellung eines Angebots verwendet.
         </p>
 
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          Aufbewahrung und Löschung
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Kontaktanfragen und Konfigurator-Anfragen werden automatisch nach <strong>60 Tagen</strong> gelöscht.
+          Diese automatische Löschung gewährleistet die Datensparsamkeit gemäss DSGVO/DSG.
+          Sie können jederzeit eine vorzeitige Löschung Ihrer Daten verlangen.
+        </p>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          Spam-Schutz (Cloudflare Turnstile)
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Unsere Formulare verwenden Cloudflare Turnstile zum Schutz vor Spam und Missbrauch.
+          Turnstile ist eine datenschutzfreundliche Alternative zu herkömmlichen Captchas und
+          setzt <strong>keine Cookies</strong>. Bei der Nutzung werden technische Daten wie
+          IP-Adresse und Browser-Informationen an Cloudflare übermittelt.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Anbieter: Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, USA.
+          Datenschutzerklärung:{" "}
+          <a
+            href="https://www.cloudflare.com/privacypolicy/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            https://www.cloudflare.com/privacypolicy/
+          </a>
+        </p>
+
         <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">Server-Log-Dateien</h3>
         <p className="text-muted-foreground mb-4">
           Der Provider der Seiten erhebt und speichert automatisch Informationen in
@@ -163,8 +194,12 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
 
       <div>
         <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
-          4. Hosting
+          4. Hosting und externe Dienste
         </h2>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 tracking-wide">
+          Hosting (Vercel)
+        </h3>
         <p className="text-muted-foreground mb-4">
           Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789,
           USA gehostet. Vercel verarbeitet die erhobenen Daten im Auftrag und ist
@@ -172,7 +207,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           Massnahmen zum Schutz der Daten zu treffen.
         </p>
         <p className="text-muted-foreground mb-4">
-          Weitere Informationen finden Sie in der Datenschutzerklärung von Vercel:{" "}
+          Datenschutzerklärung:{" "}
           <a
             href="https://vercel.com/legal/privacy-policy"
             target="_blank"
@@ -180,6 +215,49 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
             className="text-primary hover:underline"
           >
             https://vercel.com/legal/privacy-policy
+          </a>
+        </p>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          Content Management (Sanity)
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Für die Verwaltung der Website-Inhalte verwenden wir Sanity.io. Sanity ist ein
+          Content-Management-System mit Sitz in Norwegen/EU. Die Inhalte werden auf
+          Servern von Sanity gespeichert. Bei der Nutzung der Website werden keine
+          personenbezogenen Daten an Sanity übermittelt – nur redaktionelle Inhalte.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Anbieter: Sanity AS, Grensen 13, 0159 Oslo, Norwegen.
+          Datenschutzerklärung:{" "}
+          <a
+            href="https://www.sanity.io/legal/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            https://www.sanity.io/legal/privacy
+          </a>
+        </p>
+
+        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
+          E-Mail-Versand (Resend)
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          Für den Versand von E-Mails (z.B. Kontaktformular-Benachrichtigungen) nutzen wir
+          den Dienst Resend. Wenn Sie das Kontaktformular nutzen, werden Ihre Angaben
+          (Name, E-Mail, Nachricht) über Resend an uns übermittelt.
+        </p>
+        <p className="text-muted-foreground mb-4">
+          Anbieter: Resend, Inc., 2261 Market Street #4990, San Francisco, CA 94114, USA.
+          Datenschutzerklärung:{" "}
+          <a
+            href="https://resend.com/legal/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            https://resend.com/legal/privacy-policy
           </a>
         </p>
       </div>

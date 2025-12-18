@@ -60,7 +60,8 @@
       "Bash(pnpm list:*)",
       "Bash(pnpm run build:*)",
       "Bash(tasklist:*)",
-      "Bash(start cmd /k \"pnpm run dev\")"
+      "Bash(start cmd /k \"pnpm run dev\")",
+      "Bash(openssl rand:*)"
     ]
   }
 }
