@@ -448,3 +448,69 @@ export const emailSettingsQuery = groq`
     }
   }
 `;
+
+// Onboarding Questionnaire by Service Slug
+export const onboardingQuestionnaireQuery = groq`
+  *[_type == "onboardingQuestionnaire" && serviceSlug == $serviceSlug][0] {
+    _id,
+    serviceSlug,
+    title,
+    description,
+    questions[] {
+      id,
+      question,
+      type,
+      required,
+      options,
+      placeholder,
+      helpText,
+      conditionalOn {
+        questionId,
+        value
+      }
+    }
+  }
+`;
+
+// Contract Template (active)
+export const contractTemplateQuery = groq`
+  *[_type == "contractTemplate" && isActive == true][0] {
+    _id,
+    version,
+    companyInfo {
+      name,
+      owner,
+      address,
+      email,
+      phone,
+      uid,
+      bank {
+        name,
+        iban,
+        bic
+      }
+    },
+    clauses {
+      preamble,
+      scopeOfWork,
+      deposit,
+      cancellation,
+      clientObligations,
+      forceMajeure,
+      scopeChanges,
+      paymentTerms,
+      liability,
+      usageRights,
+      jurisdiction
+    },
+    depositRules {
+      minPercentage,
+      maxPercentage,
+      thresholds[] {
+        upTo,
+        percentage
+      }
+    },
+    cancellationDays
+  }
+`;

@@ -11,6 +11,9 @@ import konfiguratorPage from "./konfigurator-page";
 import portfolioPage from "./portfolio-page";
 import contactPage from "./contact-page";
 import emailSettings from "./email-settings";
+import projectOnboarding from "./project-onboarding";
+import contractTemplate from "./contract-template";
+import onboardingQuestionnaire from "./onboarding-questionnaire";
 
 export const schemaTypes = [
   service,
@@ -26,4 +29,7 @@ export const schemaTypes = [
   portfolioPage,
   contactPage,
   emailSettings,
+  projectOnboarding,
+  contractTemplate,
+  onboardingQuestionnaire,
 ];

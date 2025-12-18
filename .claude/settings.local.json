@@ -61,7 +61,15 @@
       "Bash(pnpm run build:*)",
       "Bash(tasklist:*)",
       "Bash(start cmd /k \"pnpm run dev\")",
-      "Bash(openssl rand:*)"
+      "Bash(openssl rand:*)",
+      "Bash(ls:*)",
+      "WebSearch",
+      "Bash(pnpm dlx shadcn@latest add:*)",
+      "Bash(pnpm dlx:*)",
+      "WebFetch(domain:docs.bexio.com)",
+      "WebFetch(domain:magicheidi.ch)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:bexio-api-python-client.readthedocs.io)"
     ]
   }
 }
