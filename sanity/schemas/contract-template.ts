@@ -26,22 +26,8 @@ export default defineType({
       type: "date",
     }),
 
-    // Company Info (for contract header)
-    defineField({
-      name: "companyInfo",
-      title: "Unternehmensdaten",
-      type: "object",
-      description: "Adresse erscheint im Vertragskopf. Bankverbindung wird über Bexio-Rechnung gesendet.",
-      fields: [
-        { name: "name", type: "string", title: "Firmenname", initialValue: "emmotion.ch" },
-        { name: "owner", type: "string", title: "Inhaber" },
-        { name: "street", type: "string", title: "Strasse & Nr." },
-        { name: "zipCity", type: "string", title: "PLZ & Ort" },
-        { name: "email", type: "string", title: "E-Mail" },
-        { name: "phone", type: "string", title: "Telefon" },
-        { name: "website", type: "string", title: "Website", initialValue: "emmotion.ch" },
-      ],
-    }),
+    // Note: Company info is now in global Site Settings (Einstellungen → Kontakt & Unternehmen)
+    // This keeps data centralized and consistent across the entire website
 
     // Contract Clauses
     defineField({

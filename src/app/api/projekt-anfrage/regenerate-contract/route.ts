@@ -61,24 +61,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "No regeneration needed" });
     }
 
-    // Fetch contract template
-    const contractTemplate = await sanityClient.fetch(
-      `*[_type == "contractTemplate" && isActive == true][0] {
-        _id,
-        version,
-        companyInfo {
-          name,
-          owner,
-          "address": street + ", " + zipCity,
-          email,
-          phone
+    // Fetch contract template and global settings
+    const result = await sanityClient.fetch(
+      `{
+        "template": *[_type == "contractTemplate" && isActive == true][0] {
+          _id,
+          version,
+          clauses,
+          cancellationDays,
+          optionalClauses,
+          pdfDesign
         },
-        clauses,
-        cancellationDays,
-        optionalClauses,
-        pdfDesign
+        "settings": *[_id == "siteSettings"][0] {
+          contact {
+            companyName,
+            ownerName,
+            email,
+            phone,
+            street,
+            city
+          }
+        }
       }`
     );
+
+    // Merge company info from global settings
+    const companyInfo = result.settings?.contact ? {
+      name: result.settings.contact.companyName || "emmotion.ch",
+      owner: result.settings.contact.ownerName || "Marcus Martini",
+      address: [result.settings.contact.street, result.settings.contact.city].filter(Boolean).join(", ") || "Rheintal, Schweiz",
+      email: result.settings.contact.email || "marcus@emmotion.ch",
+      phone: result.settings.contact.phone || "",
+    } : null;
+
+    const contractTemplate = {
+      ...result.template,
+      companyInfo,
+    };
 
     // Build form data from project
     const formData = {

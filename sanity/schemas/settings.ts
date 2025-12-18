@@ -23,12 +23,15 @@ export default defineType({
     }),
     defineField({
       name: "contact",
-      title: "Kontakt",
+      title: "Kontakt & Unternehmen",
       type: "object",
+      description: "Diese Daten werden überall verwendet: Website, Verträge, E-Mails, Rechnungen",
       fields: [
+        { name: "companyName", type: "string", title: "Firmenname", initialValue: "emmotion.ch" },
+        { name: "ownerName", type: "string", title: "Inhaber / Name" },
         { name: "email", type: "string", title: "E-Mail" },
         { name: "phone", type: "string", title: "Telefon" },
-        { name: "street", type: "string", title: "Strasse" },
+        { name: "street", type: "string", title: "Strasse & Nr." },
         { name: "city", type: "string", title: "PLZ & Ort" },
         { name: "uid", type: "string", title: "UID-Nummer", description: "z.B. CHE-387.768.205" },
         { name: "region", type: "string", title: "Region / Einsatzgebiet", description: "z.B. Rheintal, Liechtenstein, Ostschweiz" },

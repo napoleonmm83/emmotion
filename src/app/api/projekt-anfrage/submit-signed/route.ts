@@ -32,36 +32,57 @@ interface SubmitRequest {
   contractVersion: string;
 }
 
-// Fetch contract template from CMS
+// Fetch contract template and global settings from CMS
 async function getContractTemplate() {
   try {
-    return await sanityClient.fetch(
-      `*[_type == "contractTemplate" && isActive == true][0] {
-        _id,
-        version,
-        companyInfo {
-          name,
-          owner,
-          "address": street + ", " + zipCity,
-          email,
-          phone
+    // Fetch both contract template and global settings
+    const result = await sanityClient.fetch(
+      `{
+        "template": *[_type == "contractTemplate" && isActive == true][0] {
+          _id,
+          version,
+          clauses {
+            preamble,
+            scopeOfWork,
+            deposit,
+            cancellation,
+            clientObligations,
+            forceMajeure,
+            paymentTerms,
+            liability,
+            usageRights,
+            jurisdiction
+          },
+          cancellationDays
         },
-        clauses {
-          preamble,
-          scopeOfWork,
-          deposit,
-          cancellation,
-          clientObligations,
-          forceMajeure,
-          paymentTerms,
-          liability,
-          usageRights,
-          jurisdiction
-        },
-        cancellationDays
+        "settings": *[_id == "siteSettings"][0] {
+          contact {
+            companyName,
+            ownerName,
+            email,
+            phone,
+            street,
+            city
+          }
+        }
       }`
     );
-  } catch {
+
+    // Merge company info from global settings into template format
+    const companyInfo = result.settings?.contact ? {
+      name: result.settings.contact.companyName || "emmotion.ch",
+      owner: result.settings.contact.ownerName || "Marcus Martini",
+      address: [result.settings.contact.street, result.settings.contact.city].filter(Boolean).join(", ") || "Rheintal, Schweiz",
+      email: result.settings.contact.email || "marcus@emmotion.ch",
+      phone: result.settings.contact.phone || "",
+    } : null;
+
+    return {
+      ...result.template,
+      companyInfo,
+    };
+  } catch (error) {
+    console.error("Error fetching contract template:", error);
     return null;
   }
 }
