@@ -13,6 +13,8 @@
 5. [Styling Patterns](#styling-patterns)
 6. [Projektstruktur](#projektstruktur)
 7. [Design System](#design-system)
+8. [Environment Variables](#environment-variables)
+9. [Sicherheit](#sicherheit)
 
 ---
 
@@ -614,12 +616,159 @@ SANITY_API_TOKEN=xxx
 
 # Email (Resend)
 RESEND_API_KEY=xxx
-EMAIL_FROM=hallo@emmotion.ch
-EMAIL_TO=hallo@emmotion.ch
+# Absender/Empfänger werden in Sanity CMS konfiguriert (E-Mail Einstellungen)
+
+# Cloudflare Turnstile (Captcha)
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=xxx  # Öffentlich, für Frontend
+TURNSTILE_SECRET_KEY=xxx             # Privat, für Backend-Verifikation
+
+# Vercel Blob (Video-Upload)
+BLOB_READ_WRITE_TOKEN=xxx
+
+# Cron Jobs (Sicherheit)
+CRON_SECRET=xxx  # Zufälliger String für Cron-Job-Authentifizierung
 
 # Site
 NEXT_PUBLIC_SITE_URL=https://emmotion.ch
 ```
+
+---
+
+## Sicherheit
+
+### Cron Job Absicherung
+
+Vercel Cron Jobs sind standardmässig öffentlich erreichbar. **Immer mit CRON_SECRET absichern!**
+
+**1. Secret generieren (Terminal):**
+```bash
+openssl rand -hex 32
+```
+
+**2. In Vercel setzen:**
+- Dashboard → Project → Settings → Environment Variables
+- Name: `CRON_SECRET`
+- Value: Der generierte 64-Zeichen Hex-String
+- Environment: Production (+ Preview falls gewünscht)
+
+**3. Im API Route prüfen:**
+```typescript
+// app/api/cron/[job]/route.ts
+export async function GET(request: NextRequest) {
+  const authHeader = request.headers.get("authorization");
+  const cronSecret = process.env.CRON_SECRET;
+
+  // Vercel setzt automatisch den Bearer Token bei Cron-Aufrufen
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // ... Job-Logik
+}
+```
+
+**4. vercel.json konfigurieren:**
+```json
+{
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-submissions",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
+```
+
+Vercel fügt automatisch den `Authorization: Bearer <CRON_SECRET>` Header hinzu, wenn der Cron-Job ausgeführt wird.
+
+---
+
+### API Route Sicherheit
+
+**Immer implementieren:**
+
+1. **Rate Limiting** - Verhindert Spam/DDoS
+```typescript
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 5;
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 Stunde
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return false;
+  }
+
+  if (record.count >= RATE_LIMIT) return true;
+  record.count++;
+  return false;
+}
+```
+
+2. **Honeypot-Felder** - Fängt Bots ab
+```typescript
+// Im Formular: verstecktes Feld "website"
+if (body.website && body.website.length > 0) {
+  console.log("Honeypot triggered");
+  return NextResponse.json({ success: true }); // Fake Success
+}
+```
+
+3. **Zeit-basierte Validierung** - Zu schnelle Submissions = Bot
+```typescript
+const MIN_SUBMISSION_TIME = 3000; // 3 Sekunden
+
+if (body._timestamp) {
+  const submissionTime = Date.now() - body._timestamp;
+  if (submissionTime < MIN_SUBMISSION_TIME) {
+    return NextResponse.json({ success: true }); // Fake Success
+  }
+}
+```
+
+4. **Cloudflare Turnstile** - DSGVO-konformes Captcha
+```typescript
+// Backend-Verifikation
+const isValid = await verifyTurnstileToken(body.turnstileToken, ip);
+if (!isValid) {
+  return NextResponse.json(
+    { error: "Sicherheitsüberprüfung fehlgeschlagen" },
+    { status: 400 }
+  );
+}
+```
+
+5. **Input Sanitization** - XSS/Injection verhindern
+```typescript
+function sanitizeString(str: string): string {
+  return str.trim().slice(0, 5000); // Länge begrenzen
+}
+
+// Spam-Pattern erkennen
+const spamPatterns = [
+  /\[url=/i,
+  /\[link=/i,
+  /<a\s+href/i,
+  /viagra|cialis|casino|crypto/i,
+];
+```
+
+---
+
+### DSGVO-Konformität
+
+1. **Automatische Datenlöschung** - Kontaktanfragen nach 60 Tagen löschen
+   - Cron Job: `/api/cron/cleanup-submissions`
+   - Läuft täglich um 03:00 Uhr
+
+2. **Datensparsamkeit** - Nur notwendige Daten speichern
+
+3. **Turnstile statt reCAPTCHA** - Keine Cookies, DSGVO-konform
+
+4. **Plausible Analytics** - Cookie-frei, DSGVO-konform
 
 ---
 
