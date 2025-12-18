@@ -19,127 +19,160 @@ Font.register({
   ],
 });
 
+// Website colors
+const colors = {
+  primary: "#3b82f6", // Blue from website
+  primaryDark: "#1d4ed8",
+  dark: "#0a0a0a", // Near black background
+  darkGray: "#171717",
+  mediumGray: "#262626",
+  lightGray: "#a3a3a3",
+  white: "#fafafa",
+  accent: "#f59e0b", // Orange accent
+};
+
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 10,
     fontFamily: "Helvetica",
     lineHeight: 1.5,
+    backgroundColor: "#ffffff",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 30,
     paddingBottom: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: "#2563eb",
+    borderBottomWidth: 3,
+    borderBottomColor: colors.primary,
   },
   logo: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#2563eb",
+    color: colors.primary,
+    letterSpacing: 1,
+  },
+  logoTagline: {
+    fontSize: 9,
+    color: colors.lightGray,
+    marginTop: 2,
   },
   headerRight: {
     textAlign: "right",
     fontSize: 9,
-    color: "#666",
+    color: colors.lightGray,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 8,
     textAlign: "center",
-    color: "#1a1a1a",
+    color: colors.dark,
   },
   subtitle: {
     fontSize: 12,
-    marginBottom: 30,
+    marginBottom: 25,
     textAlign: "center",
-    color: "#666",
+    color: colors.lightGray,
   },
   section: {
-    marginBottom: 15,
+    marginBottom: 18,
   },
   sectionTitle: {
     fontSize: 12,
     fontWeight: "bold",
-    marginBottom: 8,
-    color: "#1a1a1a",
-    backgroundColor: "#f3f4f6",
-    padding: 6,
+    marginBottom: 10,
+    color: "#ffffff",
+    backgroundColor: colors.primary,
+    padding: 8,
+    borderRadius: 2,
   },
   row: {
     flexDirection: "row",
-    marginBottom: 4,
+    marginBottom: 5,
+    paddingVertical: 2,
   },
   label: {
     width: 140,
-    color: "#666",
+    color: colors.lightGray,
+    fontSize: 10,
   },
   value: {
     flex: 1,
-    color: "#1a1a1a",
+    color: colors.dark,
+    fontSize: 10,
   },
   clauseTitle: {
     fontSize: 11,
     fontWeight: "bold",
     marginBottom: 4,
-    marginTop: 10,
-    color: "#1a1a1a",
+    marginTop: 12,
+    color: colors.dark,
   },
   clauseText: {
     marginBottom: 8,
-    color: "#333",
+    color: colors.mediumGray,
     textAlign: "justify",
+    fontSize: 9,
+    lineHeight: 1.6,
   },
   highlightBox: {
     backgroundColor: "#fef3c7",
-    padding: 10,
+    padding: 12,
     marginVertical: 10,
-    borderLeftWidth: 3,
-    borderLeftColor: "#f59e0b",
+    borderLeftWidth: 4,
+    borderLeftColor: colors.accent,
+  },
+  infoBox: {
+    backgroundColor: "#eff6ff",
+    padding: 12,
+    marginVertical: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
   },
   priceTable: {
     marginTop: 10,
   },
   priceRow: {
     flexDirection: "row",
-    paddingVertical: 4,
+    paddingVertical: 6,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
   },
   priceLabel: {
     flex: 1,
-    color: "#666",
+    color: colors.lightGray,
   },
   priceValue: {
     width: 100,
     textAlign: "right",
-    color: "#1a1a1a",
+    color: colors.dark,
   },
   totalRow: {
     flexDirection: "row",
-    paddingVertical: 8,
-    marginTop: 4,
-    backgroundColor: "#f3f4f6",
-    paddingHorizontal: 8,
+    paddingVertical: 10,
+    marginTop: 6,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 10,
+    borderRadius: 2,
   },
   totalLabel: {
     flex: 1,
     fontWeight: "bold",
-    color: "#1a1a1a",
+    color: "#ffffff",
   },
   totalValue: {
     width: 100,
     textAlign: "right",
     fontWeight: "bold",
-    color: "#2563eb",
+    color: "#ffffff",
   },
   signatureSection: {
     marginTop: 40,
     paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#e5e7eb",
+    borderTopWidth: 2,
+    borderTopColor: colors.primary,
   },
   signatureRow: {
     flexDirection: "row",
@@ -151,12 +184,12 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 9,
-    color: "#666",
+    color: colors.lightGray,
     marginBottom: 4,
   },
   signatureLine: {
     borderBottomWidth: 1,
-    borderBottomColor: "#333",
+    borderBottomColor: colors.dark,
     paddingBottom: 40,
     marginBottom: 4,
   },
@@ -166,7 +199,7 @@ const styles = StyleSheet.create({
   },
   signatureName: {
     fontSize: 9,
-    color: "#333",
+    color: colors.dark,
   },
   footer: {
     position: "absolute",
@@ -174,7 +207,7 @@ const styles = StyleSheet.create({
     left: 40,
     right: 40,
     fontSize: 8,
-    color: "#999",
+    color: colors.lightGray,
     textAlign: "center",
     borderTopWidth: 1,
     borderTopColor: "#e5e7eb",
@@ -195,11 +228,6 @@ interface ContractPDFProps {
     email: string;
     phone: string;
     uid?: string;
-    bank?: {
-      name: string;
-      iban: string;
-      bic?: string;
-    };
   };
   clauses?: {
     preamble?: string;
@@ -218,15 +246,10 @@ interface ContractPDFProps {
 
 const DEFAULT_COMPANY_INFO = {
   name: "emmotion.ch",
-  owner: "Marcus",
+  owner: "Marcus Scherer",
   address: "Rheintal, Schweiz",
   email: "hallo@emmotion.ch",
   phone: "",
-  bank: {
-    name: "Raiffeisenbank",
-    iban: "CH00 0000 0000 0000 0000 0",
-    bic: "",
-  },
 };
 
 const DEFAULT_CLAUSES = {
@@ -272,9 +295,12 @@ export function ContractPDF({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>emmotion.ch</Text>
+          <View>
+            <Text style={styles.logo}>emmotion</Text>
+            <Text style={styles.logoTagline}>Videoproduktion für Unternehmen</Text>
+          </View>
           <View style={styles.headerRight}>
-            <Text>{companyInfo.name}</Text>
+            <Text style={{ fontWeight: "bold", color: colors.dark }}>{companyInfo.owner}</Text>
             <Text>{companyInfo.address}</Text>
             <Text>{companyInfo.email}</Text>
             {companyInfo.phone && <Text>{companyInfo.phone}</Text>}
@@ -388,23 +414,15 @@ export function ContractPDF({
             <Text style={styles.label}>Restzahlung:</Text>
             <Text style={styles.value}>{formatPrice(pricing.remainingAmount)}</Text>
           </View>
-          {companyInfo.bank && (
-            <>
-              <View style={{ marginTop: 8 }}>
-                <Text style={{ fontWeight: "bold", marginBottom: 4 }}>
-                  Bankverbindung:
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Bank:</Text>
-                <Text style={styles.value}>{companyInfo.bank.name}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>IBAN:</Text>
-                <Text style={styles.value}>{companyInfo.bank.iban}</Text>
-              </View>
-            </>
-          )}
+          <View style={styles.infoBox}>
+            <Text style={{ fontWeight: "bold", marginBottom: 4, color: colors.primaryDark }}>
+              Hinweis zur Zahlung
+            </Text>
+            <Text style={{ fontSize: 9, color: colors.mediumGray, lineHeight: 1.5 }}>
+              Die Anzahlungsrechnung mit allen Zahlungsdetails erhalten Sie separat per E-Mail.
+              Die Produktion beginnt nach Eingang der Anzahlung.
+            </Text>
+          </View>
         </View>
 
         {/* Footer for page 1 */}

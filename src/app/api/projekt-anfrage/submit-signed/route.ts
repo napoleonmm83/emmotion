@@ -42,15 +42,9 @@ async function getContractTemplate() {
         companyInfo {
           name,
           owner,
-          address,
+          "address": street + ", " + zipCity,
           email,
-          phone,
-          uid,
-          bank {
-            name,
-            iban,
-            bic
-          }
+          phone
         },
         clauses {
           preamble,

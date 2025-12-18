@@ -31,6 +31,7 @@ export default defineType({
       name: "companyInfo",
       title: "Unternehmensdaten",
       type: "object",
+      description: "Adresse erscheint im Vertragskopf. Bankverbindung wird über Bexio-Rechnung gesendet.",
       fields: [
         { name: "name", type: "string", title: "Firmenname", initialValue: "emmotion.ch" },
         { name: "owner", type: "string", title: "Inhaber" },
@@ -39,7 +40,6 @@ export default defineType({
         { name: "email", type: "string", title: "E-Mail" },
         { name: "phone", type: "string", title: "Telefon" },
         { name: "website", type: "string", title: "Website", initialValue: "emmotion.ch" },
-        { name: "iban", type: "string", title: "IBAN (für Zahlungen)" },
       ],
     }),
 

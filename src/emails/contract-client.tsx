@@ -27,12 +27,6 @@ interface ContractClientEmailProps {
     address: string;
     email: string;
     phone: string;
-    uid?: string;
-    bank?: {
-      name: string;
-      iban: string;
-      bic?: string;
-    };
   };
 }
 
@@ -47,11 +41,6 @@ export function ContractClientEmail({
   companyInfo,
 }: ContractClientEmailProps) {
   const serviceLabel = SERVICE_LABELS[serviceType];
-  const bank = companyInfo?.bank || {
-    name: "Raiffeisenbank",
-    iban: "CH00 0000 0000 0000 0000 0",
-    bic: "",
-  };
 
   return (
     <Html>
@@ -107,32 +96,15 @@ export function ContractClientEmail({
                 Nächster Schritt: Anzahlung
               </Heading>
               <Text style={paragraph}>
-                Um die Produktion zu starten, überweisen Sie bitte die Anzahlung
-                von <strong>{formatPrice(depositAmount)}</strong> (
-                {depositPercentage}%) innerhalb von 7 Tagen auf folgendes Konto:
+                Um die Produktion zu starten, ist eine Anzahlung von{" "}
+                <strong>{formatPrice(depositAmount)}</strong> ({depositPercentage}
+                %) erforderlich.
               </Text>
-              <table style={bankTable}>
-                <tbody>
-                  <tr>
-                    <td style={bankLabelCell}>Bank:</td>
-                    <td style={bankValueCell}>{bank.name}</td>
-                  </tr>
-                  <tr>
-                    <td style={bankLabelCell}>IBAN:</td>
-                    <td style={bankValueCell}>{bank.iban}</td>
-                  </tr>
-                  <tr>
-                    <td style={bankLabelCell}>Betreff:</td>
-                    <td style={bankValueCell}>{projectName}</td>
-                  </tr>
-                  <tr>
-                    <td style={bankLabelCell}>Betrag:</td>
-                    <td style={bankValueCell}>
-                      <strong>{formatPrice(depositAmount)}</strong>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <Text style={infoText}>
+                Die Anzahlungsrechnung mit allen Zahlungsdetails erhalten Sie
+                in Kürze in einer separaten E-Mail. Die Produktion beginnt nach
+                Eingang der Anzahlung.
+              </Text>
             </Section>
 
             {/* PDF Download */}
@@ -303,21 +275,12 @@ const valueCell = {
   fontWeight: "500",
 };
 
-const bankTable = {
-  width: "100%",
-  borderCollapse: "collapse" as const,
-  marginTop: "12px",
-};
-
-const bankLabelCell = {
-  padding: "6px 0",
+const infoText = {
   color: "#92400e",
-  width: "80px",
-};
-
-const bankValueCell = {
-  padding: "6px 0",
-  color: "#1f2937",
+  fontSize: "14px",
+  lineHeight: "1.5",
+  margin: "0",
+  fontStyle: "italic" as const,
 };
 
 const hr = {
