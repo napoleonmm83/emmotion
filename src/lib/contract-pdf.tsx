@@ -304,6 +304,7 @@ export function ContractPDF({
             <Text>{companyInfo.address}</Text>
             <Text>{companyInfo.email}</Text>
             {companyInfo.phone && <Text>{companyInfo.phone}</Text>}
+            {companyInfo.uid && <Text style={{ fontSize: 8, marginTop: 4 }}>{companyInfo.uid}</Text>}
           </View>
         </View>
 

@@ -62,7 +62,8 @@ async function getContractTemplate() {
             email,
             phone,
             street,
-            city
+            city,
+            uid
           }
         }
       }`
@@ -75,6 +76,7 @@ async function getContractTemplate() {
       address: [result.settings.contact.street, result.settings.contact.city].filter(Boolean).join(", ") || "Rheintal, Schweiz",
       email: result.settings.contact.email || "marcus@emmotion.ch",
       phone: result.settings.contact.phone || "",
+      uid: result.settings.contact.uid || "",
     } : null;
 
     return {
