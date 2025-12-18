@@ -53,6 +53,9 @@ importers:
       '@sanity/client':
         specifier: ^7.13.2
         version: 7.13.2(debug@4.4.3)
+      '@sanity/icons':
+        specifier: ^3.7.4
+        version: 3.7.4(react@19.2.3)
       '@sanity/image-url':
         specifier: ^2.0.2
         version: 2.0.2
@@ -11030,7 +11033,7 @@ snapshots:
   '@sanity/presentation-comlink@1.0.33(@sanity/client@6.29.1(debug@4.4.3))(@sanity/types@3.85.0(@types/react@19.2.7)(debug@4.4.3))':
     dependencies:
       '@sanity/comlink': 3.1.1
-      '@sanity/visual-editing-types': 1.1.8(@sanity/client@6.29.1)(@sanity/types@3.85.0(@types/react@19.2.7))
+      '@sanity/visual-editing-types': 1.1.8(@sanity/client@6.29.1(debug@4.4.3))(@sanity/types@3.85.0(@types/react@19.2.7)(debug@4.4.3))
     transitivePeerDependencies:
       - '@sanity/client'
       - '@sanity/types'
@@ -11280,6 +11283,12 @@ snapshots:
     transitivePeerDependencies:
       - '@sanity/types'
       - typescript
+
+  '@sanity/visual-editing-types@1.1.8(@sanity/client@6.29.1(debug@4.4.3))(@sanity/types@3.85.0(@types/react@19.2.7)(debug@4.4.3))':
+    dependencies:
+      '@sanity/client': 6.29.1(debug@4.4.3)
+    optionalDependencies:
+      '@sanity/types': 3.85.0(@types/react@19.2.7)(debug@4.4.3)
 
   '@sanity/visual-editing-types@1.1.8(@sanity/client@6.29.1)(@sanity/types@3.85.0(@types/react@19.2.7))':
     dependencies:
