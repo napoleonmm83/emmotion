@@ -571,36 +571,14 @@ export function ContractPDF({
               </View>
             ))}
 
-            {/* Total */}
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Gesamtpreis</Text>
-              <Text style={styles.totalValue}>{formatPrice(pricing.totalPrice)}</Text>
-            </View>
-
-            {/* Payment Cards */}
-            <View style={styles.paymentGrid}>
-              <View style={[styles.paymentCard, styles.paymentCardDeposit]}>
-                <Text style={[styles.paymentCardLabel, { color: "#ffffff", opacity: 0.9 }]}>
-                  Anzahlung ({pricing.depositPercentage}%)
-                </Text>
-                <Text style={[styles.paymentCardValue, { color: "#ffffff" }]}>
-                  {formatPrice(pricing.depositAmount)}
-                </Text>
-                <Text style={[styles.paymentCardNote, { color: "#ffffff", opacity: 0.8 }]}>
-                  Fällig innerhalb 7 Tagen
-                </Text>
-              </View>
-              <View style={[styles.paymentCard, styles.paymentCardRemaining]}>
-                <Text style={[styles.paymentCardLabel, { color: colors.lightGray }]}>
-                  Restzahlung
-                </Text>
-                <Text style={[styles.paymentCardValue, { color: colors.dark }]}>
-                  {formatPrice(pricing.remainingAmount)}
-                </Text>
-                <Text style={[styles.paymentCardNote, { color: colors.lightGray }]}>
-                  Fällig nach Lieferung
-                </Text>
-              </View>
+            {/* Total Row */}
+            <View style={[styles.priceRow, { borderBottomWidth: 0, marginTop: 4 }]}>
+              <Text style={[styles.priceLabel, { fontWeight: "bold", color: colors.dark }]}>
+                Gesamtpreis
+              </Text>
+              <Text style={[styles.priceValue, { fontWeight: "bold", fontSize: 12 }]}>
+                {formatPrice(pricing.totalPrice)}
+              </Text>
             </View>
 
             {/* Info Box */}
