@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
-import { resend, emailConfig } from "@/lib/resend";
+import { resend } from "@/lib/resend";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 
@@ -12,6 +12,33 @@ const sanityClient = createClient({
   useCdn: false,
   token: process.env.SANITY_API_TOKEN,
 });
+
+// Email Settings Interface
+interface EmailSettings {
+  enabled: boolean;
+  recipientEmail: string;
+  senderEmail: string;
+  senderName: string;
+  subjectPrefix: string;
+}
+
+// Fetch email settings from CMS
+async function getEmailSettings(): Promise<EmailSettings | null> {
+  try {
+    const settings = await sanityClient.fetch(
+      `*[_id == "emailSettings"][0] {
+        enabled,
+        recipientEmail,
+        senderEmail,
+        senderName,
+        subjectPrefix
+      }`
+    );
+    return settings;
+  } catch {
+    return null;
+  }
+}
 
 // Simple in-memory rate limiting (resets on server restart)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -152,14 +179,22 @@ export async function POST(request: NextRequest) {
     let emailSent = false;
     const subjectLabel = SUBJECT_LABELS[sanitizedData.subject] || sanitizedData.subject;
 
-    // Send email notification via Resend
-    if (process.env.RESEND_API_KEY) {
+    // Fetch email settings from CMS
+    const emailSettings = await getEmailSettings();
+
+    // Send email notification via Resend if enabled
+    if (process.env.RESEND_API_KEY && emailSettings?.enabled) {
       try {
+        const senderName = emailSettings.senderName || "emmotion.ch";
+        const senderEmail = emailSettings.senderEmail || "noreply@emmotion.ch";
+        const recipientEmail = emailSettings.recipientEmail || "hallo@emmotion.ch";
+        const subjectPrefix = emailSettings.subjectPrefix || "[emmotion.ch]";
+
         const { error } = await resend.emails.send({
-          from: emailConfig.from,
-          to: emailConfig.to,
+          from: `${senderName} <${senderEmail}>`,
+          to: recipientEmail,
           replyTo: sanitizedData.email,
-          subject: `[emmotion.ch] ${subjectLabel} von ${sanitizedData.name}`,
+          subject: `${subjectPrefix} ${subjectLabel} von ${sanitizedData.name}`,
           react: ContactNotificationEmail({
             name: sanitizedData.name,
             email: sanitizedData.email,
@@ -180,6 +215,8 @@ export async function POST(request: NextRequest) {
       } catch (emailError) {
         console.error("Failed to send email notification:", emailError);
       }
+    } else if (!emailSettings?.enabled) {
+      console.log("Email disabled in CMS - skipping email notification");
     } else {
       console.log("RESEND_API_KEY not set - skipping email notification");
     }

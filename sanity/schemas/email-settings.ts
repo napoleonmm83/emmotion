@@ -9,13 +9,9 @@ export default defineType({
   initialValue: {
     enabled: false,
     recipientEmail: "hallo@emmotion.ch",
+    senderEmail: "noreply@emmotion.ch",
     senderName: "emmotion.ch",
     subjectPrefix: "[emmotion.ch]",
-    smtp: {
-      host: "",
-      port: 587,
-      secure: false,
-    },
   },
   fields: [
     defineField({
@@ -30,7 +26,14 @@ export default defineType({
       title: "Empfänger E-Mail",
       type: "string",
       description: "An diese Adresse werden Kontaktanfragen gesendet",
-      validation: (Rule) => Rule.email(),
+      validation: (Rule) => Rule.required().email(),
+    }),
+    defineField({
+      name: "senderEmail",
+      title: "Absender E-Mail",
+      type: "string",
+      description: "Diese Adresse wird als Absender angezeigt (muss bei Resend verifiziert sein)",
+      validation: (Rule) => Rule.required().email(),
     }),
     defineField({
       name: "senderName",
@@ -43,46 +46,6 @@ export default defineType({
       title: "Betreff-Präfix",
       type: "string",
       description: "Wird vor den Betreff gesetzt, z.B. '[emmotion.ch]'",
-    }),
-    defineField({
-      name: "smtp",
-      title: "SMTP-Einstellungen",
-      type: "object",
-      description: "Server-Einstellungen für den E-Mail-Versand",
-      fields: [
-        {
-          name: "host",
-          title: "SMTP Host",
-          type: "string",
-          description: "z.B. smtp.gmail.com oder mail.infomaniak.com",
-        },
-        {
-          name: "port",
-          title: "SMTP Port",
-          type: "number",
-          description: "Meist 587 (TLS) oder 465 (SSL)",
-          initialValue: 587,
-        },
-        {
-          name: "secure",
-          title: "SSL/TLS verwenden",
-          type: "boolean",
-          description: "Aktivieren für Port 465, deaktivieren für Port 587",
-          initialValue: false,
-        },
-        {
-          name: "user",
-          title: "SMTP Benutzername",
-          type: "string",
-          description: "Meist die E-Mail-Adresse",
-        },
-        {
-          name: "password",
-          title: "SMTP Passwort",
-          type: "string",
-          description: "App-Passwort oder SMTP-Passwort",
-        },
-      ],
     }),
     defineField({
       name: "testEmail",

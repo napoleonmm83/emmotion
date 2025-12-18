@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resend, emailConfig } from "@/lib/resend";
+import { createClient } from "@sanity/client";
+import { resend } from "@/lib/resend";
+
+const sanityClient = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  apiVersion: "2024-01-01",
+  useCdn: false,
+  token: process.env.SANITY_API_TOKEN,
+});
+
+// Email Settings Interface
+interface EmailSettings {
+  enabled: boolean;
+  recipientEmail: string;
+  senderEmail: string;
+  senderName: string;
+  subjectPrefix: string;
+  testEmail?: {
+    testRecipient?: string;
+  };
+}
 
 // Test E-Mail HTML Template
 function createTestEmailHtml(): string {
@@ -40,6 +61,23 @@ function createTestEmailHtml(): string {
   `.trim();
 }
 
+// Update test result in Sanity
+async function updateTestResult(message: string) {
+  try {
+    if (!process.env.SANITY_API_TOKEN) return;
+
+    await sanityClient
+      .patch("emailSettings")
+      .set({
+        "testEmail.lastTestResult": message,
+        "testEmail.lastTestDate": new Date().toISOString(),
+      })
+      .commit();
+  } catch (error) {
+    console.error("Failed to update test result:", error);
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Verify authorization (simple token check)
@@ -61,64 +99,120 @@ export async function POST(request: NextRequest) {
 
     // Check if Resend is configured
     if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "RESEND_API_KEY nicht konfiguriert. Bitte in Vercel Environment Variables setzen."
-        },
-        { status: 400 }
-      );
+      const result = {
+        success: false,
+        error: "RESEND_API_KEY nicht konfiguriert. Bitte in Vercel Environment Variables setzen."
+      };
+      await updateTestResult(result.error);
+      return NextResponse.json(result, { status: 400 });
     }
 
-    // Get test recipient from request body or use default
-    const body = await request.json().catch(() => ({}));
-    const testRecipient = body.testRecipient || emailConfig.to;
+    // Fetch email settings from Sanity
+    const emailSettings: EmailSettings | null = await sanityClient.fetch(
+      `*[_id == "emailSettings"][0] {
+        enabled,
+        recipientEmail,
+        senderEmail,
+        senderName,
+        subjectPrefix,
+        testEmail {
+          testRecipient
+        }
+      }`
+    );
+
+    if (!emailSettings) {
+      const result = {
+        success: false,
+        error: "E-Mail-Einstellungen nicht gefunden. Bitte zuerst konfigurieren.",
+      };
+      await updateTestResult(result.error);
+      return NextResponse.json(result, { status: 400 });
+    }
+
+    if (!emailSettings.senderEmail) {
+      const result = {
+        success: false,
+        error: "Absender E-Mail nicht konfiguriert. Bitte in den Einstellungen setzen.",
+      };
+      await updateTestResult(result.error);
+      return NextResponse.json(result, { status: 400 });
+    }
+
+    const testRecipient = emailSettings.testEmail?.testRecipient || emailSettings.recipientEmail;
+
+    if (!testRecipient) {
+      const result = {
+        success: false,
+        error: "Keine Test-Empfänger-Adresse angegeben.",
+      };
+      await updateTestResult(result.error);
+      return NextResponse.json(result, { status: 400 });
+    }
+
+    const senderName = emailSettings.senderName || "emmotion.ch";
+    const senderEmail = emailSettings.senderEmail;
+    const subjectPrefix = emailSettings.subjectPrefix || "[emmotion.ch]";
 
     // Send test email via Resend
     const { data, error } = await resend.emails.send({
-      from: emailConfig.from,
+      from: `${senderName} <${senderEmail}>`,
       to: testRecipient,
-      subject: "[emmotion.ch] Test-E-Mail",
+      subject: `${subjectPrefix} Test-E-Mail`,
       text: "Diese Test-E-Mail wurde erfolgreich gesendet. Die E-Mail-Konfiguration funktioniert!",
       html: createTestEmailHtml(),
     });
 
     if (error) {
       console.error("Resend test error:", error);
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Fehler beim Senden: ${error.message}`
-        },
-        { status: 400 }
-      );
+      const result = {
+        success: false,
+        error: `Fehler beim Senden: ${error.message}`
+      };
+      await updateTestResult(result.error);
+      return NextResponse.json(result, { status: 400 });
     }
+
+    const successMessage = `✅ Test-E-Mail erfolgreich an ${testRecipient} gesendet`;
+    await updateTestResult(successMessage);
 
     return NextResponse.json({
       success: true,
-      message: `Test-E-Mail erfolgreich an ${testRecipient} gesendet`,
+      message: successMessage,
       emailId: data?.id,
     });
 
   } catch (error) {
     console.error("Email test error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler";
-    return NextResponse.json(
-      {
-        success: false,
-        error: `Fehler beim Senden: ${errorMessage}`
-      },
-      { status: 500 }
-    );
+    const result = {
+      success: false,
+      error: `Fehler beim Senden: ${errorMessage}`
+    };
+    await updateTestResult(result.error);
+    return NextResponse.json(result, { status: 500 });
   }
 }
 
 // GET endpoint to check status
 export async function GET() {
-  return NextResponse.json({
-    configured: !!process.env.RESEND_API_KEY,
-    provider: "Resend",
-    from: emailConfig.from,
-    to: emailConfig.to,
-  });
+  try {
+    const emailSettings = await sanityClient.fetch(
+      `*[_id == "emailSettings"][0] {
+        enabled,
+        senderEmail,
+        recipientEmail
+      }`
+    );
+
+    return NextResponse.json({
+      configured: !!emailSettings?.senderEmail,
+      enabled: emailSettings?.enabled || false,
+      provider: "Resend",
+      senderEmail: emailSettings?.senderEmail || null,
+      recipientEmail: emailSettings?.recipientEmail || null,
+    });
+  } catch {
+    return NextResponse.json({ configured: false, enabled: false, provider: "Resend" });
+  }
 }

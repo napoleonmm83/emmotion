@@ -18,9 +18,3 @@ export const resend = {
     },
   },
 };
-
-// Email configuration
-export const emailConfig = {
-  from: process.env.EMAIL_FROM || "emmotion.ch <noreply@emmotion.ch>",
-  to: process.env.EMAIL_TO || "hallo@emmotion.ch",
-};

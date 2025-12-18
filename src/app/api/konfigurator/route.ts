@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
-import { resend, emailConfig } from "@/lib/resend";
+import { resend } from "@/lib/resend";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { KonfiguratorNotificationEmail } from "@/emails/konfigurator-notification";
 import {
@@ -19,6 +19,33 @@ const sanityClient = createClient({
   useCdn: false,
   token: process.env.SANITY_API_TOKEN,
 });
+
+// Email Settings Interface
+interface EmailSettings {
+  enabled: boolean;
+  recipientEmail: string;
+  senderEmail: string;
+  senderName: string;
+  subjectPrefix: string;
+}
+
+// Fetch email settings from CMS
+async function getEmailSettings(): Promise<EmailSettings | null> {
+  try {
+    const settings = await sanityClient.fetch(
+      `*[_id == "emailSettings"][0] {
+        enabled,
+        recipientEmail,
+        senderEmail,
+        senderName,
+        subjectPrefix
+      }`
+    );
+    return settings;
+  } catch {
+    return null;
+  }
+}
 
 interface KonfiguratorRequest {
   name: string;
@@ -69,12 +96,19 @@ export async function POST(request: NextRequest) {
 
     let emailSent = false;
 
-    // Send email notification via Resend
-    if (process.env.RESEND_API_KEY) {
+    // Fetch email settings from CMS
+    const emailSettings = await getEmailSettings();
+
+    // Send email notification via Resend if enabled
+    if (process.env.RESEND_API_KEY && emailSettings?.enabled) {
       try {
+        const senderName = emailSettings.senderName || "emmotion.ch";
+        const senderEmail = emailSettings.senderEmail || "noreply@emmotion.ch";
+        const recipientEmail = emailSettings.recipientEmail || "hallo@emmotion.ch";
+
         const { error } = await resend.emails.send({
-          from: emailConfig.from,
-          to: emailConfig.to,
+          from: `${senderName} Konfigurator <${senderEmail}>`,
+          to: recipientEmail,
           replyTo: body.email,
           subject: `[Konfigurator] ${VIDEO_TYPES[config.videoType].label} – ${body.name}`,
           react: KonfiguratorNotificationEmail({
@@ -101,6 +135,8 @@ export async function POST(request: NextRequest) {
       } catch (emailError) {
         console.error("Failed to send konfigurator email:", emailError);
       }
+    } else if (!emailSettings?.enabled) {
+      console.log("Email disabled in CMS - skipping email notification");
     } else {
       console.log("RESEND_API_KEY not set - skipping email notification");
     }
