@@ -114,10 +114,10 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   heroSubtext: {
-    fontSize: 8,
+    fontSize: 9,
     color: "#ffffff",
-    opacity: 0.8,
-    marginTop: 2,
+    opacity: 0.85,
+    marginTop: 6,
   },
   // Section
   section: {
