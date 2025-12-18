@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -9,7 +9,9 @@ import {
   Loader2,
   CheckCircle,
   MessageSquare,
+  AlertCircle,
 } from "lucide-react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import {
   KonfiguratorInput,
   PriceResult,
@@ -25,18 +27,33 @@ interface StepResultProps {
 
 type RequestStatus = "idle" | "submitting" | "success" | "error";
 
+// Turnstile Site Key (public)
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export function StepResult({ formData, priceResult }: StepResultProps) {
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [contactData, setContactData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    // Check Turnstile token if configured
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setRequestStatus("error");
+      setErrorMessage("Bitte bestätigen Sie, dass Sie kein Roboter sind.");
+      return;
+    }
+
     setRequestStatus("submitting");
 
     try {
@@ -47,14 +64,25 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
           ...contactData,
           configuration: formData,
           priceResult,
+          turnstileToken,
         }),
       });
 
-      if (!response.ok) throw new Error("Anfrage fehlgeschlagen");
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Anfrage fehlgeschlagen");
+      }
 
       setRequestStatus("success");
-    } catch {
+    } catch (error) {
       setRequestStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Ein Fehler ist aufgetreten"
+      );
+      // Reset Turnstile on error
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     }
   };
 
@@ -219,24 +247,49 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
             className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary resize-none"
           />
 
+          {/* Cloudflare Turnstile */}
+          {TURNSTILE_SITE_KEY && (
+            <div className="flex justify-center">
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={TURNSTILE_SITE_KEY}
+                onSuccess={(token) => setTurnstileToken(token)}
+                onError={() => {
+                  setTurnstileToken(null);
+                  setErrorMessage("Captcha-Fehler. Bitte laden Sie die Seite neu.");
+                }}
+                onExpire={() => setTurnstileToken(null)}
+                options={{
+                  theme: "auto",
+                  size: "normal",
+                }}
+              />
+            </div>
+          )}
+
           {requestStatus === "error" && (
-            <p className="text-red-500 text-sm">
-              Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.
-            </p>
+            <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p className="text-sm">{errorMessage || "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."}</p>
+            </div>
           )}
 
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => setShowRequestForm(false)}
+              onClick={() => {
+                setShowRequestForm(false);
+                setTurnstileToken(null);
+                turnstileRef.current?.reset();
+              }}
               className="px-6 py-3 border border-border rounded-lg hover:bg-muted transition-colors"
             >
               Abbrechen
             </button>
             <button
               type="submit"
-              disabled={requestStatus === "submitting"}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50"
+              disabled={requestStatus === "submitting" || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {requestStatus === "submitting" ? (
                 <>

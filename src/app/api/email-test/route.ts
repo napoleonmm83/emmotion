@@ -1,32 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@sanity/client";
-import nodemailer from "nodemailer";
-
-// Sanity client with write access
-const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  apiVersion: "2024-01-01",
-  useCdn: false,
-  token: process.env.SANITY_API_TOKEN,
-});
-
-interface EmailSettings {
-  enabled: boolean;
-  recipientEmail: string;
-  senderName: string;
-  subjectPrefix: string;
-  smtp: {
-    host: string;
-    port: number;
-    secure: boolean;
-    user: string;
-    password: string;
-  };
-  testEmail?: {
-    testRecipient?: string;
-  };
-}
+import { resend, emailConfig } from "@/lib/resend";
 
 // Test E-Mail HTML Template
 function createTestEmailHtml(): string {
@@ -39,19 +12,19 @@ function createTestEmailHtml(): string {
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; border-radius: 12px 12px 0 0;">
-    <h1 style="color: white; margin: 0; font-size: 24px;">✅ Test erfolgreich!</h1>
+    <h1 style="color: white; margin: 0; font-size: 24px;">Test erfolgreich!</h1>
     <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">E-Mail-Konfiguration funktioniert</p>
   </div>
 
   <div style="background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; border-top: none;">
     <p style="margin: 0 0 16px 0;">
-      Diese Test-E-Mail wurde erfolgreich über die E-Mail-Einstellungen in Sanity CMS gesendet.
+      Diese Test-E-Mail wurde erfolgreich über Resend gesendet.
     </p>
     <p style="margin: 0 0 16px 0;">
       <strong>Was bedeutet das?</strong>
     </p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li>Die SMTP-Einstellungen sind korrekt konfiguriert</li>
+      <li>Die Resend API ist korrekt konfiguriert</li>
       <li>Kontaktanfragen werden per E-Mail zugestellt</li>
       <li>Konfigurator-Anfragen werden per E-Mail zugestellt</li>
     </ul>
@@ -86,154 +59,66 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Fetch email settings from Sanity
-    const emailSettings: EmailSettings | null = await sanityClient.fetch(
-      `*[_id == "emailSettings"][0] {
-        enabled,
-        recipientEmail,
-        senderName,
-        subjectPrefix,
-        smtp {
-          host,
-          port,
-          secure,
-          user,
-          password
+    // Check if Resend is configured
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "RESEND_API_KEY nicht konfiguriert. Bitte in Vercel Environment Variables setzen."
         },
-        testEmail {
-          testRecipient
-        }
-      }`
-    );
-
-    if (!emailSettings) {
-      const result = {
-        success: false,
-        error: "E-Mail-Einstellungen nicht gefunden. Bitte zuerst konfigurieren.",
-      };
-      await updateTestResult(result.error);
-      return NextResponse.json(result, { status: 400 });
+        { status: 400 }
+      );
     }
 
-    if (!emailSettings.enabled) {
-      const result = {
-        success: false,
-        error: "E-Mail-Versand ist deaktiviert. Bitte in den Einstellungen aktivieren.",
-      };
-      await updateTestResult(result.error);
-      return NextResponse.json(result, { status: 400 });
-    }
+    // Get test recipient from request body or use default
+    const body = await request.json().catch(() => ({}));
+    const testRecipient = body.testRecipient || emailConfig.to;
 
-    const { smtp } = emailSettings;
-
-    if (!smtp?.host || !smtp?.user || !smtp?.password) {
-      const result = {
-        success: false,
-        error: "SMTP-Einstellungen unvollständig. Bitte Host, Benutzername und Passwort eingeben.",
-      };
-      await updateTestResult(result.error);
-      return NextResponse.json(result, { status: 400 });
-    }
-
-    const testRecipient = emailSettings.testEmail?.testRecipient || emailSettings.recipientEmail;
-
-    if (!testRecipient) {
-      const result = {
-        success: false,
-        error: "Keine Test-Empfänger-Adresse angegeben.",
-      };
-      await updateTestResult(result.error);
-      return NextResponse.json(result, { status: 400 });
-    }
-
-    // Create transporter with CMS settings
-    const transporter = nodemailer.createTransport({
-      host: smtp.host,
-      port: smtp.port || 587,
-      secure: smtp.secure || false,
-      auth: {
-        user: smtp.user,
-        pass: smtp.password,
-      },
-    });
-
-    // Verify connection
-    try {
-      await transporter.verify();
-    } catch (verifyError) {
-      const errorMessage = verifyError instanceof Error ? verifyError.message : "Unbekannter Fehler";
-      const result = {
-        success: false,
-        error: `SMTP-Verbindung fehlgeschlagen: ${errorMessage}`,
-      };
-      await updateTestResult(result.error);
-      return NextResponse.json(result, { status: 400 });
-    }
-
-    // Send test email
-    const subjectPrefix = emailSettings.subjectPrefix || "[emmotion.ch]";
-    const senderName = emailSettings.senderName || "emmotion.ch";
-
-    await transporter.sendMail({
-      from: `"${senderName}" <${smtp.user}>`,
+    // Send test email via Resend
+    const { data, error } = await resend.emails.send({
+      from: emailConfig.from,
       to: testRecipient,
-      subject: `${subjectPrefix} Test-E-Mail`,
+      subject: "[emmotion.ch] Test-E-Mail",
       text: "Diese Test-E-Mail wurde erfolgreich gesendet. Die E-Mail-Konfiguration funktioniert!",
       html: createTestEmailHtml(),
     });
 
-    const successMessage = `✅ Test-E-Mail erfolgreich an ${testRecipient} gesendet`;
-    await updateTestResult(successMessage);
+    if (error) {
+      console.error("Resend test error:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Fehler beim Senden: ${error.message}`
+        },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      message: successMessage,
+      message: `Test-E-Mail erfolgreich an ${testRecipient} gesendet`,
+      emailId: data?.id,
     });
 
   } catch (error) {
     console.error("Email test error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler";
-    const result = {
-      success: false,
-      error: `Fehler beim Senden: ${errorMessage}`,
-    };
-    await updateTestResult(result.error);
-    return NextResponse.json(result, { status: 500 });
-  }
-}
-
-// Update test result in Sanity
-async function updateTestResult(message: string) {
-  try {
-    if (!process.env.SANITY_API_TOKEN) return;
-
-    await sanityClient
-      .patch("emailSettings")
-      .set({
-        "testEmail.lastTestResult": message,
-        "testEmail.lastTestDate": new Date().toISOString(),
-      })
-      .commit();
-  } catch (error) {
-    console.error("Failed to update test result:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Fehler beim Senden: ${errorMessage}`
+      },
+      { status: 500 }
+    );
   }
 }
 
 // GET endpoint to check status
 export async function GET() {
-  try {
-    const emailSettings = await sanityClient.fetch(
-      `*[_id == "emailSettings"][0] {
-        enabled,
-        smtp { host }
-      }`
-    );
-
-    return NextResponse.json({
-      configured: !!(emailSettings?.smtp?.host),
-      enabled: emailSettings?.enabled || false,
-    });
-  } catch {
-    return NextResponse.json({ configured: false, enabled: false });
-  }
+  return NextResponse.json({
+    configured: !!process.env.RESEND_API_KEY,
+    provider: "Resend",
+    from: emailConfig.from,
+    to: emailConfig.to,
+  });
 }

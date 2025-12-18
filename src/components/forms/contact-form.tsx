@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
 // CMS Contact Form Settings Interface
 interface ContactFormSettings {
@@ -62,6 +63,9 @@ const DEFAULT_SUCCESS_MESSAGE = "Vielen Dank für Ihre Nachricht! Ich melde mich
 const DEFAULT_SUBMIT_TEXT = "Nachricht senden";
 const DEFAULT_PRIVACY_TEXT = "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer Datenschutzerklärung zu.";
 
+// Turnstile Site Key (public)
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export function ContactForm({ className = "", variant = "default", settings }: ContactFormProps) {
   // Merge CMS settings with defaults
   const subjectOptions = settings?.subjectOptions?.length
@@ -94,6 +98,8 @@ export function ContactForm({ className = "", variant = "default", settings }: C
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   // Set timestamp when component mounts (for time-based spam detection)
   useEffect(() => {
@@ -109,6 +115,14 @@ export function ContactForm({ className = "", variant = "default", settings }: C
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check Turnstile token if configured
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setStatus("error");
+      setErrorMessage("Bitte bestätigen Sie, dass Sie kein Roboter sind.");
+      return;
+    }
+
     setStatus("submitting");
     setErrorMessage("");
 
@@ -116,7 +130,10 @@ export function ContactForm({ className = "", variant = "default", settings }: C
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken,
+        }),
       });
 
       const result = await response.json();
@@ -141,11 +158,16 @@ export function ContactForm({ className = "", variant = "default", settings }: C
         website: "",
         _timestamp: Date.now(),
       });
+      setTurnstileToken(null);
+      turnstileRef.current?.reset();
     } catch (error) {
       setStatus("error");
       setErrorMessage(
         error instanceof Error ? error.message : "Ein Fehler ist aufgetreten"
       );
+      // Reset Turnstile on error
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
     }
   };
 
@@ -306,6 +328,26 @@ export function ContactForm({ className = "", variant = "default", settings }: C
         />
       </div>
 
+      {/* Cloudflare Turnstile */}
+      {TURNSTILE_SITE_KEY && (
+        <div className="flex justify-center">
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setTurnstileToken(token)}
+            onError={() => {
+              setTurnstileToken(null);
+              setErrorMessage("Captcha-Fehler. Bitte laden Sie die Seite neu.");
+            }}
+            onExpire={() => setTurnstileToken(null)}
+            options={{
+              theme: "auto",
+              size: "normal",
+            }}
+          />
+        </div>
+      )}
+
       {status === "error" && (
         <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -315,7 +357,7 @@ export function ContactForm({ className = "", variant = "default", settings }: C
 
       <button
         type="submit"
-        disabled={status === "submitting"}
+        disabled={status === "submitting" || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
         className="w-full px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === "submitting" ? (
