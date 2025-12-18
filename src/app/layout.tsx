@@ -256,13 +256,6 @@ export default async function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`}>
       <head>
-        {/* Preload LCP image for faster loading */}
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero-bg.jpg"
-          fetchPriority="high"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

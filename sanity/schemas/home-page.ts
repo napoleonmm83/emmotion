@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { VideoUploadInput } from "../components/VideoUploadInput";
 
 export default defineType({
   name: "homePage",
@@ -62,9 +63,12 @@ export default defineType({
         },
         {
           name: "backgroundVideo",
-          title: "Hintergrund Video URL",
-          type: "url",
-          description: "MP4 Video URL für den Hintergrund",
+          title: "Hintergrund Video",
+          type: "string",
+          description: "Video für den Hero-Hintergrund (wird auf Vercel Blob gespeichert)",
+          components: {
+            input: VideoUploadInput,
+          },
         },
         {
           name: "backgroundImage",
