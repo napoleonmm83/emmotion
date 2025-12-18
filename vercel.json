@@ -4,15 +4,5 @@
       "path": "/api/cron/cleanup-submissions",
       "schedule": "0 3 * * *"
     }
-  ],
-  "functions": {
-    "src/app/api/projekt-anfrage/submit-signed/route.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "src/app/api/projekt-anfrage/regenerate-contract/route.ts": {
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  }
+  ]
 }
