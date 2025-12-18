@@ -114,6 +114,35 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // ===== PROJEKT-ONBOARDING =====
+      S.listItem()
+        .title("Projekt-Onboarding")
+        .icon(() => "📋")
+        .child(
+          S.list()
+            .title("Projekt-Onboarding")
+            .items([
+              S.documentTypeListItem("projectOnboarding")
+                .title("Projektanfragen")
+                .icon(() => "📥"),
+              S.divider(),
+              S.listItem()
+                .title("Vertragsvorlage")
+                .icon(() => "📄")
+                .child(
+                  S.document()
+                    .schemaType("contractTemplate")
+                    .documentId("contractTemplate")
+                    .title("Vertragsvorlage")
+                ),
+              S.documentTypeListItem("onboardingQuestionnaire")
+                .title("Fragebögen")
+                .icon(() => "❓"),
+            ])
+        ),
+
+      S.divider(),
+
       // ===== KUNDENSTIMMEN =====
       S.documentTypeListItem("testimonial").title("Kundenstimmen").icon(() => "💬"),
 
