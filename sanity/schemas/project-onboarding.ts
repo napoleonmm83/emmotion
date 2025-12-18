@@ -326,6 +326,115 @@ export default defineType({
         },
       ],
     }),
+
+    // Contract Corrections & Adjustments
+    defineField({
+      name: "contractAdjustments",
+      title: "Vertragsanpassungen",
+      type: "object",
+      group: "contract",
+      description: "Manuelle Anpassungen am Vertrag",
+      fields: [
+        {
+          name: "customPriceItems",
+          type: "array",
+          title: "Zusätzliche Preispositionen",
+          of: [
+            {
+              type: "object",
+              fields: [
+                { name: "name", type: "string", title: "Bezeichnung" },
+                { name: "price", type: "number", title: "Preis (CHF)" },
+                { name: "quantity", type: "number", title: "Menge", initialValue: 1 },
+              ],
+              preview: {
+                select: { name: "name", price: "price", quantity: "quantity" },
+                prepare({ name, price, quantity }) {
+                  const total = (price || 0) * (quantity || 1);
+                  return {
+                    title: name || "Position",
+                    subtitle: `${quantity || 1}x CHF ${price || 0} = CHF ${total}`,
+                  };
+                },
+              },
+            },
+          ],
+        },
+        {
+          name: "discount",
+          type: "object",
+          title: "Rabatt",
+          fields: [
+            { name: "type", type: "string", title: "Art", options: {
+              list: [
+                { title: "Prozent", value: "percentage" },
+                { title: "Betrag (CHF)", value: "fixed" },
+              ],
+            }},
+            { name: "value", type: "number", title: "Wert" },
+            { name: "reason", type: "string", title: "Grund" },
+          ],
+        },
+        {
+          name: "enabledOptionalClauses",
+          type: "array",
+          title: "Aktivierte optionale Klauseln",
+          description: "IDs der aktivierten optionalen Klauseln aus der Vertragsvorlage",
+          of: [{ type: "string" }],
+        },
+        {
+          name: "customNotes",
+          type: "text",
+          title: "Zusätzliche Vertragsnotizen",
+          rows: 3,
+          description: "Erscheint im Vertrag unter 'Besondere Vereinbarungen'",
+        },
+      ],
+    }),
+
+    // Contract Correction History
+    defineField({
+      name: "corrections",
+      title: "Korrekturen",
+      type: "array",
+      group: "contract",
+      description: "Verlauf aller Vertragskorrekturen",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "correctedAt", type: "datetime", title: "Korrigiert am", readOnly: true },
+            { name: "reason", type: "string", title: "Grund der Korrektur" },
+            { name: "previousPdfUrl", type: "url", title: "Vorheriges PDF", readOnly: true },
+            { name: "newPdfUrl", type: "url", title: "Neues PDF", readOnly: true },
+            { name: "correctedBy", type: "string", title: "Korrigiert von" },
+            { name: "changesSummary", type: "text", title: "Zusammenfassung der Änderungen", rows: 2 },
+          ],
+          preview: {
+            select: { correctedAt: "correctedAt", reason: "reason", correctedBy: "correctedBy" },
+            prepare({ correctedAt, reason, correctedBy }) {
+              const date = correctedAt
+                ? new Date(correctedAt).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })
+                : "";
+              return {
+                title: reason || "Korrektur",
+                subtitle: `${date}${correctedBy ? ` • ${correctedBy}` : ""}`,
+              };
+            },
+          },
+        },
+      ],
+    }),
+
+    // Trigger for contract regeneration
+    defineField({
+      name: "regenerateContract",
+      title: "🔄 Vertrag neu generieren",
+      type: "boolean",
+      group: "contract",
+      description: "Aktivieren um einen neuen Vertrag mit den aktuellen Anpassungen zu generieren. Wird automatisch zurückgesetzt.",
+      initialValue: false,
+    }),
   ],
 
   orderings: [

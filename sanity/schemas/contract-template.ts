@@ -226,6 +226,89 @@ Bei Verzug oder Nichterfüllung durch den Auftraggeber:
       type: "number",
       initialValue: 200,
     }),
+
+    // Optional Clauses (can be enabled per contract)
+    defineField({
+      name: "optionalClauses",
+      title: "Optionale Klauseln",
+      type: "array",
+      description: "Zusätzliche Klauseln, die bei Bedarf aktiviert werden können",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "id", type: "string", title: "ID", description: "Eindeutige ID (z.B. 'nda', 'exclusivity')" },
+            { name: "title", type: "string", title: "Titel", validation: (Rule) => Rule.required() },
+            { name: "content", type: "text", title: "Inhalt", rows: 6, validation: (Rule) => Rule.required() },
+            { name: "defaultEnabled", type: "boolean", title: "Standardmässig aktiv", initialValue: false },
+          ],
+          preview: {
+            select: { title: "title", id: "id", defaultEnabled: "defaultEnabled" },
+            prepare({ title, id, defaultEnabled }) {
+              return {
+                title: title || "Unbenannte Klausel",
+                subtitle: `${id || "kein-id"} ${defaultEnabled ? "• ✅ Standard" : ""}`,
+              };
+            },
+          },
+        },
+      ],
+    }),
+
+    // Custom Price Items
+    defineField({
+      name: "customPriceItems",
+      title: "Zusätzliche Preispositionen",
+      type: "array",
+      description: "Vordefinierte Preispositionen für manuelle Ergänzungen",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "id", type: "string", title: "ID" },
+            { name: "name", type: "string", title: "Bezeichnung", validation: (Rule) => Rule.required() },
+            { name: "description", type: "string", title: "Beschreibung" },
+            { name: "defaultPrice", type: "number", title: "Standardpreis (CHF)" },
+            { name: "unit", type: "string", title: "Einheit", options: {
+              list: [
+                { title: "Pauschal", value: "flat" },
+                { title: "Pro Stunde", value: "hourly" },
+                { title: "Pro Tag", value: "daily" },
+                { title: "Pro Stück", value: "piece" },
+              ],
+            }},
+          ],
+          preview: {
+            select: { name: "name", defaultPrice: "defaultPrice", unit: "unit" },
+            prepare({ name, defaultPrice, unit }) {
+              const unitLabels: Record<string, string> = {
+                flat: "pauschal",
+                hourly: "/h",
+                daily: "/Tag",
+                piece: "/Stk",
+              };
+              return {
+                title: name,
+                subtitle: defaultPrice ? `CHF ${defaultPrice} ${unitLabels[unit] || ""}` : "",
+              };
+            },
+          },
+        },
+      ],
+    }),
+
+    // PDF Design Options
+    defineField({
+      name: "pdfDesign",
+      title: "PDF-Design",
+      type: "object",
+      fields: [
+        { name: "showLogo", type: "boolean", title: "Logo anzeigen", initialValue: true },
+        { name: "logoUrl", type: "url", title: "Logo URL (optional)" },
+        { name: "primaryColor", type: "string", title: "Primärfarbe (HEX)", initialValue: "#d41919", description: "z.B. #d41919 für Rot" },
+        { name: "footerText", type: "string", title: "Fusszeilen-Text" },
+      ],
+    }),
   ],
 
   preview: {

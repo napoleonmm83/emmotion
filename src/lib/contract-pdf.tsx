@@ -19,16 +19,16 @@ Font.register({
   ],
 });
 
-// Website colors
+// Website colors - Cinematic Red Theme
 const colors = {
-  primary: "#3b82f6", // Blue from website
-  primaryDark: "#1d4ed8",
+  primary: "#d41919", // Cinematic red (hsl 0 85% 45%)
+  primaryDark: "#981b1b", // Darker red (hsl 0 70% 35%)
   dark: "#0a0a0a", // Near black background
-  darkGray: "#171717",
-  mediumGray: "#262626",
-  lightGray: "#a3a3a3",
-  white: "#fafafa",
-  accent: "#f59e0b", // Orange accent
+  darkGray: "#121212", // Card background
+  mediumGray: "#3a3a3a", // Muted text
+  lightGray: "#8c8c8c", // Secondary text
+  white: "#f2f2f2", // Foreground text
+  border: "#1f1f1f", // Border color
 };
 
 const styles = StyleSheet.create({
@@ -118,18 +118,18 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
   },
   highlightBox: {
-    backgroundColor: "#fef3c7",
-    padding: 12,
-    marginVertical: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
-  },
-  infoBox: {
-    backgroundColor: "#eff6ff",
+    backgroundColor: "#fef2f2", // Light red tint
     padding: 12,
     marginVertical: 10,
     borderLeftWidth: 4,
     borderLeftColor: colors.primary,
+  },
+  infoBox: {
+    backgroundColor: "#f5f5f5", // Neutral light gray
+    padding: 12,
+    marginVertical: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primaryDark,
   },
   priceTable: {
     marginTop: 10,
