@@ -295,7 +295,7 @@ export function ContractPDF({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <View>
+          <View style={{ flexDirection: "column" }}>
             <Text style={styles.logo}>emmotion</Text>
             <Text style={styles.logoTagline}>Videoproduktion für Unternehmen</Text>
           </View>
