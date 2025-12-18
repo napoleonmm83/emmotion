@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { Container, SectionHeader } from "@/components/shared";
+import { ContactForm } from "@/components/forms/contact-form";
 
 // Fallback Kontaktdaten
 const defaultContact = {
@@ -49,25 +49,16 @@ export function ContactSection({ settings }: ContactSectionProps) {
     phone: settings?.contact?.phone || defaultContact.phone,
     region: settings?.contact?.region || defaultContact.region,
   };
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    projectType: "",
-    message: "",
-  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // Subject options für Homepage (Projektarten)
+  const homeSubjectOptions = [
+    { value: "imagefilm", label: "Imagefilm" },
+    { value: "eventvideo", label: "Eventvideo" },
+    { value: "social-media", label: "Social Media Content" },
+    { value: "drohne", label: "Drohnenaufnahmen" },
+    { value: "produktvideo", label: "Produktvideo" },
+    { value: "sonstiges", label: "Sonstiges" },
+  ];
 
   return (
     <section id="kontakt" className="py-24 md:py-32 border-t border-border">
@@ -84,89 +75,15 @@ export function ContactSection({ settings }: ContactSectionProps) {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors duration-400"
-                  placeholder="Ihr Name"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  E-Mail
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors duration-400"
-                  placeholder="ihre@email.ch"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="projectType"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Projektart
-                </label>
-                <select
-                  id="projectType"
-                  name="projectType"
-                  value={formData.projectType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground focus:outline-none focus:border-primary transition-colors duration-400"
-                >
-                  <option value="">Bitte auswählen</option>
-                  <option value="imagefilm">Imagefilm</option>
-                  <option value="eventvideo">Eventvideo</option>
-                  <option value="social-media">Social Media Content</option>
-                  <option value="drohne">Drohnenaufnahmen</option>
-                  <option value="produktvideo">Produktvideo</option>
-                  <option value="sonstiges">Sonstiges</option>
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Nachricht
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors duration-400 resize-none"
-                  placeholder="Erzählen Sie mir von Ihrem Projekt..."
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400 flex items-center justify-center gap-2"
-              >
-                <Send size={18} />
-                Nachricht senden
-              </button>
-            </form>
+            <ContactForm
+              variant="compact"
+              settings={{
+                subjectOptions: homeSubjectOptions,
+                placeholders: {
+                  message: "Erzählen Sie mir von Ihrem Projekt...",
+                },
+              }}
+            />
           </motion.div>
 
           <motion.div
