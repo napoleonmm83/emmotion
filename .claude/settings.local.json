@@ -70,7 +70,8 @@
       "WebFetch(domain:magicheidi.ch)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:bexio-api-python-client.readthedocs.io)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

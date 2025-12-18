@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { put } from "@vercel/blob";
 import { resend } from "@/lib/resend";
-import { ContractPDF } from "@/lib/contract-pdf";
+import { generateContractHTML } from "@/lib/contract-html";
+import { generatePDFFromHTML } from "@/lib/pdf-generator";
 import { ContractClientEmail } from "@/emails/contract-client";
 import { ContractOwnerEmail } from "@/emails/contract-owner";
 import type { OnboardingFormData, PricingResult } from "@/lib/onboarding-logic";
@@ -138,21 +138,23 @@ export async function POST(request: NextRequest) {
     // Fetch contract template
     const contractTemplate = await getContractTemplate();
 
-    // Generate PDF
+    // Generate PDF using Puppeteer
     let pdfUrl = "";
     try {
-      const pdfBuffer = await renderToBuffer(
-        ContractPDF({
-          formData,
-          pricing,
-          signatureDataUrl,
-          signedAt,
-          contractVersion,
-          companyInfo: contractTemplate?.companyInfo,
-          clauses: contractTemplate?.clauses,
-          cancellationDays: contractTemplate?.cancellationDays,
-        })
-      );
+      // Generate HTML for contract
+      const contractHTML = generateContractHTML({
+        formData,
+        pricing,
+        signatureDataUrl,
+        signedAt,
+        contractVersion,
+        companyInfo: contractTemplate?.companyInfo,
+        clauses: contractTemplate?.clauses,
+        cancellationDays: contractTemplate?.cancellationDays,
+      });
+
+      // Convert HTML to PDF
+      const pdfBuffer = await generatePDFFromHTML({ html: contractHTML });
 
       // Upload to Vercel Blob
       if (process.env.BLOB_READ_WRITE_TOKEN) {

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { put } from "@vercel/blob";
 import { resend } from "@/lib/resend";
-import { ContractPDF } from "@/lib/contract-pdf";
+import { generateContractHTML } from "@/lib/contract-html";
+import { generatePDFFromHTML } from "@/lib/pdf-generator";
 import { ContractCorrectionEmail } from "@/emails/contract-correction";
 import type { PricingResult } from "@/lib/onboarding-logic";
 
@@ -165,21 +165,23 @@ export async function POST(request: NextRequest) {
     // Store previous PDF URL
     const previousPdfUrl = project.contract?.contractPdfUrl;
 
-    // Generate new PDF
+    // Generate new PDF using Puppeteer
     let newPdfUrl = "";
     try {
-      const pdfBuffer = await renderToBuffer(
-        ContractPDF({
-          formData,
-          pricing: adjustedPricing,
-          signatureDataUrl: project.contract?.signatureDataUrl || "",
-          signedAt: project.contract?.signedAt || new Date().toISOString(),
-          contractVersion: `${contractTemplate?.version || "1.0"}-korr`,
-          companyInfo: contractTemplate?.companyInfo,
-          clauses: contractTemplate?.clauses,
-          cancellationDays: contractTemplate?.cancellationDays,
-        })
-      );
+      // Generate HTML for contract
+      const contractHTML = generateContractHTML({
+        formData,
+        pricing: adjustedPricing,
+        signatureDataUrl: project.contract?.signatureDataUrl || "",
+        signedAt: project.contract?.signedAt || new Date().toISOString(),
+        contractVersion: `${contractTemplate?.version || "1.0"}-korr`,
+        companyInfo: contractTemplate?.companyInfo,
+        clauses: contractTemplate?.clauses,
+        cancellationDays: contractTemplate?.cancellationDays,
+      });
+
+      // Convert HTML to PDF
+      const pdfBuffer = await generatePDFFromHTML({ html: contractHTML });
 
       // Upload to Vercel Blob
       if (process.env.BLOB_READ_WRITE_TOKEN) {
