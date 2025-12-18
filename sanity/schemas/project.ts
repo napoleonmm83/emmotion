@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { YouTubeUrlInput } from "../components/YouTubeUrlInput";
 
 export default defineType({
   name: "project",
@@ -49,8 +50,11 @@ export default defineType({
     defineField({
       name: "videoUrl",
       title: "Video URL",
-      type: "url",
-      description: "Vimeo, YouTube oder direkte URL",
+      type: "string",
+      description: "YouTube, Vimeo oder direkte URL. Bei YouTube: Thumbnail automatisch laden möglich!",
+      components: {
+        input: YouTubeUrlInput,
+      },
     }),
     defineField({
       name: "thumbnail",
