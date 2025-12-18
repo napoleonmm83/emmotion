@@ -26,8 +26,24 @@ export default defineType({
       type: "date",
     }),
 
-    // Note: Company info is now in global Site Settings (Einstellungen → Kontakt & Unternehmen)
-    // This keeps data centralized and consistent across the entire website
+    // DEPRECATED: Company info moved to global Site Settings
+    // This hidden field prevents errors from old data
+    defineField({
+      name: "companyInfo",
+      title: "Unternehmensdaten (veraltet)",
+      type: "object",
+      hidden: true,
+      description: "Diese Daten sind jetzt unter Einstellungen → Kontakt & Unternehmen",
+      fields: [
+        { name: "name", type: "string", title: "Firmenname" },
+        { name: "owner", type: "string", title: "Inhaber" },
+        { name: "street", type: "string", title: "Strasse" },
+        { name: "zipCity", type: "string", title: "PLZ & Ort" },
+        { name: "email", type: "string", title: "E-Mail" },
+        { name: "phone", type: "string", title: "Telefon" },
+        { name: "website", type: "string", title: "Website" },
+      ],
+    }),
 
     // Contract Clauses
     defineField({
