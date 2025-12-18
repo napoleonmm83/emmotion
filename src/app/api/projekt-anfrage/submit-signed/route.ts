@@ -251,7 +251,7 @@ Sobald die Anzahlung eingegangen ist, können wir mit der Planung beginnen.
 Bei Fragen stehe ich Ihnen gerne zur Verfügung.
 
 Freundliche Grüsse
-Marcus Scherer
+Marcus Martini
 emmotion.ch`,
         });
         bexioInvoiceSent = sendResult.sent;

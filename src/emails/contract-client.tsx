@@ -162,8 +162,8 @@ export function ContractClientEmail({
               <br />
               {companyInfo?.owner || "Marcus"}
               <br />
-              <Link href="mailto:hallo@emmotion.ch" style={link}>
-                hallo@emmotion.ch
+              <Link href={`mailto:${companyInfo?.email || "marcus@emmotion.ch"}`} style={link}>
+                {companyInfo?.email || "marcus@emmotion.ch"}
               </Link>
             </Text>
           </Section>

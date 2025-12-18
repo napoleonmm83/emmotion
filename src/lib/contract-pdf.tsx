@@ -246,9 +246,9 @@ interface ContractPDFProps {
 
 const DEFAULT_COMPANY_INFO = {
   name: "emmotion.ch",
-  owner: "Marcus Scherer",
+  owner: "Marcus Martini",
   address: "Rheintal, Schweiz",
-  email: "hallo@emmotion.ch",
+  email: "marcus@emmotion.ch",
   phone: "",
 };
 

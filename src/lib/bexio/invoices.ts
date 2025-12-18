@@ -116,7 +116,7 @@ export async function createInvoice(
   // Build footer text
   const footerText =
     params.footer ||
-    `Zahlbar innert ${params.dueInDays || 30} Tagen netto.\n\nBei Fragen stehe ich Ihnen gerne zur Verfügung.\n\nFreundliche Grüsse\nMarcus Scherer\nemmotion.ch`;
+    `Zahlbar innert ${params.dueInDays || 30} Tagen netto.\n\nBei Fragen stehe ich Ihnen gerne zur Verfügung.\n\nFreundliche Grüsse\nMarcus Martini\nemmotion.ch`;
 
   // Build invoice data
   // Note: kb_item_status_id is NOT allowed as input field (read-only)
@@ -173,7 +173,7 @@ export async function createDepositInvoice(params: {
       },
     ],
     header: `Anzahlungsrechnung für Ihr Videoprojekt:\n${params.projectName}\n\nLeistung: ${params.serviceName}\nGesamtbetrag: CHF ${params.totalAmount.toFixed(2)}\nAnzahlung (${params.depositPercentage}%): CHF ${params.depositAmount.toFixed(2)}`,
-    footer: `Zahlbar innert 10 Tagen.\n\nDie Restrechnung über CHF ${(params.totalAmount - params.depositAmount).toFixed(2)} erfolgt nach Projektabschluss.\n\nVielen Dank für Ihr Vertrauen.\n\nMarcus Scherer\nemmotion.ch`,
+    footer: `Zahlbar innert 10 Tagen.\n\nDie Restrechnung über CHF ${(params.totalAmount - params.depositAmount).toFixed(2)} erfolgt nach Projektabschluss.\n\nVielen Dank für Ihr Vertrauen.\n\nMarcus Martini\nemmotion.ch`,
     dueInDays: 10,
   });
 }
@@ -223,7 +223,7 @@ Anbei erhalten Sie Ihre Rechnung.
 Bei Fragen stehe ich Ihnen gerne zur Verfügung.
 
 Freundliche Grüsse
-Marcus Scherer
+Marcus Martini
 emmotion.ch`,
     mark_as_open: true,
   };

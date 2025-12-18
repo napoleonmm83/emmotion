@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
             <p>Den aktualisierten Vertrag finden Sie hier:</p>
             <p><a href="${newPdfUrl}">Vertrag herunterladen (PDF)</a></p>
             <p>Bei Fragen stehe ich Ihnen gerne zur Verfügung.</p>
-            <p>Freundliche Grüsse<br>Marcus Scherer<br>emmotion.ch</p>
+            <p>Freundliche Grüsse<br>Marcus Martini<br>emmotion.ch</p>
           `,
         });
         console.log("Correction notification sent to:", project.clientInfo.email);
