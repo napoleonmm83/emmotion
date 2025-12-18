@@ -127,11 +127,93 @@ const imageUrl = urlFor(data.image)
 
 ---
 
-### YouTube Videos einbetten
+### YouTube/Vimeo Videos einbetten (Facade Pattern)
 
-YouTube URLs im CMS speichern und als Embed anzeigen.
+Performante Video-Embeds mit automatischer Erkennung von YouTube/Vimeo URLs.
 
-**Schema:**
+**Das Problem:** YouTube/Vimeo iframes laden viele Ressourcen (~1MB) und verlangsamen die Seite.
+
+**Die Lösung:** Facade Pattern - zeigt erst ein Thumbnail mit Play-Button, lädt iframe erst beim Klick.
+
+#### Smart VideoPlayer (Automatische Erkennung)
+
+Der `VideoPlayer` erkennt automatisch YouTube/Vimeo URLs und verwendet das Facade Pattern:
+
+```tsx
+import { VideoPlayer } from "@/components/shared";
+
+// Funktioniert mit allen URL-Typen:
+<VideoPlayer
+  src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"  // YouTube
+  poster="/thumbnail.jpg"  // Optional: eigenes Thumbnail
+  title="Mein Video"
+/>
+
+<VideoPlayer
+  src="https://vimeo.com/123456789"  // Vimeo
+  title="Vimeo Video"
+/>
+
+<VideoPlayer
+  src="/videos/local-video.mp4"  // Direkte URL → Native Player
+  autoPlay
+  loop
+/>
+```
+
+#### YouTubeEmbed Komponente (Direkt)
+
+Für YouTube/Vimeo-spezifische Verwendung:
+
+```tsx
+import { YouTubeEmbed } from "@/components/shared";
+
+<YouTubeEmbed
+  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  title="Video Titel"
+  poster="/custom-thumbnail.jpg"  // Optional
+  aspectRatio="video"  // "video" | "square" | "portrait"
+/>
+```
+
+#### URL-Erkennung Utilities
+
+```typescript
+import { isEmbeddableVideo, getVideoProvider } from "@/components/shared";
+
+// Prüfen ob URL einbettbar ist
+isEmbeddableVideo("https://youtu.be/abc123");  // true
+isEmbeddableVideo("/video.mp4");               // false
+
+// Provider ermitteln
+getVideoProvider("https://youtube.com/...");   // "youtube"
+getVideoProvider("https://vimeo.com/...");     // "vimeo"
+getVideoProvider("/video.mp4");                // "direct"
+```
+
+#### Unterstützte URL-Formate
+
+**YouTube:**
+- `https://www.youtube.com/watch?v=VIDEO_ID`
+- `https://youtu.be/VIDEO_ID`
+- `https://www.youtube.com/embed/VIDEO_ID`
+
+**Vimeo:**
+- `https://vimeo.com/VIDEO_ID`
+- `https://vimeo.com/video/VIDEO_ID`
+
+#### Sanity Schema für Videos
+
+```typescript
+defineField({
+  name: "videoUrl",
+  title: "Video URL",
+  type: "url",
+  description: "YouTube, Vimeo oder direkte Video-URL",
+})
+```
+
+**Array von Videos:**
 ```typescript
 defineField({
   name: "exampleVideos",
@@ -141,34 +223,11 @@ defineField({
     type: "object",
     fields: [
       { name: "title", type: "string", title: "Titel" },
-      { name: "youtubeUrl", type: "url", title: "YouTube URL" },
+      { name: "youtubeUrl", type: "url", title: "YouTube/Vimeo URL" },
       { name: "description", type: "text", title: "Kurzbeschreibung" }
     ]
   }]
 })
-```
-
-**YouTube ID extrahieren:**
-```typescript
-function getYouTubeId(url: string): string | null {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
-}
-```
-
-**Embed Komponente:**
-```tsx
-const videoId = getYouTubeId(video.youtubeUrl);
-
-<iframe
-  src={`https://www.youtube.com/embed/${videoId}`}
-  title={video.title}
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowFullScreen
-  className="w-full h-full"
-/>
-```
 
 ---
 

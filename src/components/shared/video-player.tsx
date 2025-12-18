@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { YouTubeEmbed, isEmbeddableVideo } from "./youtube-embed";
 
 interface VideoPlayerProps {
   src: string;
@@ -13,6 +14,7 @@ interface VideoPlayerProps {
   className?: string;
   aspectRatio?: "video" | "square" | "portrait";
   showControls?: boolean;
+  title?: string;
 }
 
 export function VideoPlayer({
@@ -24,7 +26,57 @@ export function VideoPlayer({
   className,
   aspectRatio = "video",
   showControls = true,
+  title,
 }: VideoPlayerProps) {
+  // Check if the source is a YouTube/Vimeo URL
+  if (src && isEmbeddableVideo(src)) {
+    return (
+      <YouTubeEmbed
+        url={src}
+        title={title}
+        poster={poster}
+        className={className}
+        aspectRatio={aspectRatio}
+      />
+    );
+  }
+
+  // Native video player for direct URLs
+  return (
+    <NativeVideoPlayer
+      src={src}
+      poster={poster}
+      autoPlay={autoPlay}
+      muted={muted}
+      loop={loop}
+      className={className}
+      aspectRatio={aspectRatio}
+      showControls={showControls}
+    />
+  );
+}
+
+interface NativeVideoPlayerProps {
+  src: string;
+  poster?: string;
+  autoPlay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  className?: string;
+  aspectRatio?: "video" | "square" | "portrait";
+  showControls?: boolean;
+}
+
+function NativeVideoPlayer({
+  src,
+  poster,
+  autoPlay = false,
+  muted = true,
+  loop = false,
+  className,
+  aspectRatio = "video",
+  showControls = true,
+}: NativeVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);

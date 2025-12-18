@@ -100,6 +100,7 @@ export function ProjectPageContent({
               <VideoPlayer
                 src={project.videoUrl}
                 poster={project.thumbnail}
+                title={project.title}
                 className="rounded-xl shadow-2xl"
                 aspectRatio="video"
                 showControls
