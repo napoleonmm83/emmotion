@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageContent } from "./service-content";
 import { client } from "@sanity/lib/client";
-import { serviceBySlugQuery, servicesQuery } from "@sanity/lib/queries";
+import { serviceBySlugQuery, servicesQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
 
 export interface ServiceDetail {
@@ -535,6 +535,14 @@ interface SanityService {
   seo?: { metaTitle?: string; metaDescription?: string };
 }
 
+async function getSettings() {
+  try {
+    return await client.fetch(settingsQuery);
+  } catch {
+    return null;
+  }
+}
+
 async function getServiceBySlug(slug: string): Promise<ServiceDetail | null> {
   try {
     const sanityService = await client.fetch<SanityService>(serviceBySlugQuery, { slug });
@@ -607,11 +615,11 @@ export async function generateStaticParams() {
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const [service, settings] = await Promise.all([getServiceBySlug(slug), getSettings()]);
 
   if (!service) {
     notFound();
   }
 
-  return <ServicePageContent service={service} />;
+  return <ServicePageContent service={service} settings={settings} />;
 }

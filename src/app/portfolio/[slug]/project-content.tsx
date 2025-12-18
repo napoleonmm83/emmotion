@@ -35,11 +35,18 @@ interface Project {
 interface ProjectPageContentProps {
   project: Project;
   relatedProjects: Project[];
+  settings?: {
+    siteName?: string;
+    contact?: { email?: string; phone?: string; street?: string; city?: string };
+    social?: { instagram?: string; linkedin?: string; youtube?: string };
+    footer?: { tagline?: string; ctaText?: string; copyrightName?: string };
+  } | null;
 }
 
 export function ProjectPageContent({
   project,
   relatedProjects,
+  settings,
 }: ProjectPageContentProps) {
   return (
     <>
@@ -262,7 +269,7 @@ export function ProjectPageContent({
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

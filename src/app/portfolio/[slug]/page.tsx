@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectPageContent } from "./project-content";
 import { client } from "@sanity/lib/client";
-import { projectBySlugQuery, projectsQuery } from "@sanity/lib/queries";
+import { projectBySlugQuery, projectsQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
 
 interface PageProps {
@@ -110,6 +110,14 @@ async function getAllProjects() {
   }
 }
 
+async function getSettings() {
+  try {
+    return await client.fetch(settingsQuery);
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
@@ -140,7 +148,7 @@ export async function generateStaticParams() {
 
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, settings] = await Promise.all([getProjectBySlug(slug), getSettings()]);
 
   if (!project) {
     notFound();
@@ -152,5 +160,5 @@ export default async function ProjectPage({ params }: PageProps) {
     .filter((p) => p.categorySlug === project.categorySlug && p.slug !== project.slug)
     .slice(0, 3);
 
-  return <ProjectPageContent project={project} relatedProjects={relatedProjects} />;
+  return <ProjectPageContent project={project} relatedProjects={relatedProjects} settings={settings} />;
 }

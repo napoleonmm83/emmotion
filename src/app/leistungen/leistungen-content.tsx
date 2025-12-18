@@ -140,9 +140,15 @@ const itemVariants = {
 
 interface LeistungenPageContentProps {
   services: ServiceFromSanity[] | null;
+  settings?: {
+    siteName?: string;
+    contact?: { email?: string; phone?: string; street?: string; city?: string };
+    social?: { instagram?: string; linkedin?: string; youtube?: string };
+    footer?: { tagline?: string; ctaText?: string; copyrightName?: string };
+  } | null;
 }
 
-export function LeistungenPageContent({ services: sanityServices }: LeistungenPageContentProps) {
+export function LeistungenPageContent({ services: sanityServices, settings }: LeistungenPageContentProps) {
   // Convert Sanity services to component format or use defaults
   const services: Service[] = sanityServices
     ? sanityServices.map((s) => ({
@@ -290,7 +296,7 @@ export function LeistungenPageContent({ services: sanityServices }: LeistungenPa
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

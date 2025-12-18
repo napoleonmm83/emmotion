@@ -51,9 +51,15 @@ function getYouTubeId(url: string): string | null {
 
 interface ServicePageContentProps {
   service: ServiceDetail;
+  settings?: {
+    siteName?: string;
+    contact?: { email?: string; phone?: string; street?: string; city?: string };
+    social?: { instagram?: string; linkedin?: string; youtube?: string };
+    footer?: { tagline?: string; ctaText?: string; copyrightName?: string };
+  } | null;
 }
 
-export function ServicePageContent({ service }: ServicePageContentProps) {
+export function ServicePageContent({ service, settings }: ServicePageContentProps) {
   const Icon = iconMap[service.iconName as keyof typeof iconMap] || Film;
 
   return (
@@ -362,7 +368,7 @@ export function ServicePageContent({ service }: ServicePageContentProps) {
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

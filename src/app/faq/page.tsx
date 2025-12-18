@@ -6,7 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FAQContent } from "./faq-content";
 import { client } from "@sanity/lib/client";
-import { faqsQuery } from "@sanity/lib/queries";
+import { faqsQuery, settingsQuery } from "@sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "FAQ | emmotion.ch",
@@ -253,8 +253,16 @@ function generateFAQSchema(faqs: typeof FALLBACK_FAQS) {
   };
 }
 
+async function getSettings() {
+  try {
+    return await client.fetch(settingsQuery);
+  } catch {
+    return null;
+  }
+}
+
 export default async function FAQPage() {
-  const faqs = await getFAQs();
+  const [faqs, settings] = await Promise.all([getFAQs(), getSettings()]);
   const faqSchema = generateFAQSchema(faqs);
 
   return (
@@ -267,7 +275,7 @@ export default async function FAQPage() {
       <main className="pt-20 pb-16">
         <FAQContent faqs={faqs} />
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

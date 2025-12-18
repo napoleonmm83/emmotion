@@ -4,12 +4,20 @@ export const revalidate = 60;
 import type { Metadata } from "next";
 import { UeberMichContent } from "./ueber-mich-content";
 import { client } from "@sanity/lib/client";
-import { aboutPageQuery } from "@sanity/lib/queries";
+import { aboutPageQuery, settingsQuery } from "@sanity/lib/queries";
 
 async function getAboutData() {
   try {
     const data = await client.fetch(aboutPageQuery);
     return data;
+  } catch {
+    return null;
+  }
+}
+
+async function getSettings() {
+  try {
+    return await client.fetch(settingsQuery);
   } catch {
     return null;
   }
@@ -33,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function UeberMichPage() {
-  const aboutData = await getAboutData();
+  const [aboutData, settings] = await Promise.all([getAboutData(), getSettings()]);
 
-  return <UeberMichContent data={aboutData} />;
+  return <UeberMichContent data={aboutData} settings={settings} />;
 }

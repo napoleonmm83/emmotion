@@ -147,6 +147,25 @@ interface AboutData {
 
 interface UeberMichContentProps {
   data?: AboutData | null;
+  settings?: {
+    siteName?: string;
+    contact?: {
+      email?: string;
+      phone?: string;
+      street?: string;
+      city?: string;
+    };
+    social?: {
+      instagram?: string;
+      linkedin?: string;
+      youtube?: string;
+    };
+    footer?: {
+      tagline?: string;
+      ctaText?: string;
+      copyrightName?: string;
+    };
+  } | null;
 }
 
 const containerVariants = {
@@ -169,7 +188,7 @@ const itemVariants = {
   },
 };
 
-export function UeberMichContent({ data }: UeberMichContentProps) {
+export function UeberMichContent({ data, settings }: UeberMichContentProps) {
   // Use Sanity data or fallbacks
   const name = data?.name || "Marcus Martini";
   const subtitle = data?.subtitle || "Videograf mit TV-Erfahrung";
@@ -512,7 +531,7 @@ export function UeberMichContent({ data }: UeberMichContentProps) {
           </Container>
         </section>
       </main>
-      <Footer />
+      <Footer settings={settings} />
     </>
   );
 }

@@ -4,7 +4,7 @@ export const revalidate = 60;
 import { Metadata } from "next";
 import { LeistungenPageContent } from "./leistungen-content";
 import { client } from "@sanity/lib/client";
-import { servicesQuery } from "@sanity/lib/queries";
+import { servicesQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
 
 export const metadata: Metadata = {
@@ -50,7 +50,15 @@ async function getServices() {
   }
 }
 
+async function getSettings() {
+  try {
+    return await client.fetch(settingsQuery);
+  } catch {
+    return null;
+  }
+}
+
 export default async function LeistungenPage() {
-  const services = await getServices();
-  return <LeistungenPageContent services={services} />;
+  const [services, settings] = await Promise.all([getServices(), getSettings()]);
+  return <LeistungenPageContent services={services} settings={settings} />;
 }
