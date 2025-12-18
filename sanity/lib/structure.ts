@@ -1,4 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
+import { DeleteAllSubmissions } from "../components/DeleteAllSubmissions";
 
 /**
  * Benutzerdefinierte Sanity Studio Struktur
@@ -89,6 +90,14 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("contactSubmission")
                 .title("Anfragen")
                 .icon(() => "📥"),
+              S.divider(),
+              S.listItem()
+                .title("Anfragen verwalten")
+                .icon(() => "🗑️")
+                .child(
+                  S.component(DeleteAllSubmissions)
+                    .title("Anfragen verwalten")
+                ),
             ])
         ),
 
