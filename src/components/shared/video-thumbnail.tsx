@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface VideoThumbnailProps {
@@ -27,8 +25,6 @@ export function VideoThumbnail({
   aspectRatio = "video",
   priority = false,
 }: VideoThumbnailProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   const aspectClasses = {
     video: "aspect-video",
     square: "aspect-square",
@@ -36,60 +32,51 @@ export function VideoThumbnail({
   };
 
   return (
-    <motion.div
-      className={cn(
-        "relative group overflow-hidden rounded-xl cursor-pointer",
-        aspectClasses[aspectRatio],
-        className
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <div
+      className={cn("group cursor-pointer", className)}
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.3 }}
     >
-      {/* Image */}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority={priority}
-        className={cn(
-          "object-cover transition-transform duration-700",
-          isHovered && "scale-110"
-        )}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      />
-
-      {/* Hover Overlay */}
+      {/* Image Container */}
       <div
         className={cn(
-          "absolute inset-0 bg-background/60 flex items-center justify-center transition-opacity duration-300",
-          isHovered ? "opacity-100" : "opacity-0"
+          "relative overflow-hidden rounded-xl bg-muted",
+          aspectClasses[aspectRatio]
         )}
       >
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={isHovered ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="p-4 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 will-change-transform"
-          style={{ transform: "translateZ(0)" }}
-        >
-          <Play className="w-8 h-8 text-foreground fill-foreground" />
-        </motion.div>
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          priority={priority}
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+
+        {/* Category Badge */}
+        {category && (
+          <div className="absolute top-3 left-3">
+            <span className="px-2 py-1 text-xs font-medium bg-black/60 backdrop-blur-sm text-white rounded">
+              {category}
+            </span>
+          </div>
+        )}
+
+        {/* Play Icon on Hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
+            <Play className="w-8 h-8 text-white ml-1" fill="white" />
+          </div>
+        </div>
       </div>
 
-      {/* Info Overlay */}
-      {(title || category) && (
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-background via-background/80 to-transparent">
-          {category && (
-            <p className="text-primary text-sm font-medium mb-1">{category}</p>
-          )}
-          {title && (
-            <h3 className="text-foreground text-lg font-medium">{title}</h3>
-          )}
+      {/* Text Below */}
+      {title && (
+        <div className="mt-3 px-1">
+          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+            {title}
+          </h3>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
