@@ -24,6 +24,9 @@ interface YouTubePlaylistItem {
 
 interface YouTubeVideoDetails {
   id: string;
+  snippet: {
+    publishedAt: string;
+  };
   contentDetails: {
     duration: string;
   };
@@ -144,7 +147,7 @@ async function fetchVideoDetails(
 
   for (const chunk of chunks) {
     const params = new URLSearchParams({
-      part: "contentDetails,statistics",
+      part: "snippet,contentDetails,statistics",
       id: chunk.join(","),
       key: apiKey,
     });
@@ -209,7 +212,8 @@ export async function fetchPlaylistData(playlistId: string): Promise<PlaylistDat
         title: item.snippet.title,
         description: item.snippet.description,
         thumbnailUrl: getBestThumbnail(item.snippet.thumbnails, videoId),
-        publishedAt: item.snippet.publishedAt,
+        // Echtes Veröffentlichungsdatum des Videos (nicht Playlist-Hinzufügedatum)
+        publishedAt: details.snippet.publishedAt,
         duration: parseDuration(details.contentDetails.duration),
         viewCount,
         likeCount,
