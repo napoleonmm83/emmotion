@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container, VideoThumbnail } from "@/components/shared";
-import { Tv } from "lucide-react";
+import { Tv, Film, Eye, Play } from "lucide-react";
+import Image from "next/image";
 
 interface Project {
   title: string;
@@ -125,6 +126,12 @@ const itemVariants = {
   },
 };
 
+interface TVPreview {
+  thumbnail: string | null;
+  totalVideos: number;
+  totalViews: number;
+}
+
 interface PortfolioPageContentProps {
   projects?: Project[] | null;
   pageData?: {
@@ -171,12 +178,24 @@ interface PortfolioPageContentProps {
       copyrightName?: string;
     };
   } | null;
+  tvPreview?: TVPreview | null;
+}
+
+function formatNumber(num: number): string {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + "M";
+  }
+  if (num >= 1000) {
+    return Math.round(num / 1000) + "K";
+  }
+  return num.toLocaleString("de-CH");
 }
 
 export function PortfolioPageContent({
   projects,
   pageData,
   settings,
+  tvPreview,
 }: PortfolioPageContentProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedIndustry, setSelectedIndustry] = useState("all");
@@ -318,6 +337,57 @@ export function PortfolioPageContent({
                 exit="hidden"
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
+                {/* TV Produktionen Card - nur bei "Alle" anzeigen */}
+                {selectedCategory === "all" && selectedIndustry === "all" && tvPreview && (
+                  <motion.div variants={itemVariants}>
+                    <Link href="/tv-produktionen" className="group block">
+                      <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
+                        {tvPreview.thumbnail ? (
+                          <Image
+                            src={tvPreview.thumbnail}
+                            alt="TV Produktionen"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                            <Tv className="w-16 h-16 text-primary/50" />
+                          </div>
+                        )}
+                        {/* Category Badge */}
+                        <div className="absolute top-3 left-3">
+                          <span className="px-2 py-1 text-xs font-medium bg-black/60 backdrop-blur-sm text-white rounded">
+                            TV Rheintal
+                          </span>
+                        </div>
+                        {/* Play Icon */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
+                            <Play className="w-8 h-8 text-white ml-1" fill="white" />
+                          </div>
+                        </div>
+                      </div>
+                      {/* Text below */}
+                      <div className="mt-3 px-1">
+                        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                          TV Produktionen
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                          <span className="flex items-center gap-1">
+                            <Film className="w-3.5 h-3.5" />
+                            {tvPreview.totalVideos} Videos
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-3.5 h-3.5" />
+                            {formatNumber(tvPreview.totalViews)} Views
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )}
+
                 {filteredProjects.map((project, index) => (
                   <motion.div key={project.slug} variants={itemVariants}>
                     <Link href={`/portfolio/${project.slug}`}>

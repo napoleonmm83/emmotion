@@ -4,7 +4,7 @@ export const revalidate = 60;
 import { Metadata } from "next";
 import { PortfolioPageContent } from "./portfolio-content";
 import { client } from "@sanity/lib/client";
-import { projectsQuery, portfolioPageQuery, settingsQuery } from "@sanity/lib/queries";
+import { projectsQuery, portfolioPageQuery, settingsQuery, tvProductionsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
 
 export const metadata: Metadata = {
@@ -99,12 +99,61 @@ async function getSettings() {
   }
 }
 
+interface TVProductionsData {
+  enabled: boolean;
+  cachedData?: {
+    totalVideos: number;
+    totalViews: number;
+    videos: Array<{
+      youtubeId: string;
+      title: string;
+      thumbnailUrl: string;
+    }>;
+  };
+}
+
+async function getTVProductionsPreview() {
+  try {
+    const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
+    if (!data?.enabled || !data.cachedData?.videos?.length) return null;
+
+    const videos = data.cachedData.videos;
+    const videosWithValidThumbnails = videos.filter(v =>
+      v.thumbnailUrl &&
+      !v.thumbnailUrl.endsWith('.mp4') &&
+      (v.thumbnailUrl.includes('ytimg.com') || v.thumbnailUrl.includes('.jpg') || v.thumbnailUrl.includes('.png') || v.thumbnailUrl.includes('.webp'))
+    );
+
+    if (videosWithValidThumbnails.length === 0) {
+      const firstVideo = videos[0];
+      return {
+        thumbnail: firstVideo ? `https://i.ytimg.com/vi/${firstVideo.youtubeId}/hqdefault.jpg` : null,
+        totalVideos: data.cachedData.totalVideos,
+        totalViews: data.cachedData.totalViews,
+      };
+    }
+
+    const dayOfYear = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+    const index = dayOfYear % Math.min(videosWithValidThumbnails.length, 20);
+    const selectedVideo = videosWithValidThumbnails[index];
+
+    return {
+      thumbnail: selectedVideo?.thumbnailUrl || null,
+      totalVideos: data.cachedData.totalVideos,
+      totalViews: data.cachedData.totalViews,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default async function PortfolioPage() {
-  const [projects, pageData, settings] = await Promise.all([
+  const [projects, pageData, settings, tvPreview] = await Promise.all([
     getProjects(),
     getPortfolioPageData(),
     getSettings(),
+    getTVProductionsPreview(),
   ]);
 
-  return <PortfolioPageContent projects={projects} pageData={pageData} settings={settings} />;
+  return <PortfolioPageContent projects={projects} pageData={pageData} settings={settings} tvPreview={tvPreview} />;
 }
