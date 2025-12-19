@@ -977,6 +977,12 @@ BEXIO_USER_ID=1         # Benutzer-ID (optional, wird automatisch geholt)
 BEXIO_TAX_ID=17         # Steuer-ID für 0% (optional, wird automatisch geholt)
 ```
 
+**Token generieren:** https://developer.bexio.com/ → API Tokens
+
+Benötigte Berechtigungen:
+- `kb_invoice_edit` (Rechnungen erstellen/bearbeiten)
+- `contact_edit` (Kontakte erstellen/bearbeiten)
+
 ---
 
 *Letzte Aktualisierung: Dezember 2024*

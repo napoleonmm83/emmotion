@@ -121,12 +121,18 @@ export async function createInvoice(
   dueDate.setDate(dueDate.getDate() + (params.dueInDays || 30));
 
   // Build positions - tax_id is REQUIRED by Bexio API
+  // account_id 148 = Konto 3400 Dienstleistungserlös
+  const accountId = process.env.BEXIO_ACCOUNT_ID
+    ? parseInt(process.env.BEXIO_ACCOUNT_ID, 10)
+    : 148; // Default: Konto 3400 Dienstleistungserlös
+
   const positions: BexioInvoicePosition[] = params.positions.map((pos) => ({
     type: "KbPositionCustom" as const,
     amount: pos.amount.toString(),
     unit_price: pos.unitPrice.toFixed(2),
     text: pos.text,
     tax_id: taxId,
+    account_id: accountId,
   }));
 
   // Build header text
