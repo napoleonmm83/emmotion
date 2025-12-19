@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Film } from "lucide-react";
+import { X, ArrowRight, Film, Tv, Play, Eye } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Container, SectionHeader, VideoThumbnail } from "@/components/shared";
 
@@ -14,8 +15,15 @@ interface Project {
   videoUrl: string;
 }
 
+interface TVPreview {
+  thumbnail: string | null;
+  totalVideos: number;
+  totalViews: number;
+}
+
 interface PortfolioSectionProps {
   data?: Project[] | null;
+  tvPreview?: TVPreview | null;
 }
 
 function VideoLightbox({
@@ -88,10 +96,21 @@ const itemVariants = {
   },
 };
 
-export function PortfolioSection({ data }: PortfolioSectionProps) {
+function formatNumber(num: number): string {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + "M";
+  }
+  if (num >= 1000) {
+    return Math.round(num / 1000) + "K";
+  }
+  return num.toLocaleString("de-CH");
+}
+
+export function PortfolioSection({ data, tvPreview }: PortfolioSectionProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const hasProjects = data && data.length > 0;
+  const hasContent = hasProjects || tvPreview;
 
   return (
     <section id="portfolio" className="py-24 md:py-32 border-t border-border">
@@ -101,7 +120,7 @@ export function PortfolioSection({ data }: PortfolioSectionProps) {
           subtitle="Eine Auswahl meiner Projekte – jedes Video erzählt eine einzigartige Geschichte."
         />
 
-        {hasProjects ? (
+        {hasContent ? (
           <>
             <motion.div
               variants={containerVariants}
@@ -110,7 +129,61 @@ export function PortfolioSection({ data }: PortfolioSectionProps) {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {data.map((project, index) => (
+              {/* TV Produktionen Card */}
+              {tvPreview && (
+                <motion.div variants={itemVariants}>
+                  <Link
+                    href="/tv-produktionen"
+                    className="group block relative aspect-video rounded-xl overflow-hidden bg-muted"
+                  >
+                    {tvPreview.thumbnail ? (
+                      <Image
+                        src={tvPreview.thumbnail}
+                        alt="TV Produktionen"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                        <Tv className="w-16 h-16 text-primary/50" />
+                      </div>
+                    )}
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    {/* Play Icon */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
+                        <Play className="w-8 h-8 text-white ml-1" fill="white" />
+                      </div>
+                    </div>
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-1 text-xs font-medium bg-primary/20 text-primary rounded">
+                          TV Rheintal
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-white mb-1">
+                        TV Produktionen
+                      </h3>
+                      <div className="flex items-center gap-3 text-sm text-white/70">
+                        <span className="flex items-center gap-1">
+                          <Film className="w-3.5 h-3.5" />
+                          {tvPreview.totalVideos} Videos
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3.5 h-3.5" />
+                          {formatNumber(tvPreview.totalViews)} Views
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* Regular Projects */}
+              {hasProjects && data.map((project, index) => (
                 <motion.div key={project.slug} variants={itemVariants}>
                   <VideoThumbnail
                     src={project.thumbnail}

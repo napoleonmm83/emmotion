@@ -13,7 +13,7 @@ import {
   CTASection,
 } from "@/components/sections";
 import { client } from "@sanity/lib/client";
-import { aboutPageQuery, homePageQuery, featuredTestimonialsQuery, featuredProjectsQuery, servicesQuery, settingsQuery } from "@sanity/lib/queries";
+import { aboutPageQuery, homePageQuery, featuredTestimonialsQuery, featuredProjectsQuery, servicesQuery, settingsQuery, tvProductionsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
 
 async function getHomePageData() {
@@ -157,14 +157,47 @@ async function getSettings() {
   }
 }
 
+interface TVProductionsData {
+  enabled: boolean;
+  cachedData?: {
+    totalVideos: number;
+    totalViews: number;
+    videos: Array<{
+      youtubeId: string;
+      title: string;
+      thumbnailUrl: string;
+    }>;
+  };
+}
+
+async function getTVProductionsPreview() {
+  try {
+    const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
+    if (!data?.enabled || !data.cachedData?.videos?.length) return null;
+
+    // Random thumbnail aus den TV-Projekten
+    const videos = data.cachedData.videos;
+    const randomVideo = videos[Math.floor(Math.random() * Math.min(videos.length, 20))];
+
+    return {
+      thumbnail: randomVideo?.thumbnailUrl || null,
+      totalVideos: data.cachedData.totalVideos,
+      totalViews: data.cachedData.totalViews,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default async function HomePage() {
-  const [homePageData, aboutData, testimonials, featuredProjects, services, settings] = await Promise.all([
+  const [homePageData, aboutData, testimonials, featuredProjects, services, settings, tvPreview] = await Promise.all([
     getHomePageData(),
     getAboutData(),
     getTestimonials(),
     getFeaturedProjects(),
     getServices(),
     getSettings(),
+    getTVProductionsPreview(),
   ]);
 
   // Default section visibility (all visible)
@@ -183,7 +216,7 @@ export default async function HomePage() {
       <main>
         <HeroSection data={homePageData?.hero} />
         {sections.showServices && <ServicesSection data={services} />}
-        {sections.showPortfolio && <PortfolioSection data={featuredProjects} />}
+        {sections.showPortfolio && <PortfolioSection data={featuredProjects} tvPreview={tvPreview} />}
         {sections.showTestimonials && <TestimonialsSection data={testimonials} />}
         {sections.showCTA && <CTASection variant="konfigurator" />}
         {sections.showAbout && <AboutSection data={aboutData} />}
