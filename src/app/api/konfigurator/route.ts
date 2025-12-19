@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
 import { resend } from "@/lib/resend";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+import { validateOrigin } from "@/lib/csrf";
 import { KonfiguratorNotificationEmail } from "@/emails/konfigurator-notification";
 import {
   KonfiguratorInput,
@@ -10,6 +11,7 @@ import {
   DURATION_OPTIONS,
   COMPLEXITY_OPTIONS,
   EXTRAS_INFO,
+  calculatePrice,
 } from "@/lib/konfigurator-logic";
 
 const sanityClient = createClient({
@@ -53,12 +55,20 @@ interface KonfiguratorRequest {
   phone?: string;
   message?: string;
   configuration: KonfiguratorInput;
-  priceResult: PriceResult;
+  priceResult?: PriceResult; // Client-seitig, wird ignoriert - Server berechnet neu
   turnstileToken?: string; // Cloudflare Turnstile
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // CSRF Protection: Validate origin
+    if (!validateOrigin(request)) {
+      return NextResponse.json(
+        { error: "Ungültige Anfrage." },
+        { status: 403 }
+      );
+    }
+
     // Get client IP for Turnstile verification
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ||
@@ -87,7 +97,33 @@ export async function POST(request: NextRequest) {
     }
 
     const config = body.configuration;
-    const price = body.priceResult;
+
+    // Validate configuration values
+    const validVideoTypes = ["imagefilm", "recruiting", "produkt", "social", "event"];
+    const validDurations = ["short", "medium", "long"];
+    const validComplexities = ["simple", "standard", "premium"];
+
+    if (!validVideoTypes.includes(config.videoType)) {
+      return NextResponse.json(
+        { error: "Ungültiger Video-Typ." },
+        { status: 400 }
+      );
+    }
+    if (!validDurations.includes(config.duration)) {
+      return NextResponse.json(
+        { error: "Ungültige Dauer." },
+        { status: 400 }
+      );
+    }
+    if (!validComplexities.includes(config.complexity)) {
+      return NextResponse.json(
+        { error: "Ungültige Komplexität." },
+        { status: 400 }
+      );
+    }
+
+    // Server-seitige Preisberechnung (verhindert Preismanipulation)
+    const price = calculatePrice(config);
 
     // Prepare extras list for email
     const extras = (Object.entries(config.extras) as [keyof typeof config.extras, boolean][])

@@ -3,6 +3,7 @@ import { createClient } from "@sanity/client";
 import { resend } from "@/lib/resend";
 import { notifyError } from "@/lib/error-notify";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+import { validateOrigin } from "@/lib/csrf";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 
 // Sanity client with write access
@@ -96,6 +97,14 @@ function sanitizeString(str: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    // CSRF Protection: Validate origin
+    if (!validateOrigin(request)) {
+      return NextResponse.json(
+        { error: "Ungültige Anfrage." },
+        { status: 403 }
+      );
+    }
+
     // Get client IP for rate limiting and Turnstile
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ||
