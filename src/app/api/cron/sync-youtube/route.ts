@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
-import { fetchPlaylistData } from "@/lib/youtube";
+import { put, list } from "@vercel/blob";
+import { fetchPlaylistData, YouTubeVideo } from "@/lib/youtube";
 
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -58,6 +59,64 @@ export async function GET(request: NextRequest) {
     console.log(`Syncing YouTube playlist: ${tvSettings.playlistId}`);
     const playlistData = await fetchPlaylistData(tvSettings.playlistId);
 
+    // Get existing blobs to avoid re-uploading
+    const existingBlobs = new Map<string, string>();
+    try {
+      const blobList = await list({ prefix: "tv-thumbnails/" });
+      for (const blob of blobList.blobs) {
+        // Extract video ID from pathname (tv-thumbnails/VIDEO_ID.jpg)
+        const match = blob.pathname.match(/tv-thumbnails\/([^.]+)\.jpg/);
+        if (match) {
+          existingBlobs.set(match[1], blob.url);
+        }
+      }
+    } catch {
+      console.log("No existing blobs found or blob list failed");
+    }
+
+    // Upload thumbnails to Vercel Blob
+    const videosWithBlobThumbnails = await Promise.all(
+      playlistData.videos.map(async (video) => {
+        // Check if thumbnail already exists in blob storage
+        if (existingBlobs.has(video.youtubeId)) {
+          return {
+            ...video,
+            thumbnailUrl: existingBlobs.get(video.youtubeId)!,
+          };
+        }
+
+        try {
+          // Download thumbnail from YouTube
+          const response = await fetch(video.thumbnailUrl);
+          if (!response.ok) {
+            console.log(`Failed to fetch thumbnail for ${video.youtubeId}`);
+            return video;
+          }
+
+          const imageBuffer = await response.arrayBuffer();
+
+          // Upload to Vercel Blob
+          const blob = await put(
+            `tv-thumbnails/${video.youtubeId}.jpg`,
+            imageBuffer,
+            {
+              access: "public",
+              contentType: "image/jpeg",
+            }
+          );
+
+          console.log(`Uploaded thumbnail for ${video.youtubeId}`);
+          return {
+            ...video,
+            thumbnailUrl: blob.url,
+          };
+        } catch (error) {
+          console.error(`Error uploading thumbnail for ${video.youtubeId}:`, error);
+          return video; // Keep original URL if upload fails
+        }
+      })
+    );
+
     // Update Sanity document with cached data
     await sanityClient
       .patch(tvSettings._id)
@@ -68,7 +127,7 @@ export async function GET(request: NextRequest) {
           totalViews: playlistData.totalViews,
           totalLikes: playlistData.totalLikes,
           totalComments: playlistData.totalComments,
-          videos: playlistData.videos,
+          videos: videosWithBlobThumbnails,
         },
       })
       .commit();
