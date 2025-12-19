@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, AlertCircle } from "lucide-react";
 import { Header } from "@/components/layout/header";
@@ -269,6 +270,16 @@ export function OnboardingContent({
         throw new Error("Submission failed");
       }
 
+      // Track successful submission
+      track("onboarding_complete", {
+        service: serviceSlug,
+        totalPrice: pricing.totalPrice,
+        extras: Object.entries(formData.extras)
+          .filter(([, value]) => value)
+          .map(([key]) => key)
+          .join(","),
+      });
+
       // Redirect to confirmation page
       router.push("/projekt-anfrage/bestaetigung");
     } catch (error) {
@@ -295,6 +306,26 @@ export function OnboardingContent({
   };
 
   const serviceLabel = SERVICE_LABELS[serviceSlug];
+
+  // Track initial page load (step 1)
+  useEffect(() => {
+    track("onboarding_start", {
+      service: serviceSlug,
+      serviceLabel: serviceLabel,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Track step changes
+  useEffect(() => {
+    if (currentStep > 1) {
+      track("onboarding_step", {
+        step: currentStep,
+        stepName: STEPS[currentStep - 1].title,
+        service: serviceSlug,
+      });
+    }
+  }, [currentStep, serviceSlug]);
 
   return (
     <>

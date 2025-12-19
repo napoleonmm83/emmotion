@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { track } from "@vercel/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { StepVideoType } from "./step-video-type";
@@ -26,6 +27,35 @@ export function Konfigurator() {
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
 
   const priceResult = calculatePrice(formData);
+  const hasTrackedStart = useRef(false);
+
+  // Track konfigurator start
+  useEffect(() => {
+    if (!hasTrackedStart.current) {
+      track("konfigurator_start");
+      hasTrackedStart.current = true;
+    }
+  }, []);
+
+  // Track step changes and result viewing
+  useEffect(() => {
+    if (currentStep > 1) {
+      track("konfigurator_step", {
+        step: currentStep,
+        stepName: STEPS[currentStep - 1].title,
+        videoType: formData.videoType,
+      });
+    }
+    // Track when result step is reached
+    if (currentStep === 4) {
+      track("konfigurator_result", {
+        videoType: formData.videoType,
+        duration: formData.duration,
+        complexity: formData.complexity,
+        totalPrice: priceResult.totalPrice,
+      });
+    }
+  }, [currentStep, formData.videoType, formData.duration, formData.complexity, priceResult.totalPrice]);
 
   const updateFormData = (updates: Partial<KonfiguratorInput>) => {
     setFormData((prev) => ({ ...prev, ...updates }));

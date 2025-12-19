@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { track } from "@vercel/analytics";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -122,6 +124,21 @@ interface ProjektAnfrageContentProps {
 export function ProjektAnfrageContent({ services: sanityServices, settings }: ProjektAnfrageContentProps) {
   const services = sanityServices && sanityServices.length > 0 ? sanityServices : defaultServices;
 
+  // Track page view
+  useEffect(() => {
+    track("projekt_anfrage_view", {
+      servicesCount: services.length,
+    });
+  }, [services.length]);
+
+  // Track service selection
+  const handleServiceClick = (serviceSlug: string, serviceTitle: string) => {
+    track("service_selected", {
+      service: serviceSlug,
+      serviceTitle: serviceTitle,
+    });
+  };
+
   return (
     <>
       <Header />
@@ -204,6 +221,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                     <Link
                       href={`/projekt-anfrage/${service.slug}`}
                       className="block h-full"
+                      onClick={() => handleServiceClick(service.slug, service.title)}
                     >
                       <div className="card-surface rounded-xl overflow-hidden h-full group hover:border-primary/50 transition-all duration-300">
                         {/* Image or Gradient */}

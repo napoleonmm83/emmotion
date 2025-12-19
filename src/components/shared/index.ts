@@ -7,3 +7,4 @@ export { AnimatedCounter } from "./animated-counter";
 export { BackToTop } from "./back-to-top";
 export { CustomCursor } from "./custom-cursor";
 export { CookieConsent } from "./cookie-consent";
+export { TrackPageView } from "./track-page-view";

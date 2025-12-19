@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, Mail, CreditCard, Calendar, ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Container } from "@/components/shared";
+import { Container, TrackPageView } from "@/components/shared";
 import { client } from "@sanity/lib/client";
 import { settingsQuery } from "@sanity/lib/queries";
 
@@ -25,6 +25,7 @@ export default async function BestaetigungPage() {
 
   return (
     <>
+      <TrackPageView event="onboarding_confirmation" />
       <Header />
       <main className="pt-24 pb-16">
         <Container>
