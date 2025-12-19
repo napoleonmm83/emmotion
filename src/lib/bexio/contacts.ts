@@ -121,12 +121,27 @@ interface CreateContactParams {
 
 /**
  * Get the first user in the Bexio account (for user_id/owner_id fields)
+ * Uses v3 API as v2 /user returns 404
  */
 async function getBexioUserId(): Promise<number | null> {
-  const client = getBexioClient();
+  const token = process.env.BEXIO_API_TOKEN;
+  if (!token) return null;
+
   try {
-    // Fetch users list - this should work with API token
-    const users = await client.get<Array<{ id: number; email: string }>>("/user");
+    // Use v3 API for users
+    const response = await fetch("https://api.bexio.com/3.0/users", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("Error fetching Bexio users:", response.status);
+      return null;
+    }
+
+    const users = await response.json() as Array<{ id: number; email: string }>;
     if (users && users.length > 0) {
       console.log(`Found Bexio user: ${users[0].id} (${users[0].email})`);
       return users[0].id;
@@ -175,6 +190,20 @@ export async function createContact(
   const firstName = nameParts.slice(0, -1).join(" ") || nameParts[0];
   const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
 
+  // Parse street into street_name and house_number
+  let streetName: string | undefined;
+  let houseNumber: string | undefined;
+  if (params.street) {
+    // Try to extract house number from street (e.g., "Hauptstrasse 42" -> "Hauptstrasse", "42")
+    const streetMatch = params.street.match(/^(.+?)\s+(\d+\s*\w*)$/);
+    if (streetMatch) {
+      streetName = streetMatch[1].trim();
+      houseNumber = streetMatch[2].trim();
+    } else {
+      streetName = params.street;
+    }
+  }
+
   // Build contact data - user_id and owner_id are optional for API tokens
   const contactData: Record<string, unknown> = {
     contact_type_id: contactTypeId,
@@ -182,7 +211,8 @@ export async function createContact(
     // For persons: name_1 = last name, name_2 = first name
     name_1: hasCompany ? params.company! : lastName || params.name,
     name_2: hasCompany ? params.name : firstName,
-    address: params.street || undefined,
+    street_name: streetName || undefined,
+    house_number: houseNumber || undefined,
     postcode: postcode || undefined,
     city: city || undefined,
     country_id: params.zipCity

@@ -10,7 +10,9 @@ export interface BexioContact {
   salutation_form?: number;
   title_id?: number;
   birthday?: string;
-  address?: string;
+  street_name?: string; // Strassenname
+  house_number?: string; // Hausnummer
+  address_addition?: string; // Adresszusatz
   postcode?: string;
   city?: string;
   country_id?: number;
@@ -36,7 +38,9 @@ export interface BexioContactCreate {
   name_1: string;
   name_2?: string;
   salutation_id?: number;
-  address?: string;
+  street_name?: string; // Strassenname
+  house_number?: string; // Hausnummer
+  address_addition?: string; // Adresszusatz
   postcode?: string;
   city?: string;
   country_id?: number; // 1 = Schweiz

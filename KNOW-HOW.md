@@ -15,6 +15,7 @@
 7. [Design System](#design-system)
 8. [Environment Variables](#environment-variables)
 9. [Sicherheit](#sicherheit)
+10. [Bexio API Integration](#bexio-api-integration)
 
 ---
 
@@ -828,6 +829,127 @@ const spamPatterns = [
 3. **Turnstile statt reCAPTCHA** - Keine Cookies, DSGVO-konform
 
 4. **Plausible Analytics** - Cookie-frei, DSGVO-konform
+
+---
+
+## Bexio API Integration
+
+### API Versionen
+
+Bexio verwendet zwei API-Versionen parallel:
+
+- **v2.0** (`https://api.bexio.com/2.0/`) - Für Rechnungen, Kontakte, Aufträge
+- **v3.0** (`https://api.bexio.com/3.0/`) - Für Benutzer, Steuersätze
+
+```typescript
+// v2 Endpoints (funktionieren)
+/kb_invoice          // Rechnungen
+/contact             // Kontakte
+/kb_invoice/{id}/send    // Rechnung per E-Mail senden
+/kb_invoice/{id}/issue   // Rechnung ausstellen
+
+// v2 Endpoints (geben 404 zurück - v3 verwenden!)
+/user    // -> v3: /users
+/tax     // -> v3: /taxes
+```
+
+### ⚠️ Kritisch: E-Mail-Versand mit [Network Link]
+
+**Der `/kb_invoice/{id}/send` Endpoint erfordert ZWINGEND den Platzhalter `[Network Link]` im Nachrichtentext!**
+
+Ohne diesen Platzhalter gibt die API den Fehler zurück:
+```json
+{
+  "error_code": 422,
+  "errors": ["message: plugins.ibNetworkPlugin.i18n.form_module_network.error.missing_network_placeholder"]
+}
+```
+
+**Lösung:**
+```typescript
+const message = `Guten Tag
+
+Anbei erhalten Sie Ihre Rechnung:
+[Network Link]
+
+Freundliche Grüsse
+emmotion.ch`;
+
+await client.post(`/kb_invoice/${invoiceId}/send`, {
+  recipient_email: "kunde@example.com",
+  subject: "Ihre Rechnung",
+  message: message,  // MUSS [Network Link] enthalten!
+  mark_as_open: false,
+});
+```
+
+Der `[Network Link]` wird von Bexio durch den tatsächlichen Link zur Online-Rechnung ersetzt.
+
+### Korrekter Workflow: Rechnung erstellen und versenden
+
+```typescript
+// 1. Rechnung erstellen (Status: Entwurf)
+const invoice = await client.post("/kb_invoice", invoiceData);
+
+// 2. Rechnung ausstellen (Status: Offen)
+await client.post(`/kb_invoice/${invoice.id}/issue`);
+
+// 3. Per E-Mail versenden (mit [Network Link]!)
+await client.post(`/kb_invoice/${invoice.id}/send`, {
+  recipient_email: "kunde@example.com",
+  subject: "Ihre Rechnung",
+  message: "Rechnung hier: [Network Link]",
+  mark_as_open: false,  // Bereits offen durch /issue
+});
+```
+
+### Rechnungs-Status IDs
+
+```typescript
+const STATUS = {
+  DRAFT: 7,        // Entwurf
+  OPEN: 8,         // Offen/Ausstehend
+  PAID: 9,         // Bezahlt
+  PARTIAL: 16,     // Teilbezahlt
+  CANCELLED: 19,   // Storniert
+  OVERDUE: 31,     // Überfällig
+};
+```
+
+### Dateien
+
+- `src/lib/bexio/client.ts` - API Client
+- `src/lib/bexio/invoices.ts` - Rechnungen erstellen/versenden
+- `src/lib/bexio/contacts.ts` - Kontakte verwalten
+- `src/lib/bexio/types.ts` - TypeScript Typen
+
+### Kontakt-Adressfelder
+
+**Wichtig:** Die Adresse muss in separate Felder aufgeteilt werden:
+
+```typescript
+// FALSCH - gibt 422 Fehler
+const contact = {
+  address: "Hauptstrasse 42",  // ❌ Feld existiert nicht!
+};
+
+// RICHTIG
+const contact = {
+  street_name: "Hauptstrasse",   // Strassenname
+  house_number: "42",             // Hausnummer
+  address_addition: "2. Stock",   // Optional: Adresszusatz
+  postcode: "9000",
+  city: "St. Gallen",
+};
+```
+
+### Environment Variables
+
+```env
+BEXIO_API_TOKEN=xxx     # Personal Access Token
+BEXIO_USER_ID=1         # Benutzer-ID (optional, wird automatisch geholt)
+BEXIO_TAX_ID=17         # Steuer-ID für 0% (optional, wird automatisch geholt)
+```
 
 ---
 

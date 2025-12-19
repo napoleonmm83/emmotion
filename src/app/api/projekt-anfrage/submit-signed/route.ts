@@ -283,23 +283,13 @@ export async function POST(request: NextRequest) {
         });
         console.log(`Bexio invoice created: ${bexioInvoice.document_nr}`);
 
-        // Try to send invoice by email (may fail due to Bexio email template config)
+        // Send invoice by email via Bexio
+        // Note: Message must contain [Network Link] placeholder for Bexio to work
         const sendResult = await sendInvoiceByEmail(bexioInvoice.id, {
           recipientEmail: formData.clientInfo.email,
           subject: `Anzahlungsrechnung - ${formData.projectDetails.projectName}`,
-          message: `Guten Tag ${formData.clientInfo.name}
-
-Vielen Dank für Ihre Projektanfrage!
-
-Anbei erhalten Sie die Anzahlungsrechnung für Ihr Videoprojekt "${formData.projectDetails.projectName}".
-
-Sobald die Anzahlung eingegangen ist, können wir mit der Planung beginnen.
-
-Bei Fragen stehe ich Ihnen gerne zur Verfügung.
-
-Freundliche Grüsse
-Marcus Martini
-emmotion.ch`,
+          clientName: formData.clientInfo.name,
+          projectName: formData.projectDetails.projectName,
         });
         bexioInvoiceSent = sendResult.sent;
         const bexioInvoiceIssued = sendResult.issued;

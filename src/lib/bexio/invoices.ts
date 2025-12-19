@@ -37,14 +37,37 @@ function formatDate(date: Date): string {
  * Create an invoice in Bexio
  */
 /**
- * Fetch available tax rates from Bexio
+ * Fetch available tax rates from Bexio (using v3 API)
  */
-async function fetchTaxRates(): Promise<Array<{ id: number; value: string; name: string }>> {
-  const client = getBexioClient();
+async function fetchTaxRates(): Promise<Array<{ id: number; value: number; name: string }>> {
+  // Use v3 API for taxes (v2 /tax endpoint returns 404)
+  const token = process.env.BEXIO_API_TOKEN;
+  if (!token) return [];
+
   try {
-    const taxes = await client.get<Array<{ id: number; value: string; name: string; is_active: boolean }>>("/tax");
-    console.log("Available Bexio tax rates:", taxes.map(t => `${t.id}: ${t.value}% (${t.name})`).join(", "));
-    return taxes.filter(t => t.is_active);
+    const response = await fetch("https://api.bexio.com/3.0/taxes", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("Error fetching tax rates:", response.status);
+      return [];
+    }
+
+    const taxes = await response.json() as Array<{
+      id: number;
+      value: number;
+      name: string;
+      type: string;
+    }>;
+
+    // Filter for sales taxes only
+    const salesTaxes = taxes.filter(t => t.type === "sales_tax" || t.type === "not_taxable_turnover");
+    console.log("Available Bexio tax rates:", salesTaxes.map(t => `${t.id}: ${t.value}% (${t.name})`).join(", "));
+    return salesTaxes;
   } catch (error) {
     console.error("Error fetching tax rates:", error);
     return [];
@@ -64,7 +87,7 @@ async function getValidTaxId(): Promise<number | undefined> {
   const taxes = await fetchTaxRates();
   if (taxes.length > 0) {
     // Prefer 0% tax rate
-    const noTax = taxes.find(t => t.value === "0" || t.value === "0.0" || t.value === "0.00");
+    const noTax = taxes.find(t => t.value === 0);
     if (noTax) return noTax.id;
     // Otherwise return first active rate
     return taxes[0].id;
@@ -198,7 +221,13 @@ export async function getInvoicePdfUrl(
 
 /**
  * Send invoice by email via Bexio
- * Falls back to marking as issued if email sending fails
+ *
+ * IMPORTANT: The message MUST contain the placeholder [Network Link]
+ * which will be replaced by Bexio with the link to view the invoice online.
+ *
+ * Workflow:
+ * 1. First issue the invoice (changes status from "Entwurf" to "Offen")
+ * 2. Then send via email with [Network Link] placeholder
  */
 export async function sendInvoiceByEmail(
   invoiceId: number,
@@ -206,45 +235,57 @@ export async function sendInvoiceByEmail(
     recipientEmail: string;
     subject?: string;
     message?: string;
+    clientName?: string;
+    projectName?: string;
   }
 ): Promise<{ sent: boolean; issued: boolean }> {
   const client = getBexioClient();
 
-  const emailData: BexioSendEmail = {
-    recipient_email: params.recipientEmail,
-    subject:
-      params.subject || `Ihre Rechnung von emmotion.ch`,
-    message:
-      params.message ||
-      `Guten Tag
+  // Step 1: Issue the invoice first (required before sending)
+  try {
+    await client.post(`/kb_invoice/${invoiceId}/issue`);
+    console.log(`Invoice ${invoiceId} issued successfully`);
+  } catch (issueError) {
+    // If already issued, this is fine - continue with send
+    console.log(`Invoice ${invoiceId} issue skipped (may already be issued)`);
+  }
 
-Anbei erhalten Sie Ihre Rechnung.
+  // Step 2: Prepare email with [Network Link] placeholder (REQUIRED by Bexio API)
+  const defaultMessage = `Guten Tag${params.clientName ? ` ${params.clientName}` : ""}
+
+Vielen Dank für Ihre Projektanfrage${params.projectName ? ` "${params.projectName}"` : ""}!
+
+Anbei erhalten Sie Ihre Anzahlungsrechnung:
+[Network Link]
 
 Bei Fragen stehe ich Ihnen gerne zur Verfügung.
 
 Freundliche Grüsse
 Marcus Martini
-emmotion.ch`,
-    mark_as_open: true,
+emmotion.ch`;
+
+  // Ensure message contains [Network Link] placeholder
+  let message = params.message || defaultMessage;
+  if (!message.includes("[Network Link]")) {
+    message += "\n\nRechnung online ansehen: [Network Link]";
+  }
+
+  const emailData: BexioSendEmail = {
+    recipient_email: params.recipientEmail,
+    subject: params.subject || `Ihre Rechnung von emmotion.ch`,
+    message,
+    mark_as_open: false, // Already issued above
   };
 
-  // Try to send via email
+  // Step 3: Send via email
   try {
     await client.post(`/kb_invoice/${invoiceId}/send`, emailData);
-    console.log(`Invoice ${invoiceId} sent via Bexio email`);
+    console.log(`Invoice ${invoiceId} sent via Bexio email to ${params.recipientEmail}`);
     return { sent: true, issued: true };
   } catch (sendError) {
-    console.warn("Bexio /send endpoint failed, trying /issue instead:", sendError);
-
-    // Fall back to just marking as issued
-    try {
-      await client.post(`/kb_invoice/${invoiceId}/issue`);
-      console.log(`Invoice ${invoiceId} marked as issued (email not sent via Bexio)`);
-      return { sent: false, issued: true };
-    } catch (issueError) {
-      console.error("Both /send and /issue failed:", issueError);
-      return { sent: false, issued: false };
-    }
+    console.error("Bexio /send endpoint failed:", sendError);
+    // Invoice is already issued, just couldn't send email
+    return { sent: false, issued: true };
   }
 }
 
