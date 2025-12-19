@@ -12,8 +12,13 @@ interface TurnstileVerifyResponse {
 
 export async function verifyTurnstileToken(token: string, ip?: string): Promise<boolean> {
   if (!TURNSTILE_SECRET_KEY) {
-    console.warn("TURNSTILE_SECRET_KEY not set - skipping verification");
-    return true; // Allow in development if not configured
+    // Fail secure in production, allow in development
+    if (process.env.NODE_ENV === "production") {
+      console.error("TURNSTILE_SECRET_KEY not set in production - blocking request");
+      return false;
+    }
+    console.warn("TURNSTILE_SECRET_KEY not set - skipping verification in development");
+    return true;
   }
 
   if (!token) {

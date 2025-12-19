@@ -4,6 +4,9 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { put } from "@vercel/blob";
 import { resend } from "@/lib/resend";
 import { notifyError } from "@/lib/error-notify";
+import { validateOrigin } from "@/lib/csrf";
+import { rateLimit } from "@/lib/rate-limit";
+import { sanitizeString, sanitizeEmail, sanitizePhone, isBodySizeValid } from "@/lib/sanitize";
 import { ContractPDF } from "@/lib/contract-pdf";
 import { ContractClientEmail } from "@/emails/contract-client";
 import { ContractOwnerEmail } from "@/emails/contract-owner";
@@ -111,6 +114,47 @@ async function getEmailSettings() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Request size validation (500KB max - signatures can be large)
+    if (!isBodySizeValid(request.headers.get("content-length"), 500000)) {
+      return NextResponse.json(
+        { error: "Anfrage zu gross." },
+        { status: 413 }
+      );
+    }
+
+    // CSRF Protection: Validate origin
+    if (!validateOrigin(request)) {
+      return NextResponse.json(
+        { error: "Ungültige Anfrage." },
+        { status: 403 }
+      );
+    }
+
+    // Get client IP and user agent
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    const userAgent = request.headers.get("user-agent") || "unknown";
+
+    // Rate limiting: 5 submissions per hour
+    const rateLimitResult = await rateLimit(ip, {
+      limit: 5,
+      window: 3600,
+      prefix: "submit_signed",
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": rateLimitResult.resetIn.toString(),
+          },
+        }
+      );
+    }
+
     const body: SubmitRequest = await request.json();
     const { formData, pricing, signatureDataUrl, contractVersion } = body;
 
@@ -129,12 +173,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get client IP and user agent
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0] ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    const userAgent = request.headers.get("user-agent") || "unknown";
+    // Sanitize client input
+    const sanitizedClientInfo = {
+      ...formData.clientInfo,
+      name: sanitizeString(formData.clientInfo.name, 200),
+      email: sanitizeEmail(formData.clientInfo.email),
+      phone: formData.clientInfo.phone ? sanitizePhone(formData.clientInfo.phone) : formData.clientInfo.phone,
+      company: formData.clientInfo.company ? sanitizeString(formData.clientInfo.company, 200) : formData.clientInfo.company,
+      street: formData.clientInfo.street ? sanitizeString(formData.clientInfo.street, 200) : formData.clientInfo.street,
+      zipCity: formData.clientInfo.zipCity ? sanitizeString(formData.clientInfo.zipCity, 100) : formData.clientInfo.zipCity,
+    };
+    const sanitizedProjectDetails = {
+      ...formData.projectDetails,
+      projectName: sanitizeString(formData.projectDetails.projectName, 200),
+      description: formData.projectDetails.description ? sanitizeString(formData.projectDetails.description, 2000) : formData.projectDetails.description,
+    };
+
+    // Replace with sanitized data
+    formData.clientInfo = sanitizedClientInfo;
+    formData.projectDetails = sanitizedProjectDetails;
 
     const signedAt = new Date().toISOString();
 

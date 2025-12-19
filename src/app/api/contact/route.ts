@@ -5,6 +5,7 @@ import { notifyError } from "@/lib/error-notify";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { validateOrigin } from "@/lib/csrf";
 import { rateLimitContact } from "@/lib/rate-limit";
+import { sanitizeString, sanitizeEmail, sanitizePhone, isBodySizeValid } from "@/lib/sanitize";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 
 // Sanity client with write access
@@ -71,12 +72,16 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email);
 }
 
-function sanitizeString(str: string): string {
-  return str.trim().slice(0, 5000);
-}
-
 export async function POST(request: NextRequest) {
   try {
+    // Request size validation (50KB max)
+    if (!isBodySizeValid(request.headers.get("content-length"), 50000)) {
+      return NextResponse.json(
+        { error: "Anfrage zu gross." },
+        { status: 413 }
+      );
+    }
+
     // CSRF Protection: Validate origin
     if (!validateOrigin(request)) {
       return NextResponse.json(
@@ -150,14 +155,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Sanitize inputs
+    // Sanitize inputs (DOMPurify removes HTML tags)
     const sanitizedData = {
-      name: sanitizeString(body.name),
-      email: sanitizeString(body.email).toLowerCase(),
-      phone: body.phone ? sanitizeString(body.phone) : undefined,
-      company: body.company ? sanitizeString(body.company) : undefined,
+      name: sanitizeString(body.name, 200),
+      email: sanitizeEmail(body.email),
+      phone: body.phone ? sanitizePhone(body.phone) : undefined,
+      company: body.company ? sanitizeString(body.company, 200) : undefined,
       subject: body.subject,
-      message: sanitizeString(body.message),
+      message: sanitizeString(body.message, 5000),
     };
 
     // Check for spam patterns

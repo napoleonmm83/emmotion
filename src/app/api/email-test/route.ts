@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
 import { resend } from "@/lib/resend";
+import { rateLimit } from "@/lib/rate-limit";
 
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -80,6 +81,25 @@ async function updateTestResult(message: string) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Rate limiting: 3 test emails per hour (admin function)
+    const rateLimitResult = await rateLimit(ip, {
+      limit: 3,
+      window: 3600,
+      prefix: "email_test",
+    });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Zu viele Test-E-Mails. Bitte warten Sie." },
+        { status: 429 }
+      );
+    }
+
     // Verify authorization (simple token check)
     const authHeader = request.headers.get("authorization");
     const expectedToken = process.env.SANITY_API_TOKEN;

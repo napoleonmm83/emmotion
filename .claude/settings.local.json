@@ -91,7 +91,11 @@
       "Bash(src/app/api/cron/sync-youtube/route.ts )",
       "Bash(src/app/api/projekt-anfrage/regenerate-contract/route.ts)",
       "Bash(NEXT_PUBLIC_TURNSTILE_SITE_KEY=\"0x4AAAAAACHcwaC7K73Z2RH3\" pnpm run build)",
-      "Bash(pnpm remove:*)"
+      "Bash(pnpm remove:*)",
+      "Bash(for i in 1 2 3 4 5 6)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(done)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -4,6 +4,7 @@ import { resend } from "@/lib/resend";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { validateOrigin } from "@/lib/csrf";
 import { rateLimitKonfigurator } from "@/lib/rate-limit";
+import { sanitizeString, sanitizeEmail, sanitizePhone, isBodySizeValid } from "@/lib/sanitize";
 import { KonfiguratorNotificationEmail } from "@/emails/konfigurator-notification";
 import {
   KonfiguratorInput,
@@ -62,6 +63,14 @@ interface KonfiguratorRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Request size validation (50KB max)
+    if (!isBodySizeValid(request.headers.get("content-length"), 50000)) {
+      return NextResponse.json(
+        { error: "Anfrage zu gross." },
+        { status: 413 }
+      );
+    }
+
     // CSRF Protection: Validate origin
     if (!validateOrigin(request)) {
       return NextResponse.json(
@@ -141,6 +150,12 @@ export async function POST(request: NextRequest) {
     // Server-seitige Preisberechnung (verhindert Preismanipulation)
     const price = calculatePrice(config);
 
+    // Sanitize user inputs (DOMPurify removes HTML tags)
+    const sanitizedName = sanitizeString(body.name, 200);
+    const sanitizedEmail = sanitizeEmail(body.email);
+    const sanitizedPhone = body.phone ? sanitizePhone(body.phone) : undefined;
+    const sanitizedMessage = body.message ? sanitizeString(body.message, 2000) : undefined;
+
     // Prepare extras list for email
     const extras = (Object.entries(config.extras) as [keyof typeof config.extras, boolean][])
       .filter(([, value]) => value)
@@ -161,13 +176,13 @@ export async function POST(request: NextRequest) {
         const { error } = await resend.emails.send({
           from: `${senderName} Konfigurator <${senderEmail}>`,
           to: recipientEmail,
-          replyTo: body.email,
-          subject: `[Konfigurator] ${VIDEO_TYPES[config.videoType].label} – ${body.name}`,
+          replyTo: sanitizedEmail,
+          subject: `[Konfigurator] ${VIDEO_TYPES[config.videoType].label} – ${sanitizedName}`,
           react: KonfiguratorNotificationEmail({
-            name: body.name,
-            email: body.email,
-            phone: body.phone,
-            message: body.message,
+            name: sanitizedName,
+            email: sanitizedEmail,
+            phone: sanitizedPhone,
+            message: sanitizedMessage,
             videoType: VIDEO_TYPES[config.videoType].label,
             duration: DURATION_OPTIONS[config.duration].label,
             complexity: COMPLEXITY_OPTIONS[config.complexity].label,
@@ -197,9 +212,9 @@ export async function POST(request: NextRequest) {
     if (process.env.SANITY_API_TOKEN) {
       const document = {
         _type: "contactSubmission",
-        name: body.name,
-        email: body.email,
-        phone: body.phone || undefined,
+        name: sanitizedName,
+        email: sanitizedEmail,
+        phone: sanitizedPhone,
         subject: "konfigurator",
         message: `
 KONFIGURATOR-ANFRAGE
@@ -212,7 +227,7 @@ Extras: ${extras.length > 0 ? extras.join(", ") : "Keine"}
 Preisschätzung: CHF ${price.priceRange.min} – ${price.priceRange.max}
 Lieferzeit: ca. ${price.estimatedDays} Werktage
 
-${body.message ? `Zusätzliche Nachricht:\n${body.message}` : ""}
+${sanitizedMessage ? `Zusätzliche Nachricht:\n${sanitizedMessage}` : ""}
         `.trim(),
         status: "new",
         submittedAt: new Date().toISOString(),
