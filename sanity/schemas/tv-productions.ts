@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { YouTubeSyncButton } from "../components";
 
 export default defineType({
   name: "tvProductions",
@@ -19,6 +20,14 @@ export default defineType({
       type: "string",
       description: "Die ID der YouTube-Playlist (z.B. PLlqvVZIoFthOJTjq3WQNmRwQa2SxMVkN3)",
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "syncButton",
+      title: "Synchronisieren",
+      type: "string",
+      components: {
+        field: YouTubeSyncButton,
+      },
     }),
     defineField({
       name: "title",
