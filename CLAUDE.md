@@ -20,6 +20,16 @@ Bei Implementierungen zuerst in `KNOW-HOW.md` nachschauen, ob bereits ein Patter
 
 ---
 
+## WICHTIG: Task-Management
+
+**Tasks immer sofort schliessen, sobald sie vollständig erledigt sind und keine Fehler mehr gemeldet werden.**
+
+- Nach erfolgreichem Test/Deploy: Task auf "done" setzen
+- Nicht warten bis der User daran erinnert
+- Bei Archon MCP: `manage_task("update", task_id="...", status="done")`
+
+---
+
 ## PROJEKTÜBERSICHT
 
 **Projekt:** emmotion.ch – Website für Videoproduktion
