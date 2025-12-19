@@ -175,12 +175,28 @@ async function getTVProductionsPreview() {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     if (!data?.enabled || !data.cachedData?.videos?.length) return null;
 
-    // Deterministisches Thumbnail basierend auf dem aktuellen Tag
-    // Wechselt täglich, aber ist konsistent zwischen Server und Client
+    // Nur Videos mit gültigen Bild-Thumbnails (keine .mp4 URLs)
     const videos = data.cachedData.videos;
+    const videosWithValidThumbnails = videos.filter(v =>
+      v.thumbnailUrl &&
+      !v.thumbnailUrl.endsWith('.mp4') &&
+      (v.thumbnailUrl.includes('ytimg.com') || v.thumbnailUrl.includes('.jpg') || v.thumbnailUrl.includes('.png') || v.thumbnailUrl.includes('.webp'))
+    );
+
+    if (videosWithValidThumbnails.length === 0) {
+      // Fallback: YouTube-Thumbnail direkt aus Video-ID generieren
+      const firstVideo = videos[0];
+      return {
+        thumbnail: firstVideo ? `https://i.ytimg.com/vi/${firstVideo.youtubeId}/hqdefault.jpg` : null,
+        totalVideos: data.cachedData.totalVideos,
+        totalViews: data.cachedData.totalViews,
+      };
+    }
+
+    // Deterministisches Thumbnail basierend auf dem aktuellen Tag
     const dayOfYear = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-    const index = dayOfYear % Math.min(videos.length, 20);
-    const selectedVideo = videos[index];
+    const index = dayOfYear % Math.min(videosWithValidThumbnails.length, 20);
+    const selectedVideo = videosWithValidThumbnails[index];
 
     return {
       thumbnail: selectedVideo?.thumbnailUrl || null,

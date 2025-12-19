@@ -129,7 +129,7 @@ export function PortfolioSection({ data, tvPreview }: PortfolioSectionProps) {
               viewport={{ once: true }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {/* TV Produktionen Card */}
+              {/* TV Produktionen Card - Option 2: Blur + Gradient */}
               {tvPreview && (
                 <motion.div variants={itemVariants}>
                   <Link
@@ -149,25 +149,80 @@ export function PortfolioSection({ data, tvPreview }: PortfolioSectionProps) {
                         <Tv className="w-16 h-16 text-primary/50" />
                       </div>
                     )}
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     {/* Play Icon */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                       <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
                         <Play className="w-8 h-8 text-white ml-1" fill="white" />
                       </div>
                     </div>
-                    {/* Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 text-xs font-medium bg-primary/20 text-primary rounded">
+                    {/* Content with blur background */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/60 backdrop-blur-md">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Tv className="w-4 h-4 text-primary" />
+                            <h3 className="text-base font-semibold text-white">
+                              TV Produktionen
+                            </h3>
+                          </div>
+                          <p className="text-xs text-white/70">TV Rheintal</p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-white/80">
+                          <span className="flex items-center gap-1">
+                            <Film className="w-3 h-3" />
+                            {tvPreview.totalVideos}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Eye className="w-3 h-3" />
+                            {formatNumber(tvPreview.totalViews)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )}
+
+              {/* TV Produktionen Card - Option 5: Text unterhalb */}
+              {tvPreview && (
+                <motion.div variants={itemVariants}>
+                  <Link
+                    href="/tv-produktionen"
+                    className="group block"
+                  >
+                    <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
+                      {tvPreview.thumbnail ? (
+                        <Image
+                          src={tvPreview.thumbnail}
+                          alt="TV Produktionen"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                          <Tv className="w-16 h-16 text-primary/50" />
+                        </div>
+                      )}
+                      {/* Category Badge */}
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2 py-1 text-xs font-medium bg-black/60 backdrop-blur-sm text-white rounded">
                           TV Rheintal
                         </span>
                       </div>
-                      <h3 className="text-lg font-semibold text-white mb-1">
+                      {/* Play Icon */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center">
+                          <Play className="w-8 h-8 text-white ml-1" fill="white" />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Text below */}
+                    <div className="mt-3 px-1">
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                         TV Produktionen
                       </h3>
-                      <div className="flex items-center gap-3 text-sm text-white/70">
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                         <span className="flex items-center gap-1">
                           <Film className="w-3.5 h-3.5" />
                           {tvPreview.totalVideos} Videos
