@@ -10,12 +10,26 @@ import {
 import type { OnboardingFormData, PricingResult } from "./onboarding-logic";
 import { SERVICE_LABELS, formatPrice, formatDate } from "./onboarding-logic";
 
-// Register fonts (using standard fonts for now)
+// Register Inter font from Google Fonts
 Font.register({
-  family: "Helvetica",
+  family: "Inter",
   fonts: [
-    { src: "Helvetica" },
-    { src: "Helvetica-Bold", fontWeight: "bold" },
+    {
+      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2",
+      fontWeight: 400,
+    },
+    {
+      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hjp-Ek-_EeA.woff2",
+      fontWeight: 500,
+    },
+    {
+      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hjp-Ek-_EeA.woff2",
+      fontWeight: 600,
+    },
+    {
+      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff2",
+      fontWeight: 700,
+    },
   ],
 });
 
@@ -32,198 +46,229 @@ const colors = {
   border: "#e5e5e5", // Border color
 };
 
+// Spacing scale for consistent rhythm
+const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+};
+
+// Font size scale
+const fontSize = {
+  xs: 8,
+  sm: 9,
+  base: 10,
+  md: 11,
+  lg: 12,
+  xl: 16,
+  xxl: 20,
+  hero: 24,
+};
+
 const styles = StyleSheet.create({
   page: {
-    padding: 35,
-    fontSize: 10,
-    fontFamily: "Helvetica",
-    lineHeight: 1.5,
+    padding: 40,
+    fontSize: fontSize.base,
+    fontFamily: "Inter",
+    lineHeight: 1.6,
     backgroundColor: "#ffffff",
   },
   // Header
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
-    paddingBottom: 15,
-    borderBottomWidth: 3,
+    alignItems: "flex-start",
+    marginBottom: spacing.xl,
+    paddingBottom: spacing.lg,
+    borderBottomWidth: 2,
     borderBottomColor: colors.primary,
   },
   headerLeft: {
     flexDirection: "column",
+    maxWidth: "55%",
   },
   logo: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: 700,
     color: colors.primary,
     letterSpacing: 1,
+    marginBottom: spacing.sm,
   },
   logoTagline: {
-    fontSize: 9,
-    color: colors.lightGray,
-    marginTop: 2,
+    fontSize: fontSize.base,
+    color: colors.dark,
+    fontWeight: 500,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
   headerRight: {
     textAlign: "right",
-    fontSize: 9,
-    color: colors.lightGray,
+    fontSize: fontSize.sm,
+    color: colors.mediumGray,
+    lineHeight: 1.6,
+    maxWidth: "40%",
   },
   // Title
   title: {
-    fontSize: 24,
+    fontSize: fontSize.hero,
     fontWeight: "bold",
-    marginBottom: 6,
+    marginBottom: spacing.sm,
     textAlign: "center",
     color: colors.dark,
+    letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 11,
-    marginBottom: 20,
+    fontSize: fontSize.md,
+    marginBottom: spacing.xl,
     textAlign: "center",
     color: colors.lightGray,
   },
-  // Hero Summary - NEW PROMINENT SECTION
+  // Hero Summary - Prominent pricing overview
   heroSummary: {
     backgroundColor: colors.primary,
-    padding: 18,
-    marginBottom: 20,
-    borderRadius: 6,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
+    borderRadius: 4,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   heroItem: {
     flex: 1,
     alignItems: "center",
+    paddingHorizontal: spacing.sm,
   },
   heroLabel: {
-    fontSize: 8,
+    fontSize: fontSize.xs,
     color: "#ffffff",
     opacity: 0.9,
     textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 4,
+    letterSpacing: 0.8,
+    marginBottom: spacing.xs,
   },
   heroValue: {
-    fontSize: 22,
+    fontSize: fontSize.xxl,
     fontWeight: "bold",
     color: "#ffffff",
   },
   heroValueSmall: {
-    fontSize: 16,
+    fontSize: fontSize.xl,
     fontWeight: "bold",
     color: "#ffffff",
   },
   heroSubtext: {
-    fontSize: 9,
+    fontSize: fontSize.xs,
     color: "#ffffff",
     opacity: 0.85,
-    marginTop: 6,
+    marginTop: spacing.sm,
   },
   // Section
   section: {
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: fontSize.md,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: spacing.md,
     color: "#ffffff",
     backgroundColor: colors.primary,
-    padding: 8,
+    padding: spacing.sm,
     borderRadius: 3,
   },
   sectionTitleDark: {
-    fontSize: 11,
+    fontSize: fontSize.md,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: spacing.md,
     color: "#ffffff",
     backgroundColor: colors.dark,
-    padding: 8,
+    padding: spacing.sm,
     borderRadius: 3,
   },
   // Info Cards
   infoGrid: {
     flexDirection: "row",
-    gap: 12,
+    gap: spacing.md,
   },
   infoCard: {
     flex: 1,
     backgroundColor: colors.offWhite,
-    padding: 12,
+    padding: spacing.md,
     borderRadius: 4,
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
   },
   infoCardTitle: {
-    fontSize: 9,
+    fontSize: fontSize.sm,
     fontWeight: "bold",
     color: colors.primaryDark,
-    marginBottom: 8,
+    marginBottom: spacing.sm,
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   row: {
     flexDirection: "row",
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   label: {
-    width: 70,
+    width: 65,
     color: colors.lightGray,
-    fontSize: 9,
+    fontSize: fontSize.sm,
   },
   value: {
     flex: 1,
     color: colors.dark,
-    fontSize: 9,
+    fontSize: fontSize.sm,
     fontWeight: "bold",
   },
   // Price Section
   priceSection: {
     backgroundColor: colors.offWhite,
-    padding: 14,
+    padding: spacing.lg,
     borderRadius: 6,
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   priceRow: {
     flexDirection: "row",
-    paddingVertical: 6,
+    paddingVertical: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   priceLabel: {
     flex: 1,
     color: colors.mediumGray,
-    fontSize: 10,
+    fontSize: fontSize.base,
   },
   priceValue: {
     width: 90,
     textAlign: "right",
     color: colors.dark,
-    fontSize: 10,
+    fontSize: fontSize.base,
   },
   discountRow: {
     flexDirection: "row",
-    paddingVertical: 6,
+    paddingVertical: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   discountLabel: {
     flex: 1,
     color: "#16a34a",
-    fontSize: 10,
+    fontSize: fontSize.base,
   },
   discountValue: {
     width: 90,
     textAlign: "right",
     color: "#16a34a",
-    fontSize: 10,
+    fontSize: fontSize.base,
   },
   // Total Row
   totalRow: {
     flexDirection: "row",
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    marginTop: 10,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.md,
     backgroundColor: colors.dark,
     borderRadius: 4,
   },
@@ -231,7 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: "bold",
     color: "#ffffff",
-    fontSize: 12,
+    fontSize: fontSize.lg,
   },
   totalValue: {
     width: 100,
@@ -243,12 +288,12 @@ const styles = StyleSheet.create({
   // Payment Cards
   paymentGrid: {
     flexDirection: "row",
-    gap: 12,
-    marginTop: 12,
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
   paymentCard: {
     flex: 1,
-    padding: 14,
+    padding: spacing.lg,
     borderRadius: 6,
     alignItems: "center",
   },
@@ -261,123 +306,123 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   paymentCardLabel: {
-    fontSize: 8,
+    fontSize: fontSize.xs,
     textTransform: "uppercase",
     letterSpacing: 0.5,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   paymentCardValue: {
     fontSize: 18,
     fontWeight: "bold",
   },
   paymentCardNote: {
-    fontSize: 8,
-    marginTop: 4,
+    fontSize: fontSize.xs,
+    marginTop: spacing.xs,
   },
   // Info Box
   infoBox: {
     backgroundColor: "#fef3cd",
     borderLeftWidth: 3,
     borderLeftColor: "#f59e0b",
-    padding: 12,
-    marginTop: 12,
+    padding: spacing.md,
+    marginTop: spacing.md,
     borderRadius: 3,
   },
   infoBoxTitle: {
     fontWeight: "bold",
     color: "#92400e",
-    fontSize: 10,
-    marginBottom: 4,
+    fontSize: fontSize.base,
+    marginBottom: spacing.xs,
   },
   infoBoxText: {
     color: "#78350f",
-    fontSize: 9,
+    fontSize: fontSize.sm,
     lineHeight: 1.5,
   },
   // Contract Terms
   termsTitle: {
-    fontSize: 20,
+    fontSize: fontSize.xxl,
     fontWeight: "bold",
     color: colors.dark,
     textAlign: "center",
-    marginBottom: 18,
-    paddingBottom: 10,
+    marginBottom: spacing.xl,
+    paddingBottom: spacing.md,
     borderBottomWidth: 3,
     borderBottomColor: colors.primary,
   },
   clauseTitle: {
-    fontSize: 11,
+    fontSize: fontSize.md,
     fontWeight: "bold",
-    marginBottom: 4,
-    marginTop: 12,
+    marginBottom: spacing.xs,
+    marginTop: spacing.md,
     color: colors.dark,
   },
   clauseText: {
-    marginBottom: 8,
+    marginBottom: spacing.sm,
     color: colors.mediumGray,
     textAlign: "justify",
-    fontSize: 9,
+    fontSize: fontSize.sm,
     lineHeight: 1.6,
   },
   highlightBox: {
     backgroundColor: "#fef2f2",
-    padding: 12,
-    marginVertical: 8,
+    padding: spacing.md,
+    marginVertical: spacing.sm,
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
     borderRadius: 3,
   },
   // Signature Section
   signatureSection: {
-    marginTop: 30,
-    paddingTop: 16,
+    marginTop: spacing.xxl,
+    paddingTop: spacing.lg,
     borderTopWidth: 2,
     borderTopColor: colors.primary,
   },
   signatureTitle: {
     fontWeight: "bold",
-    fontSize: 12,
-    marginBottom: 16,
+    fontSize: fontSize.lg,
+    marginBottom: spacing.lg,
   },
   signatureRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
+    marginTop: spacing.lg,
   },
   signatureBox: {
     width: "45%",
   },
   signatureLabel: {
-    fontSize: 9,
+    fontSize: fontSize.sm,
     color: colors.lightGray,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   signatureLine: {
     borderBottomWidth: 1,
     borderBottomColor: colors.dark,
     paddingBottom: 40,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   signatureImage: {
     height: 50,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   signatureName: {
-    fontSize: 9,
+    fontSize: fontSize.sm,
     color: colors.dark,
   },
   // Footer
   footer: {
     position: "absolute",
-    bottom: 25,
+    bottom: spacing.xl,
     left: 35,
     right: 35,
-    fontSize: 8,
+    fontSize: fontSize.xs,
     color: colors.lightGray,
     textAlign: "center",
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    paddingTop: 10,
+    paddingTop: spacing.md,
   },
 });
 
@@ -389,6 +434,7 @@ interface ContractPDFProps {
   contractVersion: string;
   companyInfo?: {
     name: string;
+    tagline?: string;
     owner: string;
     address: string;
     email: string;
@@ -412,6 +458,7 @@ interface ContractPDFProps {
 
 const DEFAULT_COMPANY_INFO = {
   name: "emmotion.ch",
+  tagline: "Videoproduktion für Unternehmen",
   owner: "Marcus Martini",
   address: "Rheintal, Schweiz",
   email: "marcus@emmotion.ch",
@@ -464,15 +511,15 @@ export function ContractPDF({
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.logo}>emmotion</Text>
-            <Text style={styles.logoTagline}>Videoproduktion für Unternehmen</Text>
+            <Text style={styles.logo}>{companyInfo.name?.replace(".ch", "") || "emmotion"}</Text>
+            <Text style={styles.logoTagline}>{companyInfo.tagline || "Videoproduktion für Unternehmen"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={{ fontWeight: "bold", color: colors.dark }}>{companyInfo.owner}</Text>
+            <Text style={{ fontWeight: 600, color: colors.dark }}>{companyInfo.owner}</Text>
             <Text>{companyInfo.address}</Text>
             <Text>{companyInfo.email}</Text>
             {companyInfo.phone && <Text>{companyInfo.phone}</Text>}
-            {companyInfo.uid && <Text style={{ fontSize: 8, marginTop: 4 }}>{companyInfo.uid}</Text>}
+            {companyInfo.uid && <Text style={{ fontSize: fontSize.xs, marginTop: spacing.xs }}>{companyInfo.uid}</Text>}
           </View>
         </View>
 
@@ -553,7 +600,7 @@ export function ContractPDF({
         </View>
 
         {/* Pricing Section */}
-        <View style={[styles.section, { marginTop: 18 }]}>
+        <View style={[styles.section, { marginTop: spacing.xl }]}>
           <Text style={styles.sectionTitleDark}>Preisübersicht</Text>
           <View style={styles.priceSection}>
             {/* Price Breakdown */}
@@ -572,11 +619,11 @@ export function ContractPDF({
             ))}
 
             {/* Total Row */}
-            <View style={[styles.priceRow, { borderBottomWidth: 0, marginTop: 4 }]}>
+            <View style={[styles.priceRow, { borderBottomWidth: 0, marginTop: spacing.xs }]}>
               <Text style={[styles.priceLabel, { fontWeight: "bold", color: colors.dark }]}>
                 Gesamtpreis
               </Text>
-              <Text style={[styles.priceValue, { fontWeight: "bold", fontSize: 12 }]}>
+              <Text style={[styles.priceValue, { fontWeight: "bold", fontSize: fontSize.lg }]}>
                 {formatPrice(pricing.totalPrice)}
               </Text>
             </View>

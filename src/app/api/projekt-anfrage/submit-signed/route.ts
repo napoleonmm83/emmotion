@@ -59,6 +59,7 @@ async function getContractTemplate() {
         "settings": *[_id == "siteSettings"][0] {
           contact {
             companyName,
+            companyTagline,
             ownerName,
             email,
             phone,
@@ -73,6 +74,7 @@ async function getContractTemplate() {
     // Merge company info from global settings into template format
     const companyInfo = result.settings?.contact ? {
       name: result.settings.contact.companyName || "emmotion.ch",
+      tagline: result.settings.contact.companyTagline || "Videoproduktion für Unternehmen",
       owner: result.settings.contact.ownerName || "Marcus Martini",
       address: [result.settings.contact.street, result.settings.contact.city].filter(Boolean).join(", ") || "Rheintal, Schweiz",
       email: result.settings.contact.email || "marcus@emmotion.ch",

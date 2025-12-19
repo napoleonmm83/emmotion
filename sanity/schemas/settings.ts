@@ -28,6 +28,7 @@ export default defineType({
       description: "Diese Daten werden überall verwendet: Website, Verträge, E-Mails, Rechnungen",
       fields: [
         { name: "companyName", type: "string", title: "Firmenname", initialValue: "emmotion.ch" },
+        { name: "companyTagline", type: "string", title: "Untertitel / Tagline", description: "z.B. 'Videoproduktion für Unternehmen' - wird in Verträgen und PDFs angezeigt", initialValue: "Videoproduktion für Unternehmen" },
         { name: "ownerName", type: "string", title: "Inhaber / Name" },
         { name: "email", type: "string", title: "E-Mail" },
         { name: "phone", type: "string", title: "Telefon" },
