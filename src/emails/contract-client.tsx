@@ -196,7 +196,7 @@ const container = {
 };
 
 const header = {
-  background: "linear-gradient(135deg, #2563eb, #3b82f6)",
+  background: "linear-gradient(135deg, #b91c1c, #dc2626)",
   padding: "30px",
   borderRadius: "12px 12px 0 0",
   textAlign: "center" as const,
@@ -289,7 +289,7 @@ const hr = {
 };
 
 const button = {
-  backgroundColor: "#2563eb",
+  backgroundColor: "#b91c1c",
   color: "white",
   padding: "12px 24px",
   borderRadius: "6px",
@@ -310,7 +310,7 @@ const stepsItem = {
 };
 
 const link = {
-  color: "#2563eb",
+  color: "#b91c1c",
   textDecoration: "none",
 };
 

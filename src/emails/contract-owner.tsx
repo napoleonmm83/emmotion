@@ -31,13 +31,9 @@ export function ContractOwnerEmail({
   formData,
   pricing,
   pdfUrl,
-  sanityDocId,
   signedAt,
 }: ContractOwnerEmailProps) {
   const serviceLabel = SERVICE_LABELS[formData.serviceType];
-  const sanityUrl = sanityDocId
-    ? `https://emmotion.sanity.studio/structure/projectOnboarding;${sanityDocId}`
-    : null;
 
   return (
     <Html>
@@ -79,7 +75,7 @@ export function ContractOwnerEmail({
                   <tr>
                     <td style={highlightLabel}>Gesamtpreis:</td>
                     <td style={highlightValue}>
-                      <strong style={{ color: "#059669" }}>
+                      <strong style={{ color: "#b91c1c" }}>
                         {formatPrice(pricing.totalPrice)}
                       </strong>
                     </td>
@@ -96,18 +92,13 @@ export function ContractOwnerEmail({
             </Section>
 
             {/* Action Buttons */}
-            <Section style={{ textAlign: "center" as const, margin: "24px 0" }}>
-              {pdfUrl && (
+            {pdfUrl && (
+              <Section style={{ textAlign: "center" as const, margin: "24px 0" }}>
                 <Button href={pdfUrl} style={buttonPrimary}>
                   Vertrag herunterladen
                 </Button>
-              )}
-              {sanityUrl && (
-                <Button href={sanityUrl} style={buttonSecondary}>
-                  In Sanity öffnen
-                </Button>
-              )}
-            </Section>
+              </Section>
+            )}
 
             <Hr style={hr} />
 
@@ -301,7 +292,7 @@ const container = {
 };
 
 const header = {
-  background: "linear-gradient(135deg, #059669, #10b981)",
+  background: "linear-gradient(135deg, #b91c1c, #dc2626)",
   padding: "30px",
   borderRadius: "12px 12px 0 0",
   textAlign: "center" as const,
@@ -328,15 +319,15 @@ const content = {
 };
 
 const highlightBox = {
-  backgroundColor: "#ecfdf5",
+  backgroundColor: "#fef2f2",
   padding: "20px",
   borderRadius: "8px",
-  border: "1px solid #10b981",
+  border: "1px solid #dc2626",
 };
 
 const highlightLabel = {
   padding: "6px 0",
-  color: "#065f46",
+  color: "#7f1d1d",
   width: "100px",
 };
 
@@ -347,18 +338,7 @@ const highlightValue = {
 };
 
 const buttonPrimary = {
-  backgroundColor: "#2563eb",
-  color: "white",
-  padding: "12px 24px",
-  borderRadius: "6px",
-  textDecoration: "none",
-  fontWeight: "600",
-  display: "inline-block",
-  marginRight: "12px",
-};
-
-const buttonSecondary = {
-  backgroundColor: "#6b7280",
+  backgroundColor: "#b91c1c",
   color: "white",
   padding: "12px 24px",
   borderRadius: "6px",
@@ -394,7 +374,7 @@ const valueCell = {
 };
 
 const link = {
-  color: "#2563eb",
+  color: "#b91c1c",
   textDecoration: "none",
 };
 
@@ -455,7 +435,7 @@ const totalLabel = {
 const totalValue = {
   padding: "12px 8px",
   fontWeight: "600",
-  color: "#059669",
+  color: "#b91c1c",
   textAlign: "right" as const,
 };
 

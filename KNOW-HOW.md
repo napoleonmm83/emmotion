@@ -581,6 +581,32 @@ emmotion.ch/
 
 ## Design System
 
+### Brand-Farbe: Rot
+
+**Die primäre Brand-Farbe ist Rot und wird für alle wichtigen UI-Elemente verwendet:**
+
+```css
+/* CSS Variable */
+--color-primary: hsl(0 85% 45%);  /* ≈ #b91c1c */
+
+/* Hex-Werte für E-Mails (CSS Variables funktionieren dort nicht) */
+#b91c1c  /* Primary - Buttons, Links, Akzente */
+#dc2626  /* Primary Light - Hover, Gradienten */
+#7f1d1d  /* Primary Dark - Text auf hellem Hintergrund */
+#fef2f2  /* Primary Background - Helle Flächen */
+```
+
+**Verwendung:**
+- Header-Hintergründe: `linear-gradient(135deg, #b91c1c, #dc2626)`
+- Buttons: `background: #b91c1c`
+- Links: `color: #b91c1c`
+- Akzent-Boxen: `background: #fef2f2; border: 1px solid #dc2626`
+- Wichtige Zahlen/Preise: `color: #b91c1c`
+
+**E-Mail Templates:**
+Da E-Mails keine CSS Variables unterstützen, werden die Hex-Werte direkt verwendet.
+Siehe: `src/emails/*.tsx`
+
 ### Farben (CSS Variables)
 
 ```css
