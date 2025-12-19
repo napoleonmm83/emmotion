@@ -263,7 +263,7 @@ export function StepServiceQuestions({
   return (
     <div className="space-y-6">
       {/* Always show Duration & Complexity */}
-      <div>
+      <div id="field-duration">
         <label className={`block text-sm font-medium mb-3 ${hasError("duration") ? "text-destructive" : "text-foreground"}`}>
           <Clock className="w-4 h-4 inline-block mr-2" />
           Gewünschte Videolänge *
@@ -287,7 +287,7 @@ export function StepServiceQuestions({
         </div>
       </div>
 
-      <div>
+      <div id="field-complexity">
         <label className={`block text-sm font-medium mb-3 ${hasError("complexity") ? "text-destructive" : "text-foreground"}`}>
           <Layers className="w-4 h-4 inline-block mr-2" />
           Produktionsumfang *

@@ -28,7 +28,7 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
   return (
     <div className="space-y-6">
       {/* Project Name */}
-      <div>
+      <div id="field-projectName">
         <label className={`block text-sm font-medium mb-2 ${hasError("projectName") ? "text-destructive" : "text-foreground"}`}>
           <FileText className="w-4 h-4 inline-block mr-2" />
           Projektname *
@@ -43,7 +43,7 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
       </div>
 
       {/* Description */}
-      <div>
+      <div id="field-description">
         <label className={`block text-sm font-medium mb-2 ${hasError("description") ? "text-destructive" : "text-foreground"}`}>
           Projektbeschreibung *
         </label>
@@ -95,7 +95,7 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
       </div>
 
       {/* Budget */}
-      <div>
+      <div id="field-budget">
         <label className={`block text-sm font-medium mb-3 ${hasError("budget") ? "text-destructive" : "text-foreground"}`}>
           <Wallet className="w-4 h-4 inline-block mr-2" />
           Budget-Rahmen *

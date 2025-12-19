@@ -228,6 +228,13 @@ export function OnboardingContent({
 
     if (errors.length > 0) {
       setValidationErrors(errors);
+      // Scroll to first error field on mobile
+      setTimeout(() => {
+        const firstErrorField = document.getElementById(`field-${errors[0]}`);
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
       return;
     }
 

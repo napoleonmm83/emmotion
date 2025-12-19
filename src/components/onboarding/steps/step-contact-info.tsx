@@ -31,7 +31,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
 
       {/* Name & Company */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+        <div id="field-name">
           <label className={`block text-sm font-medium mb-2 ${hasError("name") ? "text-destructive" : "text-foreground"}`}>
             <User className="w-4 h-4 inline-block mr-2" />
             Name *
@@ -61,7 +61,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
 
       {/* Email & Phone */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+        <div id="field-email">
           <label className={`block text-sm font-medium mb-2 ${hasError("email") ? "text-destructive" : "text-foreground"}`}>
             <Mail className="w-4 h-4 inline-block mr-2" />
             E-Mail *
@@ -74,7 +74,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("email")}`}
           />
         </div>
-        <div>
+        <div id="field-phone">
           <label className={`block text-sm font-medium mb-2 ${hasError("phone") ? "text-destructive" : "text-foreground"}`}>
             <Phone className="w-4 h-4 inline-block mr-2" />
             Telefon *
@@ -91,7 +91,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
 
       {/* Address */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+        <div id="field-street">
           <label className={`block text-sm font-medium mb-2 ${hasError("street") ? "text-destructive" : "text-foreground"}`}>
             <MapPin className="w-4 h-4 inline-block mr-2" />
             Strasse / Nr. *
@@ -104,7 +104,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("street")}`}
           />
         </div>
-        <div>
+        <div id="field-zipCity">
           <label className={`block text-sm font-medium mb-2 ${hasError("zipCity") ? "text-destructive" : "text-foreground"}`}>
             PLZ / Ort *
           </label>
