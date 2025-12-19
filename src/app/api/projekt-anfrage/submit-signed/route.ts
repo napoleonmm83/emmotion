@@ -3,6 +3,7 @@ import { createClient } from "@sanity/client";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { put } from "@vercel/blob";
 import { resend } from "@/lib/resend";
+import { notifyError } from "@/lib/error-notify";
 import { ContractPDF } from "@/lib/contract-pdf";
 import { ContractClientEmail } from "@/emails/contract-client";
 import { ContractOwnerEmail } from "@/emails/contract-owner";
@@ -168,6 +169,16 @@ export async function POST(request: NextRequest) {
       }
     } catch (pdfError) {
       console.error("PDF generation error:", pdfError);
+      await notifyError({
+        context: "PDF-Generierung fehlgeschlagen",
+        error: pdfError,
+        severity: "warning",
+        metadata: {
+          clientName: formData.clientInfo.name,
+          projectName: formData.projectDetails.projectName,
+          serviceType: formData.serviceType,
+        },
+      });
       // Continue without PDF - still save to Sanity and send basic emails
     }
 
@@ -221,6 +232,17 @@ export async function POST(request: NextRequest) {
         console.log("Project onboarding saved to Sanity:", sanityDocId);
       } catch (sanityError) {
         console.error("Sanity save error:", sanityError);
+        await notifyError({
+          context: "Sanity Speichern fehlgeschlagen",
+          error: sanityError,
+          severity: "error",
+          metadata: {
+            clientName: formData.clientInfo.name,
+            clientEmail: formData.clientInfo.email,
+            projectName: formData.projectDetails.projectName,
+            serviceType: formData.serviceType,
+          },
+        });
       }
     }
 
@@ -360,6 +382,17 @@ emmotion.ch`,
         }
       } catch (emailError) {
         console.error("Email sending error:", emailError);
+        await notifyError({
+          context: "E-Mail-Versand fehlgeschlagen",
+          error: emailError,
+          severity: "error",
+          metadata: {
+            clientName: formData.clientInfo.name,
+            clientEmail: formData.clientInfo.email,
+            projectName: formData.projectDetails.projectName,
+            sanityDocId,
+          },
+        });
       }
     } else {
       console.log("Email disabled or RESEND_API_KEY not set");
@@ -382,6 +415,14 @@ emmotion.ch`,
     });
   } catch (error) {
     console.error("Project onboarding submission error:", error);
+    await notifyError({
+      context: "Kritischer Fehler bei Projektanfrage",
+      error,
+      severity: "critical",
+      metadata: {
+        endpoint: "/api/projekt-anfrage/submit-signed",
+      },
+    });
     return NextResponse.json(
       { error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut." },
       { status: 500 }

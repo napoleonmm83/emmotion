@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
 import { resend } from "@/lib/resend";
+import { notifyError } from "@/lib/error-notify";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 
@@ -214,6 +215,16 @@ export async function POST(request: NextRequest) {
         }
       } catch (emailError) {
         console.error("Failed to send email notification:", emailError);
+        await notifyError({
+          context: "Kontaktformular E-Mail fehlgeschlagen",
+          error: emailError,
+          severity: "error",
+          metadata: {
+            senderName: sanitizedData.name,
+            senderEmail: sanitizedData.email,
+            subject: subjectLabel,
+          },
+        });
       }
     } else if (!emailSettings?.enabled) {
       console.log("Email disabled in CMS - skipping email notification");
@@ -265,6 +276,14 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Contact form error:", error);
+    await notifyError({
+      context: "Kritischer Fehler Kontaktformular",
+      error,
+      severity: "critical",
+      metadata: {
+        endpoint: "/api/contact",
+      },
+    });
     return NextResponse.json(
       { error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut." },
       { status: 500 }
