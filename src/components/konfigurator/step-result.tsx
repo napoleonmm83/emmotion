@@ -27,8 +27,8 @@ interface StepResultProps {
 
 type RequestStatus = "idle" | "submitting" | "success" | "error";
 
-// Turnstile Site Key (public)
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// Turnstile Site Key (public) - Fallback für Vercel Build-Cache Probleme
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAACHcwaC7K73Z2RH3";
 
 export function StepResult({ formData, priceResult }: StepResultProps) {
   const [showRequestForm, setShowRequestForm] = useState(false);

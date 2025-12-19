@@ -71,7 +71,30 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:bexio-api-python-client.readthedocs.io)",
       "Bash(npx vercel:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(rm:*)",
+      "Bash(cd:*)",
+      "Bash(git restore:*)",
+      "Bash(has been deprecated\"\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git reset:*)",
+      "Bash(source .env.local)",
+      "Bash(node -e \"\nconst token = require\\(''fs''\\).readFileSync\\(''.env.local'', ''utf8''\\).split\\(''\\\\n''\\).find\\(l => l.startsWith\\(''SANITY_API_TOKEN=''\\)\\).split\\(''=''\\)[1];\nconst https = require\\(''https''\\);\nconst data = JSON.stringify\\({mutations: [{patch: {id: ''BnDTGFfxPv4zY87rrw1ERv'', set: {regenerateContract: true}}}]}\\);\nconst req = https.request\\({\n  hostname: ''aep7bw9p.api.sanity.io'',\n  path: ''/v2024-01-01/data/mutate/production'',\n  method: ''POST'',\n  headers: {''Content-Type'': ''application/json'', ''Authorization'': ''Bearer '' + token}\n}, res => {\n  let body = '''';\n  res.on\\(''data'', d => body += d\\);\n  res.on\\(''end'', \\(\\) => console.log\\(body\\)\\);\n}\\);\nreq.write\\(data\\);\nreq.end\\(\\);\n\")",
+      "Bash(node -e \"\nconst token = require\\(''fs''\\).readFileSync\\(''.env.local'', ''utf8''\\).split\\(''\\\\n''\\).find\\(l => l.startsWith\\(''SANITY_API_TOKEN=''\\)\\).split\\(''=''\\)[1];\nconst https = require\\(''https''\\);\nconst data = JSON.stringify\\({mutations: [{patch: {id: ''BnDTGFfxPv4zY87rrw1ERv'', set: {regenerateContract: true}}}]}\\);\nconst req = https.request\\({\n  hostname: ''aep7bw9p.api.sanity.io'',\n  path: ''/v2024-01-01/data/mutate/production'',\n  method: ''POST'',\n  headers: {''Content-Type'': ''application/json'', ''Authorization'': ''Bearer '' + token}\n}, res => {\n  let body = '''';\n  res.on\\(''data'', d => body += d\\);\n  res.on\\(''end'', \\(\\) => console.log\\(''Sanity:'', body\\)\\);\n}\\);\nreq.write\\(data\\);\nreq.end\\(\\);\n\")",
+      "WebFetch(domain:help.bexio.com)",
+      "Bash(grep:*)",
+      "Bash(pnpm run dev)",
+      "Bash(pkill:*)",
+      "Bash(next.config.ts )",
+      "Bash(sanity/components/VideoUploadInput.tsx )",
+      "Bash(src/app/api/blob/upload/route.ts )",
+      "Bash(src/app/api/cron/cleanup-submissions/route.ts )",
+      "Bash(src/app/api/cron/sync-youtube/route.ts )",
+      "Bash(src/app/api/projekt-anfrage/regenerate-contract/route.ts)",
+      "Bash(NEXT_PUBLIC_TURNSTILE_SITE_KEY=\"0x4AAAAAACHcwaC7K73Z2RH3\" pnpm run build)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ]
 }

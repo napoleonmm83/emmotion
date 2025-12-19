@@ -63,8 +63,8 @@ const DEFAULT_SUCCESS_MESSAGE = "Vielen Dank für Ihre Nachricht! Ich melde mich
 const DEFAULT_SUBMIT_TEXT = "Nachricht senden";
 const DEFAULT_PRIVACY_TEXT = "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer Datenschutzerklärung zu.";
 
-// Turnstile Site Key (public)
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+// Turnstile Site Key (public) - Fallback für Vercel Build-Cache Probleme
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAACHcwaC7K73Z2RH3";
 
 export function ContactForm({ className = "", variant = "default", settings }: ContactFormProps) {
   // Merge CMS settings with defaults
