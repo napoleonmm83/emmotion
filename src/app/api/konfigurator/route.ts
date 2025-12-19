@@ -3,6 +3,7 @@ import { createClient } from "@sanity/client";
 import { resend } from "@/lib/resend";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { validateOrigin } from "@/lib/csrf";
+import { rateLimitKonfigurator } from "@/lib/rate-limit";
 import { KonfiguratorNotificationEmail } from "@/emails/konfigurator-notification";
 import {
   KonfiguratorInput,
@@ -69,11 +70,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get client IP for Turnstile verification
+    // Get client IP for Turnstile verification and rate limiting
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ||
       request.headers.get("x-real-ip") ||
       "unknown";
+
+    // Check rate limit (Redis-backed with in-memory fallback)
+    const rateLimitResult = await rateLimitKonfigurator(ip);
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": rateLimitResult.resetIn.toString(),
+            "X-RateLimit-Remaining": "0",
+          }
+        }
+      );
+    }
 
     const body: KonfiguratorRequest = await request.json();
 

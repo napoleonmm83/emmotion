@@ -1,10 +1,6 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
-
-// Rate limiting: Max uploads per IP per hour
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 10; // Max 10 uploads per hour
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
+import { rateLimitBlobUpload } from "@/lib/rate-limit";
 
 function getClientIP(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -17,23 +13,6 @@ function getClientIP(request: Request): string {
     return realIP;
   }
   return "unknown";
-}
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return false;
-  }
-
-  if (record.count >= RATE_LIMIT) {
-    return true;
-  }
-
-  record.count++;
-  return false;
 }
 
 function isValidOrigin(request: Request): boolean {
@@ -84,12 +63,19 @@ function hasValidSecret(request: Request): boolean {
 export async function POST(request: Request): Promise<NextResponse> {
   const ip = getClientIP(request);
 
-  // 1. Rate Limiting prüfen
-  if (isRateLimited(ip)) {
+  // 1. Rate Limiting prüfen (Redis-backed with in-memory fallback)
+  const rateLimitResult = await rateLimitBlobUpload(ip);
+  if (!rateLimitResult.success) {
     console.warn(`Rate limit exceeded for IP: ${ip}`);
     return NextResponse.json(
       { error: "Zu viele Uploads. Bitte warten Sie eine Stunde." },
-      { status: 429 }
+      {
+        status: 429,
+        headers: {
+          "Retry-After": rateLimitResult.resetIn.toString(),
+          "X-RateLimit-Remaining": "0",
+        }
+      }
     );
   }
 

@@ -4,6 +4,7 @@ import { resend } from "@/lib/resend";
 import { notifyError } from "@/lib/error-notify";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { validateOrigin } from "@/lib/csrf";
+import { rateLimitContact } from "@/lib/rate-limit";
 import { ContactNotificationEmail } from "@/emails/contact-notification";
 
 // Sanity client with write access
@@ -42,27 +43,6 @@ async function getEmailSettings(): Promise<EmailSettings | null> {
   }
 }
 
-// Simple in-memory rate limiting (resets on server restart)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 5;
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return false;
-  }
-
-  if (record.count >= RATE_LIMIT) {
-    return true;
-  }
-
-  record.count++;
-  return false;
-}
 
 const MIN_SUBMISSION_TIME = 3000; // 3 seconds
 
@@ -111,11 +91,18 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    // Check rate limit
-    if (isRateLimited(ip)) {
+    // Check rate limit (Redis-backed with in-memory fallback)
+    const rateLimitResult = await rateLimitContact(ip);
+    if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
-        { status: 429 }
+        {
+          status: 429,
+          headers: {
+            "Retry-After": rateLimitResult.resetIn.toString(),
+            "X-RateLimit-Remaining": "0",
+          }
+        }
       );
     }
 
