@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Film } from "lucide-react";
 import Link from "next/link";
 import { Container, SectionHeader, VideoThumbnail } from "@/components/shared";
 
@@ -13,64 +13,6 @@ interface Project {
   thumbnail: string;
   videoUrl: string;
 }
-
-// Fallback-Projekte wenn keine CMS-Daten vorhanden
-const fallbackProjects: Project[] = [
-  {
-    title: "Corporate Vision",
-    slug: "corporate-vision",
-    category: "Imagefilm",
-    thumbnail:
-      "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  },
-  {
-    title: "Summit 2024",
-    slug: "summit-2024",
-    category: "Eventdokumentation",
-    thumbnail:
-      "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  },
-  {
-    title: "Product Launch",
-    slug: "product-launch",
-    category: "Produktvideo",
-    thumbnail:
-      "https://images.unsplash.com/photo-1551817958-c5b51e7b4a33?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  },
-  {
-    title: "Alpine Views",
-    slug: "alpine-views",
-    category: "Drohnenaufnahmen",
-    thumbnail:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  },
-  {
-    title: "Brand Story",
-    slug: "brand-story",
-    category: "Social Media",
-    thumbnail:
-      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-  },
-  {
-    title: "Interview Series",
-    slug: "interview-series",
-    category: "Imagefilm",
-    thumbnail:
-      "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=800&q=80",
-    videoUrl:
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  },
-];
 
 interface PortfolioSectionProps {
   data?: Project[] | null;
@@ -149,8 +91,7 @@ const itemVariants = {
 export function PortfolioSection({ data }: PortfolioSectionProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // CMS-Daten oder Fallback verwenden
-  const projects = data && data.length > 0 ? data : fallbackProjects;
+  const hasProjects = data && data.length > 0;
 
   return (
     <section id="portfolio" className="py-24 md:py-32 border-t border-border">
@@ -160,42 +101,79 @@ export function PortfolioSection({ data }: PortfolioSectionProps) {
           subtitle="Eine Auswahl meiner Projekte – jedes Video erzählt eine einzigartige Geschichte."
         />
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {projects.map((project, index) => (
-            <motion.div key={project.slug} variants={itemVariants}>
-              <VideoThumbnail
-                src={project.thumbnail}
-                alt={project.title}
-                title={project.title}
-                category={project.category}
-                onClick={() => setSelectedProject(project)}
-                priority={index < 3}
-              />
+        {hasProjects ? (
+          <>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {data.map((project, index) => (
+                <motion.div key={project.slug} variants={itemVariants}>
+                  <VideoThumbnail
+                    src={project.thumbnail}
+                    alt={project.title}
+                    title={project.title}
+                    category={project.category}
+                    onClick={() => setSelectedProject(project)}
+                    priority={index < 3}
+                  />
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Link
-            href="/portfolio"
-            className="inline-flex items-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-center mt-12"
+            >
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+              >
+                Alle Projekte ansehen
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center py-16 md:py-24"
           >
-            Alle Projekte ansehen
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </motion.div>
+            <div className="max-w-md mx-auto">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center"
+              >
+                <Film className="w-10 h-10 text-primary" />
+              </motion.div>
+              <h3 className="text-2xl md:text-3xl font-display text-foreground mb-4">
+                Coming Soon
+              </h3>
+              <p className="text-muted-foreground text-lg mb-8">
+                Hier entsteht gerade etwas Grossartiges. Die ersten Projekte sind bereits in Arbeit – schau bald wieder vorbei!
+              </p>
+              <Link
+                href="/kontakt"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border text-foreground font-medium rounded-lg hover:border-primary/50 transition-all duration-300"
+              >
+                Projekt anfragen
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </Container>
 
       <VideoLightbox
