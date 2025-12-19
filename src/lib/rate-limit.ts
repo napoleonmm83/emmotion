@@ -1,8 +1,8 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
 /**
- * Rate Limiting mit Vercel KV (Redis)
- * Fallback auf In-Memory wenn KV nicht konfiguriert
+ * Rate Limiting mit Upstash Redis
+ * Fallback auf In-Memory wenn Redis nicht konfiguriert
  */
 
 // In-Memory Fallback (nur für lokale Entwicklung)
@@ -24,10 +24,30 @@ interface RateLimitResult {
 }
 
 /**
- * Check if KV is configured
+ * Check if Upstash Redis is configured
  */
-function isKVConfigured(): boolean {
-  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+function isRedisConfigured(): boolean {
+  return !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+}
+
+/**
+ * Get Redis client (lazy initialization)
+ */
+let redisClient: Redis | null = null;
+
+function getRedis(): Redis | null {
+  if (!isRedisConfigured()) {
+    return null;
+  }
+
+  if (!redisClient) {
+    redisClient = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
+  }
+
+  return redisClient;
 }
 
 /**
@@ -68,19 +88,24 @@ function inMemoryRateLimit(
 }
 
 /**
- * Redis Rate Limiting with Vercel KV (Sliding Window)
+ * Redis Rate Limiting with Upstash (Sliding Window)
  */
 async function redisRateLimit(
   identifier: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
+  const redis = getRedis();
+  if (!redis) {
+    return inMemoryRateLimit(identifier, config);
+  }
+
   const key = `rate_limit:${config.prefix}:${identifier}`;
   const now = Math.floor(Date.now() / 1000);
   const windowStart = now - config.window;
 
   try {
     // Use a pipeline for atomic operations
-    const pipeline = kv.pipeline();
+    const pipeline = redis.pipeline();
 
     // Remove expired entries
     pipeline.zremrangebyscore(key, 0, windowStart);
@@ -124,7 +149,7 @@ export async function rateLimit(
   identifier: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
-  if (isKVConfigured()) {
+  if (isRedisConfigured()) {
     return redisRateLimit(identifier, config);
   }
 
