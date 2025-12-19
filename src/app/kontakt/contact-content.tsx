@@ -191,7 +191,7 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
             transition={{ duration: 0.6 }}
             className="max-w-3xl"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display tracking-wider text-foreground mb-6">
               {hero.title}
               <span className="text-primary"> {hero.titleHighlight}</span>
             </h1>

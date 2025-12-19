@@ -650,19 +650,108 @@ Siehe: `src/emails/*.tsx`
 
 ### Typografie
 
-```css
---font-sans: "Inter", system-ui, sans-serif;
+#### Font Families
 
-/* Sizes (Tailwind) */
-text-sm:   0.875rem
-text-base: 1rem
-text-lg:   1.125rem
-text-xl:   1.25rem
-text-2xl:  1.5rem
-text-3xl:  1.875rem
-text-4xl:  2.25rem
-text-5xl:  3rem
-text-6xl:  3.75rem
+```css
+/* In globals.css definiert */
+--font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+--font-display: "Bebas Neue", ui-sans-serif, system-ui, sans-serif;
+```
+
+- **font-sans**: Für Fliesstext, Labels, Buttons
+- **font-display**: Für H1 und H2 Überschriften (Display-Font, Grossbuchstaben-Stil)
+
+#### Heading-Hierarchie
+
+**⚠️ WICHTIG: Immer diese Patterns verwenden für konsistente Typografie!**
+
+| Element | Font | Tracking | Sizes | Verwendung |
+|---------|------|----------|-------|------------|
+| H1 (Hero) | `font-display` | `tracking-wider` | `text-5xl md:text-7xl lg:text-8xl xl:text-9xl` | Hauptseiten-Hero |
+| H1 (Page) | `font-display` | `tracking-wider` | `text-3xl md:text-4xl lg:text-5xl` | Unterseiten-Titel |
+| H2 (Section) | `font-display` | `tracking-wide` | `text-3xl md:text-4xl lg:text-5xl` | Sektionsüberschriften |
+| H3 | `font-semibold` | - | `text-lg lg:text-xl` | Karten-Titel, Untertitel |
+| H4-H6 | `font-medium` | - | `text-base lg:text-lg` | Kleine Überschriften |
+
+**Beispiele:**
+
+```tsx
+// H1 auf Seiten-Ebene
+<h1 className="text-3xl md:text-4xl lg:text-5xl font-display tracking-wider text-foreground">
+  Seitentitel
+</h1>
+
+// H2 für Sektionen
+<h2 className="text-3xl md:text-4xl lg:text-5xl font-display tracking-wide text-foreground">
+  Sektionsüberschrift
+</h2>
+
+// H3 für Karten/Inhalt
+<h3 className="text-lg lg:text-xl font-semibold text-foreground">
+  Untertitel
+</h3>
+```
+
+**CSS Base Layer (automatisch angewendet):**
+```css
+/* globals.css */
+h1 { @apply font-display uppercase; letter-spacing: 0.08em; }
+h2 { @apply font-display uppercase; letter-spacing: 0.06em; }
+h3 { @apply font-sans font-semibold; letter-spacing: 0.02em; }
+h4, h5, h6 { @apply font-sans font-medium; letter-spacing: 0.01em; }
+```
+
+#### Font Sizes (Tailwind)
+
+```css
+text-xs:   0.75rem   /* 12px */
+text-sm:   0.875rem  /* 14px */
+text-base: 1rem      /* 16px */
+text-lg:   1.125rem  /* 18px */
+text-xl:   1.25rem   /* 20px */
+text-2xl:  1.5rem    /* 24px */
+text-3xl:  1.875rem  /* 30px */
+text-4xl:  2.25rem   /* 36px */
+text-5xl:  3rem      /* 48px */
+text-6xl:  3.75rem   /* 60px */
+```
+
+#### Letter Spacing (Tracking)
+
+| Tailwind Class | CSS Value | Verwendung |
+|----------------|-----------|------------|
+| `tracking-wider` | `0.125em` | H1 Überschriften |
+| `tracking-wide` | `0.025em` | H2 Sektionsüberschriften |
+| (default) | `0` | Fliesstext |
+| `tracking-tight` | `-0.025em` | ❌ NICHT für Überschriften verwenden |
+
+#### Text-Farben
+
+```tsx
+// Primäre Textfarbe
+<p className="text-foreground">Haupttext</p>
+
+// Gedämpfte Farbe für Nebentexte
+<p className="text-muted-foreground">Beschreibung, Datum, etc.</p>
+
+// Akzentfarbe
+<span className="text-primary">Hervorgehobener Text</span>
+```
+
+**Niemals hardcoded Farben verwenden** (ausser in E-Mail-Templates wo CSS Variables nicht funktionieren).
+
+#### Responsive Text-Pattern
+
+Immer responsive Grössen verwenden:
+
+```tsx
+// RICHTIG
+<h1 className="text-3xl md:text-4xl lg:text-5xl">...</h1>
+<p className="text-sm lg:text-base">...</p>
+
+// FALSCH - fehlt responsive scaling
+<h1 className="text-5xl">...</h1>
+<p className="text-sm">...</p>
 ```
 
 ### Animationen (Framer Motion)

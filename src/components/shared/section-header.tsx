@@ -24,7 +24,7 @@ export function SectionHeader({
       transition={{ duration: 0.7 }}
       className={cn("mb-12 md:mb-16", centered && "text-center", className)}
     >
-      <h2 className="text-4xl md:text-5xl font-extralight text-foreground mb-6">
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-display tracking-wide text-foreground mb-6">
         {title}
       </h2>
       {subtitle && (
