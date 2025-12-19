@@ -195,12 +195,7 @@ export async function POST(request: NextRequest) {
       }
     } catch (pdfError) {
       console.error("PDF generation error:", pdfError);
-      const errorMessage = pdfError instanceof Error ? pdfError.message : String(pdfError);
-      return NextResponse.json({
-        error: "PDF generation failed",
-        details: errorMessage,
-        stack: pdfError instanceof Error ? pdfError.stack : undefined,
-      }, { status: 500 });
+      return NextResponse.json({ error: "PDF generation failed" }, { status: 500 });
     }
 
     // Update the project document

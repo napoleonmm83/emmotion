@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.primary,
     letterSpacing: 1,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
   logoTagline: {
     fontSize: fontSize.base,
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 0.5,
     textTransform: "uppercase",
+    marginTop: spacing.xs,
   },
   headerRight: {
     textAlign: "right",
