@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
@@ -110,6 +110,44 @@ function formatNumber(num: number): string {
   return num.toLocaleString("de-CH");
 }
 
+function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isInView || hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    const startTime = performance.now();
+    const startValue = 0;
+    const endValue = value;
+
+    // Easing function for smooth deceleration
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+      const easedProgress = easeOutQuart(progress);
+      const currentValue = Math.floor(startValue + (endValue - startValue) * easedProgress);
+
+      setCount(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCount(endValue);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [isInView, value, duration]);
+
+  return <span ref={ref}>{formatNumber(count)}</span>;
+}
+
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("de-CH", {
     day: "2-digit",
@@ -138,7 +176,11 @@ function StatCard({
     >
       <Icon className="w-8 h-8 mx-auto mb-3 text-primary" />
       <p className="text-3xl md:text-4xl font-bold text-foreground mb-1">
-        {typeof value === "number" ? formatNumber(value) : value}
+        {typeof value === "number" ? (
+          <AnimatedCounter value={value} duration={2 + delay} />
+        ) : (
+          value
+        )}
       </p>
       <p className="text-sm text-muted-foreground">{label}</p>
     </motion.div>
