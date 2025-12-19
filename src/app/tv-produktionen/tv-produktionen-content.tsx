@@ -147,6 +147,17 @@ function StatCard({
 
 function VideoCard({ video, priority = false }: { video: Video; priority?: boolean }) {
   const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
+  const [imgSrc, setImgSrc] = useState(video.thumbnailUrl);
+  const [imgError, setImgError] = useState(false);
+
+  // Fallback-Kette für Thumbnails
+  const handleImageError = () => {
+    if (!imgError) {
+      // Versuche hqdefault als Fallback
+      setImgSrc(`https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`);
+      setImgError(true);
+    }
+  };
 
   return (
     <motion.a
@@ -157,14 +168,16 @@ function VideoCard({ video, priority = false }: { video: Video; priority?: boole
       className="group block bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative aspect-video overflow-hidden bg-muted">
         <Image
-          src={video.thumbnailUrl}
+          src={imgSrc}
           alt={video.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           priority={priority}
+          onError={handleImageError}
+          unoptimized={imgError}
         />
         {/* Play overlay */}
         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
