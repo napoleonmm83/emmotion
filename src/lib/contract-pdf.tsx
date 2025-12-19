@@ -10,28 +10,8 @@ import {
 import type { OnboardingFormData, PricingResult } from "./onboarding-logic";
 import { SERVICE_LABELS, formatPrice, formatDate } from "./onboarding-logic";
 
-// Register Inter font from Google Fonts
-Font.register({
-  family: "Inter",
-  fonts: [
-    {
-      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2",
-      fontWeight: 400,
-    },
-    {
-      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hjp-Ek-_EeA.woff2",
-      fontWeight: 500,
-    },
-    {
-      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hjp-Ek-_EeA.woff2",
-      fontWeight: 600,
-    },
-    {
-      src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff2",
-      fontWeight: 700,
-    },
-  ],
-});
+// Use Helvetica (built-in) - reliable across all environments
+// Note: Custom fonts like Inter require TTF files hosted locally
 
 // Website colors - Cinematic Red Theme
 const colors = {
@@ -72,7 +52,7 @@ const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: fontSize.base,
-    fontFamily: "Inter",
+    fontFamily: "Helvetica",
     lineHeight: 1.6,
     backgroundColor: "#ffffff",
   },
@@ -92,7 +72,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: 28,
-    fontWeight: 700,
+    fontWeight: "bold",
     color: colors.primary,
     letterSpacing: 1,
     marginBottom: spacing.sm,
@@ -100,7 +80,7 @@ const styles = StyleSheet.create({
   logoTagline: {
     fontSize: fontSize.base,
     color: colors.dark,
-    fontWeight: 500,
+    fontWeight: "bold",
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
@@ -515,7 +495,7 @@ export function ContractPDF({
             <Text style={styles.logoTagline}>{companyInfo.tagline || "Videoproduktion für Unternehmen"}</Text>
           </View>
           <View style={styles.headerRight}>
-            <Text style={{ fontWeight: 600, color: colors.dark }}>{companyInfo.owner}</Text>
+            <Text style={{ fontWeight: "bold", color: colors.dark }}>{companyInfo.owner}</Text>
             <Text>{companyInfo.address}</Text>
             <Text>{companyInfo.email}</Text>
             {companyInfo.phone && <Text>{companyInfo.phone}</Text>}
