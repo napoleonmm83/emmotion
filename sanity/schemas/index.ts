@@ -14,6 +14,7 @@ import emailSettings from "./email-settings";
 import projectOnboarding from "./project-onboarding";
 import contractTemplate from "./contract-template";
 import onboardingQuestionnaire from "./onboarding-questionnaire";
+import tvProductions from "./tv-productions";
 
 export const schemaTypes = [
   service,
@@ -32,4 +33,5 @@ export const schemaTypes = [
   projectOnboarding,
   contractTemplate,
   onboardingQuestionnaire,
+  tvProductions,
 ];

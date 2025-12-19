@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container, VideoThumbnail } from "@/components/shared";
+import { Tv, ArrowRight } from "lucide-react";
 
 interface Project {
   title: string;
@@ -251,6 +252,37 @@ export function PortfolioPageContent({
                 {hero.title}
               </h1>
               <p className="text-muted-foreground text-lg">{hero.subtitle}</p>
+            </motion.div>
+          </Container>
+        </section>
+
+        {/* TV Produktionen Banner */}
+        <section className="pb-8">
+          <Container>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Link
+                href="/tv-produktionen"
+                className="group flex items-center justify-between gap-4 p-4 md:p-6 bg-card border border-border rounded-xl hover:border-primary/50 transition-all duration-300"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Tv className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      TV Produktionen
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Meine Arbeiten für TV Rheintal – Regionalfernsehen
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </Link>
             </motion.div>
           </Container>
         </section>

@@ -148,6 +148,19 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // ===== TV PRODUKTIONEN =====
+      S.listItem()
+        .title("TV Produktionen")
+        .icon(() => "📺")
+        .child(
+          S.document()
+            .schemaType("tvProductions")
+            .documentId("tvProductions")
+            .title("TV Produktionen")
+        ),
+
+      S.divider(),
+
       // ===== EINSTELLUNGEN =====
       S.listItem()
         .title("Einstellungen")

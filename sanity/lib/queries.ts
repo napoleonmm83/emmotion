@@ -514,3 +514,39 @@ export const contractTemplateQuery = groq`
     cancellationDays
   }
 `;
+
+// TV Productions (Singleton)
+export const tvProductionsQuery = groq`
+  *[_type == "tvProductions"][0] {
+    _id,
+    enabled,
+    playlistId,
+    title,
+    subtitle,
+    description,
+    channelInfo {
+      channelName,
+      channelUrl,
+      role
+    },
+    cachedData {
+      lastSyncedAt,
+      totalVideos,
+      totalViews,
+      totalLikes,
+      totalComments,
+      videos[] {
+        youtubeId,
+        title,
+        description,
+        thumbnailUrl,
+        publishedAt,
+        duration,
+        viewCount,
+        likeCount,
+        commentCount
+      }
+    },
+    seo
+  }
+`;
