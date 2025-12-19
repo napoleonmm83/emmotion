@@ -54,7 +54,7 @@ const fallbackServices: Service[] = [
     title: "Imagefilme",
     slug: "imagefilm",
     description:
-      "Professionelle Unternehmensvideos, die Ihre Marke authentisch und überzeugend präsentieren.",
+      "Professionelle Unternehmensvideos, die deine Marke authentisch und überzeugend präsentieren.",
     features: [
       "Storytelling-Konzept",
       "Professionelle Interviews",
@@ -66,7 +66,7 @@ const fallbackServices: Service[] = [
     title: "Eventvideos",
     slug: "eventvideo",
     description:
-      "Dynamische Dokumentation Ihrer Veranstaltungen – von Konferenzen bis zu Firmenfeiern.",
+      "Dynamische Dokumentation deiner Veranstaltungen – von Konferenzen bis zu Firmenfeiern.",
     features: ["Mehrkamera-Setup", "Live-Mitschnitte", "Highlight-Reels"],
   },
   {
@@ -92,7 +92,7 @@ const fallbackServices: Service[] = [
     icon: Clapperboard,
     title: "Produktvideos",
     slug: "produktvideo",
-    description: "Präsentieren Sie Ihre Produkte im besten Licht.",
+    description: "Präsentiere deine Produkte im besten Licht.",
     features: [
       "360° Produktansichten",
       "Animations-Integration",
@@ -104,7 +104,7 @@ const fallbackServices: Service[] = [
     title: "Postproduktion",
     slug: "postproduktion",
     description:
-      "Professionelle Nachbearbeitung Ihrer Videos auf höchstem Niveau.",
+      "Professionelle Nachbearbeitung deiner Videos auf höchstem Niveau.",
     features: ["Color Grading", "Motion Graphics", "Sound Design"],
   },
 ];

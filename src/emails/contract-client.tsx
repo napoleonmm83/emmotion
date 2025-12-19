@@ -46,13 +46,13 @@ export function ContractClientEmail({
     <Html>
       <Head />
       <Preview>
-        Vielen Dank für Ihre Projektanfrage - {projectName}
+        Vielen Dank für deine Projektanfrage - {projectName}
       </Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
           <Section style={header}>
-            <Heading style={headerTitle}>Vielen Dank für Ihren Auftrag!</Heading>
+            <Heading style={headerTitle}>Vielen Dank für deinen Auftrag!</Heading>
             <Text style={headerSubtitle}>emmotion.ch</Text>
           </Section>
 
@@ -60,9 +60,9 @@ export function ContractClientEmail({
           <Section style={content}>
             <Text style={greeting}>Hallo {clientName},</Text>
             <Text style={paragraph}>
-              vielen Dank für Ihr Vertrauen! Ihr Produktionsvertrag wurde
-              erfolgreich unterzeichnet. Hier finden Sie alle wichtigen
-              Informationen zu Ihrem Projekt.
+              vielen Dank für dein Vertrauen! Dein Produktionsvertrag wurde
+              erfolgreich unterzeichnet. Hier findest du alle wichtigen
+              Informationen zu deinem Projekt.
             </Text>
 
             {/* Project Summary */}
@@ -101,7 +101,7 @@ export function ContractClientEmail({
                 %) erforderlich.
               </Text>
               <Text style={infoText}>
-                Die Anzahlungsrechnung mit allen Zahlungsdetails erhalten Sie
+                Die Anzahlungsrechnung mit allen Zahlungsdetails erhältst du
                 in Kürze in einer separaten E-Mail. Die Produktion beginnt nach
                 Eingang der Anzahlung.
               </Text>
@@ -113,7 +113,7 @@ export function ContractClientEmail({
                 <Hr style={hr} />
                 <Section style={{ textAlign: "center" as const }}>
                   <Text style={paragraph}>
-                    Ihren signierten Vertrag können Sie hier herunterladen:
+                    Deinen signierten Vertrag kannst du hier herunterladen:
                   </Text>
                   <Button href={pdfUrl} style={button}>
                     Vertrag herunterladen (PDF)
@@ -134,7 +134,7 @@ export function ContractClientEmail({
               </li>
               <li style={stepsItem}>
                 <strong>Zahlungseingang bestätigen</strong> - Ich melde mich bei
-                Ihnen
+                dir
               </li>
               <li style={stepsItem}>
                 <strong>Detailplanung</strong> - Wir besprechen Drehtermin und
@@ -148,14 +148,14 @@ export function ContractClientEmail({
                 Vertonung
               </li>
               <li style={stepsItem}>
-                <strong>Lieferung</strong> - Sie erhalten Ihr fertiges Video
+                <strong>Lieferung</strong> - Du erhältst dein fertiges Video
               </li>
             </ol>
 
             <Hr style={hr} />
 
             <Text style={paragraph}>
-              Bei Fragen stehe ich Ihnen jederzeit zur Verfügung.
+              Bei Fragen stehe ich dir jederzeit zur Verfügung.
             </Text>
             <Text style={paragraph}>
               Herzliche Grüsse,

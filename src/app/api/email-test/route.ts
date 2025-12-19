@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     });
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Zu viele Test-E-Mails. Bitte warten Sie." },
+        { error: "Zu viele Test-E-Mails. Bitte warte kurz." },
         { status: 429 }
       );
     }

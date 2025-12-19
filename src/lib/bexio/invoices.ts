@@ -140,12 +140,12 @@ export async function createInvoice(
     params.header ||
     (params.isDeposit
       ? `Anzahlung für: ${params.projectName || params.title}`
-      : `Vielen Dank für Ihren Auftrag.`);
+      : `Vielen Dank für deinen Auftrag.`);
 
   // Build footer text
   const footerText =
     params.footer ||
-    `Zahlbar innert ${params.dueInDays || 30} Tagen netto.\n\nBei Fragen stehe ich Ihnen gerne zur Verfügung.\n\nFreundliche Grüsse\nMarcus Martini\nemmotion.ch`;
+    `Zahlbar innert ${params.dueInDays || 30} Tagen netto.\n\nBei Fragen stehe ich dir gerne zur Verfügung.\n\nFreundliche Grüsse\nMarcus Martini\nemmotion.ch`;
 
   // Build invoice data
   // Note: kb_item_status_id is NOT allowed as input field (read-only)
@@ -257,14 +257,14 @@ export async function sendInvoiceByEmail(
   }
 
   // Step 2: Prepare email with [Network Link] placeholder (REQUIRED by Bexio API)
-  const defaultMessage = `Guten Tag${params.clientName ? ` ${params.clientName}` : ""}
+  const defaultMessage = `Hallo${params.clientName ? ` ${params.clientName}` : ""}
 
-Vielen Dank für Ihre Projektanfrage${params.projectName ? ` "${params.projectName}"` : ""}!
+Vielen Dank für deine Projektanfrage${params.projectName ? ` "${params.projectName}"` : ""}!
 
-Anbei erhalten Sie Ihre Anzahlungsrechnung:
+Anbei erhältst du deine Anzahlungsrechnung:
 [Network Link]
 
-Bei Fragen stehe ich Ihnen gerne zur Verfügung.
+Bei Fragen stehe ich dir gerne zur Verfügung.
 
 Freundliche Grüsse
 Marcus Martini

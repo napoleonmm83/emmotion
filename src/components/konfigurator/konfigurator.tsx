@@ -15,10 +15,10 @@ import {
 } from "@/lib/konfigurator-logic";
 
 const STEPS = [
-  { id: 1, title: "Video-Typ", description: "Was möchten Sie produzieren?" },
+  { id: 1, title: "Video-Typ", description: "Was möchtest du produzieren?" },
   { id: 2, title: "Details", description: "Dauer und Umfang" },
   { id: 3, title: "Extras", description: "Zusätzliche Optionen" },
-  { id: 4, title: "Ergebnis", description: "Ihre Preisübersicht" },
+  { id: 4, title: "Ergebnis", description: "Deine Preisübersicht" },
 ];
 
 export function Konfigurator() {

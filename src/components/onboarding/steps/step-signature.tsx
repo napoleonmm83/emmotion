@@ -160,7 +160,7 @@ export function StepSignature({
       {/* Signature Canvas */}
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">
-          Ihre Unterschrift
+          Deine Unterschrift
         </label>
         <div className="relative">
           <canvas
@@ -199,8 +199,8 @@ export function StepSignature({
       {/* Legal Notice */}
       <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground">
         <p>
-          Mit Ihrer digitalen Unterschrift bestätigen Sie, dass Sie die Vertragsbedingungen
-          gelesen und akzeptiert haben. Die Unterschrift ist rechtlich bindend.
+          Mit deiner digitalen Unterschrift bestätigst du, dass du die Vertragsbedingungen
+          gelesen und akzeptiert hast. Die Unterschrift ist rechtlich bindend.
         </p>
       </div>
 
@@ -229,7 +229,7 @@ export function StepSignature({
       </button>
 
       <p className="text-xs text-center text-muted-foreground">
-        Nach dem Absenden erhalten Sie eine Bestätigung per E-Mail mit dem
+        Nach dem Absenden erhältst du eine Bestätigung per E-Mail mit dem
         signierten Vertrag als PDF.
       </p>
     </div>

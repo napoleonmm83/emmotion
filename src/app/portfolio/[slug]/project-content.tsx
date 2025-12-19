@@ -245,11 +245,11 @@ export function ProjectPageContent({
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 tracking-wide">
-                Bereit für Ihr Projekt?
+                Bereit für dein Projekt?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren
-                Sie mich für ein unverbindliches Erstgespräch.
+                Ich freue mich darauf, deine Geschichte zu erzählen. Kontaktiere
+                mich für ein unverbindliches Erstgespräch.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link

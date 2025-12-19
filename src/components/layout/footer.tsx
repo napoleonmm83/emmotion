@@ -27,7 +27,7 @@ const defaultContact = {
 // Fallback Footer-Texte
 const defaultFooter = {
   tagline: "Videoproduktion mit TV-Erfahrung für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.",
-  ctaText: "Bereit für Ihr nächstes Videoprojekt? Ich freue mich auf Ihre Anfrage.",
+  ctaText: "Bereit für dein nächstes Videoprojekt? Ich freue mich auf deine Anfrage.",
   copyrightName: "emmotion",
 };
 

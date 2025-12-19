@@ -9,7 +9,7 @@ import { settingsQuery } from "@sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "Anfrage bestätigt | emmotion.ch",
-  description: "Ihre Projektanfrage wurde erfolgreich eingereicht.",
+  description: "Deine Projektanfrage wurde erfolgreich eingereicht.",
 };
 
 async function getSettings() {
@@ -37,10 +37,10 @@ export default async function BestaetigungPage() {
 
             {/* Title */}
             <h1 className="text-3xl md:text-4xl font-display text-foreground mb-4">
-              Vielen Dank für Ihren Auftrag!
+              Vielen Dank für deinen Auftrag!
             </h1>
             <p className="text-muted-foreground text-lg mb-8">
-              Ihr Vertrag wurde erfolgreich unterzeichnet. Sie erhalten in Kürze
+              Dein Vertrag wurde erfolgreich unterzeichnet. Du erhältst in Kürze
               eine Bestätigung per E-Mail mit allen Details.
             </p>
 
@@ -58,7 +58,7 @@ export default async function BestaetigungPage() {
                   <div>
                     <h3 className="font-medium text-foreground">E-Mail prüfen</h3>
                     <p className="text-sm text-muted-foreground">
-                      Sie erhalten eine Bestätigung mit Ihrem signierten Vertrag als
+                      Du erhältst eine Bestätigung mit deinem signierten Vertrag als
                       PDF-Anhang.
                     </p>
                   </div>
@@ -74,8 +74,8 @@ export default async function BestaetigungPage() {
                       Anzahlung überweisen
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Bitte überweisen Sie die Anzahlung innerhalb von 7 Tagen. Die
-                      Bankdaten finden Sie in der E-Mail.
+                      Bitte überweise die Anzahlung innerhalb von 7 Tagen. Die
+                      Bankdaten findest du in der E-Mail.
                     </p>
                   </div>
                 </div>
@@ -90,7 +90,7 @@ export default async function BestaetigungPage() {
                       Terminplanung
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Nach Zahlungseingang melde ich mich bei Ihnen, um den
+                      Nach Zahlungseingang melde ich mich bei dir, um den
                       Drehtermin und weitere Details zu besprechen.
                     </p>
                   </div>
@@ -118,7 +118,7 @@ export default async function BestaetigungPage() {
             {/* Contact Info */}
             <div className="mt-12 pt-8 border-t border-border">
               <p className="text-sm text-muted-foreground">
-                Fragen? Kontaktieren Sie mich unter{" "}
+                Fragen? Kontaktiere mich unter{" "}
                 <a
                   href={`mailto:${settings?.contact?.email || "hallo@emmotion.ch"}`}
                   className="text-primary hover:underline"

@@ -49,7 +49,7 @@ export function ContractCorrectionEmail({
           <Section style={content}>
             <Text style={greeting}>Hallo {clientName},</Text>
             <Text style={paragraph}>
-              Ihr Vertrag für das Projekt <strong>"{projectName}"</strong> wurde
+              Dein Vertrag für das Projekt <strong>"{projectName}"</strong> wurde
               aktualisiert. Die Änderungen wurden in einem neuen Dokument
               zusammengefasst.
             </Text>
@@ -64,8 +64,8 @@ export function ContractCorrectionEmail({
             <Hr style={hr} />
 
             <Text style={paragraph}>
-              Bitte prüfen Sie die Änderungen. Falls Sie Fragen haben oder
-              weitere Anpassungen benötigen, stehe ich Ihnen gerne zur Verfügung.
+              Bitte prüfe die Änderungen. Falls du Fragen hast oder
+              weitere Anpassungen benötigst, stehe ich dir gerne zur Verfügung.
             </Text>
 
             <Text style={paragraph}>

@@ -160,8 +160,8 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
         <section className="py-16 md:py-24 border-t border-border">
           <Container>
             <SectionHeader
-              title="Ihre Vorteile"
-              subtitle={`Was Sie bei einem ${service.title}-Projekt von mir erwarten können.`}
+              title="Deine Vorteile"
+              subtitle={`Was du bei einem ${service.title}-Projekt von mir erwarten kannst.`}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,7 +199,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
             <Container>
               <SectionHeader
                 title="Beispielvideos"
-                subtitle="Schauen Sie sich an, was möglich ist."
+                subtitle="Schau dir an, was möglich ist."
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -316,7 +316,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                 className="text-center mt-8"
               >
                 <p className="text-muted-foreground mb-4">
-                  Weitere Fragen? Ich bin für Sie da.
+                  Weitere Fragen? Ich bin für dich da.
                 </p>
                 <Link
                   href="/#kontakt"
@@ -343,10 +343,10 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 tracking-wide">
-                Bereit für Ihr {service.title}-Projekt?
+                Bereit für dein {service.title}-Projekt?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Kontaktieren Sie mich, um Ihr Projekt zu besprechen. Ich freue mich
+                Kontaktiere mich, um dein Projekt zu besprechen. Ich freue mich
                 auf ein unverbindliches Erstgespräch.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

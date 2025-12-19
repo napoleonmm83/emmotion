@@ -39,7 +39,7 @@ const FALLBACK_FAQS = [
           },
           {
             _type: "span",
-            text: " können Sie eine unverbindliche Preisschätzung für Ihr Projekt erhalten.",
+            text: " kannst du eine unverbindliche Preisschätzung für dein Projekt erhalten.",
           },
         ],
       },
@@ -86,7 +86,7 @@ const FALLBACK_FAQS = [
           },
           {
             _type: "span",
-            text: " Ich bespreche mit Ihnen Ihre Ziele und entwickle ein Konzept.",
+            text: " Ich bespreche mit dir deine Ziele und entwickle ein Konzept.",
           },
         ],
       },
@@ -163,7 +163,7 @@ const FALLBACK_FAQS = [
         children: [
           {
             _type: "span",
-            text: "Ja, zwei Korrekturschleifen sind im Preis inbegriffen. Sie erhalten zunächst einen Rohschnitt zur Prüfung und können dann Anpassungen wünschen. Grössere Änderungen nach Freigabe werden separat berechnet.",
+            text: "Ja, zwei Korrekturschleifen sind im Preis inbegriffen. Du erhältst zunächst einen Rohschnitt zur Prüfung und kannst dann Anpassungen wünschen. Grössere Änderungen nach Freigabe werden separat berechnet.",
           },
         ],
       },
@@ -172,14 +172,14 @@ const FALLBACK_FAQS = [
   },
   {
     _id: "fallback-6",
-    question: "Wer sind Sie und was unterscheidet Sie von anderen?",
+    question: "Wer bist du und was unterscheidet dich von anderen?",
     answer: [
       {
         _type: "block",
         children: [
           {
             _type: "span",
-            text: "Ich bin Marcus Martini, Videograf mit TV-Erfahrung aus dem Regionalfernsehen. Im Gegensatz zu grossen Agenturen arbeiten Sie bei mir direkt mit dem Produzenten – persönlich, flexibel und ohne Umwege. Mein Fokus liegt auf authentischen Geschichten für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.",
+            text: "Ich bin Marcus Martini, Videograf mit TV-Erfahrung aus dem Regionalfernsehen. Im Gegensatz zu grossen Agenturen arbeitest du bei mir direkt mit dem Produzenten – persönlich, flexibel und ohne Umwege. Mein Fokus liegt auf authentischen Geschichten für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.",
           },
         ],
       },
@@ -188,14 +188,14 @@ const FALLBACK_FAQS = [
   },
   {
     _id: "fallback-7",
-    question: "Bieten Sie auch Drohnenaufnahmen an?",
+    question: "Bietest du auch Drohnenaufnahmen an?",
     answer: [
       {
         _type: "block",
         children: [
           {
             _type: "span",
-            text: "Ja, ich bin zertifizierter Drohnenpilot und biete professionelle Luftaufnahmen an. Drohnenaufnahmen können als Extra zu jedem Videoprojekt hinzugebucht werden und verleihen Ihrem Video eine beeindruckende Perspektive.",
+            text: "Ja, ich bin zertifizierter Drohnenpilot und biete professionelle Luftaufnahmen an. Drohnenaufnahmen können als Extra zu jedem Videoprojekt hinzugebucht werden und verleihen deinem Video eine beeindruckende Perspektive.",
           },
         ],
       },
@@ -211,7 +211,7 @@ const FALLBACK_FAQS = [
         children: [
           {
             _type: "span",
-            text: "Sie erhalten die vollständigen Nutzungsrechte für alle vereinbarten Kanäle (Website, Social Media, Messen etc.). Die Rechte an der Musik und verwendeten Stockmaterial sind ebenfalls abgedeckt. Details werden im Angebot festgehalten.",
+            text: "Du erhältst die vollständigen Nutzungsrechte für alle vereinbarten Kanäle (Website, Social Media, Messen etc.). Die Rechte an der Musik und verwendeten Stockmaterial sind ebenfalls abgedeckt. Details werden im Angebot festgehalten.",
           },
         ],
       },

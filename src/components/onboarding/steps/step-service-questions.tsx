@@ -324,7 +324,7 @@ export function StepServiceQuestions({
       {!questionnaire?.questions?.length && (
         <div className="pt-4 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            Haben Sie spezifische Wünsche oder Anforderungen? Teilen Sie uns diese
+            Hast du spezifische Wünsche oder Anforderungen? Teile uns diese
             gerne im nächsten Schritt mit.
           </p>
         </div>

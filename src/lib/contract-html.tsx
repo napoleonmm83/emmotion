@@ -683,7 +683,7 @@ export function generateContractHTML({
 
         <div class="info-box">
           <strong>Hinweis zur Zahlung</strong>
-          <p>Die Anzahlungsrechnung mit allen Zahlungsdetails (IBAN, QR-Code) erhalten Sie separat per E-Mail. Die Produktion beginnt nach Eingang der Anzahlung.</p>
+          <p>Die Anzahlungsrechnung mit allen Zahlungsdetails (IBAN, QR-Code) erhältst du separat per E-Mail. Die Produktion beginnt nach Eingang der Anzahlung.</p>
         </div>
       </div>
     </div>

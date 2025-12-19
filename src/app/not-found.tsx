@@ -37,7 +37,7 @@ export default function NotFound() {
               </h1>
               <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
                 Die gesuchte Seite existiert leider nicht oder wurde verschoben.
-                Aber keine Sorge – hier finden Sie den Weg zurück.
+                Aber keine Sorge – hier findest du den Weg zurück.
               </p>
             </motion.div>
 
@@ -72,7 +72,7 @@ export default function NotFound() {
               className="card-surface rounded-xl p-6 md:p-8"
             >
               <p className="text-muted-foreground mb-4">
-                Vielleicht suchen Sie eine dieser Seiten:
+                Vielleicht suchst du eine dieser Seiten:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Link

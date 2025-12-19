@@ -11,7 +11,7 @@ import { legalPageBySlugQuery, settingsQuery } from "@sanity/lib/queries";
 export const metadata: Metadata = {
   title: "Datenschutz | emmotion.ch",
   description:
-    "Datenschutzerklärung von emmotion.ch - Informationen zum Umgang mit Ihren personenbezogenen Daten.",
+    "Datenschutzerklärung von emmotion.ch - Informationen zum Umgang mit deinen personenbezogenen Daten.",
   robots: {
     index: true,
     follow: true,
@@ -77,10 +77,10 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           Allgemeine Hinweise
         </h3>
         <p className="text-muted-foreground mb-4">
-          Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
-          personenbezogenen Daten passiert, wenn Sie diese Website besuchen.
-          Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert
-          werden können.
+          Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit deinen
+          personenbezogenen Daten passiert, wenn du diese Website besuchst.
+          Personenbezogene Daten sind alle Daten, mit denen du persönlich identifiziert
+          werden kannst.
         </p>
       </div>
 
@@ -121,14 +121,14 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           Kontaktformular
         </h3>
         <p className="text-muted-foreground mb-4">
-          Wenn Sie mir per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben
-          aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten
+          Wenn du mir per Kontaktformular Anfragen zukommen lässt, werden deine Angaben
+          aus dem Anfrageformular inklusive der von dir dort angegebenen Kontaktdaten
           zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei mir
-          gespeichert. Diese Daten gebe ich nicht ohne Ihre Einwilligung weiter.
+          gespeichert. Diese Daten gebe ich nicht ohne deine Einwilligung weiter.
         </p>
         <p className="text-muted-foreground mb-4">
-          Die Verarbeitung dieser Daten erfolgt auf Grundlage Ihrer Einwilligung
-          (Art. 6 Abs. 1 lit. a DSGVO / Art. 13 DSG). Sie können diese Einwilligung
+          Die Verarbeitung dieser Daten erfolgt auf Grundlage deiner Einwilligung
+          (Art. 6 Abs. 1 lit. a DSGVO / Art. 13 DSG). Du kannst diese Einwilligung
           jederzeit widerrufen.
         </p>
 
@@ -136,8 +136,8 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           Video-Konfigurator
         </h3>
         <p className="text-muted-foreground mb-4">
-          Bei Nutzung unseres Video-Konfigurators werden die von Ihnen eingegebenen Daten
-          (Konfiguration, Kontaktdaten) zwecks Bearbeitung Ihrer Anfrage gespeichert.
+          Bei Nutzung unseres Video-Konfigurators werden die von dir eingegebenen Daten
+          (Konfiguration, Kontaktdaten) zwecks Bearbeitung deiner Anfrage gespeichert.
           Diese Daten werden ausschliesslich zur Erstellung eines Angebots verwendet.
         </p>
 
@@ -147,7 +147,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
         <p className="text-muted-foreground mb-4">
           Kontaktanfragen und Konfigurator-Anfragen werden automatisch nach <strong>60 Tagen</strong> gelöscht.
           Diese automatische Löschung gewährleistet die Datensparsamkeit gemäss DSGVO/DSG.
-          Sie können jederzeit eine vorzeitige Löschung Ihrer Daten verlangen.
+          Du kannst jederzeit eine vorzeitige Löschung deiner Daten verlangen.
         </p>
 
         <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">
@@ -175,7 +175,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
         <h3 className="text-lg md:text-xl font-semibold text-foreground mb-3 mt-8 tracking-wide">Server-Log-Dateien</h3>
         <p className="text-muted-foreground mb-4">
           Der Provider der Seiten erhebt und speichert automatisch Informationen in
-          sogenannten Server-Log-Dateien, die Ihr Browser automatisch übermittelt.
+          sogenannten Server-Log-Dateien, die dein Browser automatisch übermittelt.
           Dies sind:
         </p>
         <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-1">
@@ -245,7 +245,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
         </h3>
         <p className="text-muted-foreground mb-4">
           Für den Versand von E-Mails (z.B. Kontaktformular-Benachrichtigungen) nutzen wir
-          den Dienst Resend. Wenn Sie das Kontaktformular nutzen, werden Ihre Angaben
+          den Dienst Resend. Wenn du das Kontaktformular nutzt, werden deine Angaben
           (Name, E-Mail, Nachricht) über Resend an uns übermittelt.
         </p>
         <p className="text-muted-foreground mb-4">
@@ -264,12 +264,12 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
 
       <div>
         <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 tracking-wide">
-          5. Ihre Rechte
+          5. Deine Rechte
         </h2>
-        <p className="text-muted-foreground mb-4">Sie haben jederzeit das Recht:</p>
+        <p className="text-muted-foreground mb-4">Du hast jederzeit das Recht:</p>
         <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-2">
           <li>
-            <strong>Auskunft</strong> über Ihre bei mir gespeicherten personenbezogenen
+            <strong>Auskunft</strong> über deine bei mir gespeicherten personenbezogenen
             Daten zu erhalten
           </li>
           <li>
@@ -277,7 +277,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
             verlangen
           </li>
           <li>
-            <strong>Löschung</strong> Ihrer bei mir gespeicherten personenbezogenen
+            <strong>Löschung</strong> deiner bei mir gespeicherten personenbezogenen
             Daten zu verlangen
           </li>
           <li>
@@ -287,12 +287,12 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
             <strong>Widerspruch</strong> gegen die Verarbeitung einzulegen
           </li>
           <li>
-            <strong>Datenübertragbarkeit</strong> Ihrer Daten zu verlangen
+            <strong>Datenübertragbarkeit</strong> deiner Daten zu verlangen
           </li>
         </ul>
         <p className="text-muted-foreground mb-4">
-          Wenn Sie der Meinung sind, dass die Verarbeitung Ihrer Daten gegen das
-          Datenschutzrecht verstösst, haben Sie das Recht, sich bei der zuständigen
+          Wenn du der Meinung bist, dass die Verarbeitung deiner Daten gegen das
+          Datenschutzrecht verstösst, hast du das Recht, dich bei der zuständigen
           Aufsichtsbehörde zu beschweren.
         </p>
       </div>
@@ -302,9 +302,9 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
           6. E-Mail-Kommunikation
         </h2>
         <p className="text-muted-foreground mb-4">
-          Wenn Sie mit mir per E-Mail kommunizieren, werden Ihre E-Mail-Adresse und der
-          Inhalt Ihrer Nachricht gespeichert, um Ihre Anfrage bearbeiten zu können.
-          Diese Daten werden ohne Ihre Einwilligung nicht an Dritte weitergegeben.
+          Wenn du mit mir per E-Mail kommunizierst, werden deine E-Mail-Adresse und der
+          Inhalt deiner Nachricht gespeichert, um deine Anfrage bearbeiten zu können.
+          Diese Daten werden ohne deine Einwilligung nicht an Dritte weitergegeben.
         </p>
       </div>
 
@@ -337,9 +337,9 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
         <p className="text-muted-foreground mb-4">
           Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung
           vertraulicher Inhalte eine SSL-/TLS-Verschlüsselung. Eine verschlüsselte
-          Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von
+          Verbindung erkennst du daran, dass die Adresszeile des Browsers von
           &quot;http://&quot; auf &quot;https://&quot; wechselt und an dem Schloss-Symbol
-          in Ihrer Browserzeile.
+          in deiner Browserzeile.
         </p>
       </div>
 
@@ -350,7 +350,7 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
         <p className="text-muted-foreground mb-4">
           Ich behalte mir vor, diese Datenschutzerklärung anzupassen, damit sie stets
           den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen meiner
-          Leistungen in der Datenschutzerklärung umzusetzen. Für Ihren erneuten Besuch
+          Leistungen in der Datenschutzerklärung umzusetzen. Für deinen erneuten Besuch
           gilt dann die neue Datenschutzerklärung.
         </p>
       </div>

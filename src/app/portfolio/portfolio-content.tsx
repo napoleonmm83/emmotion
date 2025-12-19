@@ -54,9 +54,9 @@ const defaultHero = {
 
 // Fallback CTA
 const defaultCta = {
-  title: "Ihr Projekt könnte hier sein",
+  title: "Dein Projekt könnte hier sein",
   description:
-    "Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren Sie mich für ein unverbindliches Erstgespräch.",
+    "Ich freue mich darauf, deine Geschichte zu erzählen. Kontaktiere mich für ein unverbindliches Erstgespräch.",
   buttonText: "Projekt anfragen",
 };
 

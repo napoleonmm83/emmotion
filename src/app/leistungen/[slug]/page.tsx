@@ -31,9 +31,9 @@ const defaultServices: ServiceDetail[] = [
     title: "Imagefilme",
     slug: "imagefilm",
     shortDescription:
-      "Professionelle Unternehmensvideos, die Ihre Marke authentisch und überzeugend präsentieren.",
+      "Professionelle Unternehmensvideos, die deine Marke authentisch und überzeugend präsentieren.",
     description:
-      "Ein Imagefilm ist mehr als nur ein Video – er ist das Aushängeschild Ihres Unternehmens. Mit meiner TV-Erfahrung produziere ich authentische Unternehmensfilme, die Ihre Werte, Kultur und Stärken emotional vermitteln. Ob für die Website, Social Media oder Recruiting – ein professioneller Imagefilm schafft Vertrauen und bleibt im Gedächtnis.",
+      "Ein Imagefilm ist mehr als nur ein Video – er ist das Aushängeschild deines Unternehmens. Mit meiner TV-Erfahrung produziere ich authentische Unternehmensfilme, die deine Werte, Kultur und Stärken emotional vermitteln. Ob für die Website, Social Media oder Recruiting – ein professioneller Imagefilm schafft Vertrauen und bleibt im Gedächtnis.",
     image:
       "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
     priceFrom: 2400,
@@ -47,7 +47,7 @@ const defaultServices: ServiceDetail[] = [
       {
         title: "Authentische Darstellung",
         description:
-          "Echte Mitarbeiter, echte Geschichten – keine gestellten Szenen, sondern authentische Einblicke in Ihr Unternehmen.",
+          "Echte Mitarbeiter, echte Geschichten – keine gestellten Szenen, sondern authentische Einblicke in dein Unternehmen.",
       },
       {
         title: "TV-Qualität",
@@ -57,7 +57,7 @@ const defaultServices: ServiceDetail[] = [
       {
         title: "Strategisches Storytelling",
         description:
-          "Eine durchdachte Geschichte, die Ihre Kernbotschaft emotional und einprägsam vermittelt.",
+          "Eine durchdachte Geschichte, die deine Kernbotschaft emotional und einprägsam vermittelt.",
       },
       {
         title: "Vielseitig einsetzbar",
@@ -70,13 +70,13 @@ const defaultServices: ServiceDetail[] = [
         step: 1,
         title: "Briefing & Konzept",
         description:
-          "Ich bespreche mit Ihnen Ihre Ziele, Zielgruppe und Kernbotschaften und entwickle ein massgeschneidertes Konzept.",
+          "Ich bespreche mit dir deine Ziele, Zielgruppe und Kernbotschaften und entwickle ein massgeschneidertes Konzept.",
       },
       {
         step: 2,
         title: "Vorbereitung",
         description:
-          "Planung der Drehorte, Interviewpartner und Shotlist. Sie erhalten einen detaillierten Ablaufplan.",
+          "Planung der Drehorte, Interviewpartner und Shotlist. Du erhältst einen detaillierten Ablaufplan.",
       },
       {
         step: 3,
@@ -100,7 +100,7 @@ const defaultServices: ServiceDetail[] = [
       {
         question: "Können Mitarbeiter vor der Kamera sprechen?",
         answer:
-          "Absolut! Ich bereite Ihre Mitarbeiter professionell vor und sorge für eine entspannte Atmosphäre. Die besten Aussagen entstehen oft spontan.",
+          "Absolut! Ich bereite deine Mitarbeiter professionell vor und sorge für eine entspannte Atmosphäre. Die besten Aussagen entstehen oft spontan.",
       },
       {
         question: "Erhalte ich auch Kurzversionen für Social Media?",
@@ -116,9 +116,9 @@ const defaultServices: ServiceDetail[] = [
     title: "Eventvideos",
     slug: "eventvideo",
     shortDescription:
-      "Dynamische Dokumentation Ihrer Veranstaltungen – von Konferenzen bis zu Firmenfeiern.",
+      "Dynamische Dokumentation deiner Veranstaltungen – von Konferenzen bis zu Firmenfeiern.",
     description:
-      "Ihre Veranstaltung verdient es, festgehalten zu werden. Ob Konferenz, Jubiläum, Produktlaunch oder Firmenevent – ich dokumentiere die Highlights, die Atmosphäre und die besonderen Momente. Das Ergebnis: Ein dynamisches Video, das die Energie Ihres Events einfängt und für künftiges Marketing nutzbar ist.",
+      "Deine Veranstaltung verdient es, festgehalten zu werden. Ob Konferenz, Jubiläum, Produktlaunch oder Firmenevent – ich dokumentiere die Highlights, die Atmosphäre und die besonderen Momente. Das Ergebnis: Ein dynamisches Video, das die Energie deines Events einfängt und für künftiges Marketing nutzbar ist.",
     image:
       "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=80",
     priceFrom: 1800,
@@ -142,7 +142,7 @@ const defaultServices: ServiceDetail[] = [
       {
         title: "Schnelle Lieferung",
         description:
-          "Auf Wunsch liefere ich bereits am nächsten Tag einen Rohschnitt für Ihre Social-Media-Kanäle.",
+          "Auf Wunsch liefere ich bereits am nächsten Tag einen Rohschnitt für deine Social-Media-Kanäle.",
       },
       {
         title: "Mehrkamera-Option",
@@ -155,7 +155,7 @@ const defaultServices: ServiceDetail[] = [
         step: 1,
         title: "Vorbesprechung",
         description:
-          "Ich bespreche mit Ihnen den Ablauf, wichtige Programmpunkte und Ihre Erwartungen an das Video.",
+          "Ich bespreche mit dir den Ablauf, wichtige Programmpunkte und deine Erwartungen an das Video.",
       },
       {
         step: 2,
@@ -178,12 +178,12 @@ const defaultServices: ServiceDetail[] = [
     ],
     faq: [
       {
-        question: "Wie lange sollte ich Sie für ein Event buchen?",
+        question: "Wie lange sollte ich dich für ein Event buchen?",
         answer:
           "Das hängt vom Programm ab. Für ein Halbtages-Event reichen 4-5 Stunden, für ganztägige Events plane ich 8-10 Stunden ein.",
       },
       {
-        question: "Können Sie auch Interviews mit Teilnehmern führen?",
+        question: "Kannst du auch Interviews mit Teilnehmern führen?",
         answer:
           "Ja, kurze Testimonials oder Statements von Teilnehmern und Speakern können das Video aufwerten.",
       },
@@ -263,7 +263,7 @@ const defaultServices: ServiceDetail[] = [
           "Je nach Komplexität können 5-15 kurze Clips entstehen. Bei einfachen Formaten sogar mehr.",
       },
       {
-        question: "Können Sie auch bestehende Videos für Social Media umschneiden?",
+        question: "Kannst du auch bestehende Videos für Social Media umschneiden?",
         answer:
           "Ja, ich kann längere Videos in Social-Media-taugliche Kurzformate umwandeln.",
       },
@@ -338,7 +338,7 @@ const defaultServices: ServiceDetail[] = [
     ],
     faq: [
       {
-        question: "Dürfen Sie überall fliegen?",
+        question: "Darfst du überall fliegen?",
         answer:
           "Nein, es gibt Flugverbotszonen und Einschränkungen. Ich prüfe vorab, ob ein Flug am gewünschten Ort möglich ist und hole ggf. Genehmigungen ein.",
       },
@@ -356,9 +356,9 @@ const defaultServices: ServiceDetail[] = [
     title: "Produktvideos",
     slug: "produktvideo",
     shortDescription:
-      "Präsentieren Sie Ihre Produkte im besten Licht.",
+      "Präsentiere deine Produkte im besten Licht.",
     description:
-      "Ein gutes Produktvideo kann den Unterschied zwischen einem Kauf und einem Absprung machen. Ich inszeniere Ihre Produkte professionell – von einfachen E-Commerce-Clips bis zu aufwendigen Werbe-Spots. Mit der richtigen Beleuchtung, Kameraführung und Postproduktion wird Ihr Produkt zum Star.",
+      "Ein gutes Produktvideo kann den Unterschied zwischen einem Kauf und einem Absprung machen. Ich inszeniere deine Produkte professionell – von einfachen E-Commerce-Clips bis zu aufwendigen Werbe-Spots. Mit der richtigen Beleuchtung, Kameraführung und Postproduktion wird dein Produkt zum Star.",
     image:
       "https://images.unsplash.com/photo-1551817958-c5b51e7b4a33?auto=format&fit=crop&w=1200&q=80",
     priceFrom: 800,
@@ -401,7 +401,7 @@ const defaultServices: ServiceDetail[] = [
         step: 2,
         title: "Studio-Setup",
         description:
-          "Professionelles Licht-Setup und Hintergrund für Ihre Produkte.",
+          "Professionelles Licht-Setup und Hintergrund für deine Produkte.",
       },
       {
         step: 3,
@@ -418,7 +418,7 @@ const defaultServices: ServiceDetail[] = [
     ],
     faq: [
       {
-        question: "Können Sie auch bei mir vor Ort drehen?",
+        question: "Kannst du auch bei mir vor Ort drehen?",
         answer:
           "Ja, ich bringe mobiles Equipment mit. Für komplexere Setups empfehle ich jedoch ein Studio.",
       },
@@ -436,9 +436,9 @@ const defaultServices: ServiceDetail[] = [
     title: "Postproduktion",
     slug: "postproduktion",
     shortDescription:
-      "Professionelle Nachbearbeitung Ihrer Videos auf höchstem Niveau.",
+      "Professionelle Nachbearbeitung deiner Videos auf höchstem Niveau.",
     description:
-      "Die Postproduktion macht aus gutem Material ein grossartiges Video. Ich biete professionellen Schnitt, Color Grading, Motion Graphics und Sound Design. Ob Sie eigenes Footage haben oder eine Komplettproduktion wünschen – ich bringe Ihr Material zum Glänzen.",
+      "Die Postproduktion macht aus gutem Material ein grossartiges Video. Ich biete professionellen Schnitt, Color Grading, Motion Graphics und Sound Design. Ob du eigenes Footage hast oder eine Komplettproduktion wünschst – ich bringe dein Material zum Glänzen.",
     image:
       "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80",
     priceFrom: 500,
@@ -475,13 +475,13 @@ const defaultServices: ServiceDetail[] = [
         step: 1,
         title: "Material-Sichtung",
         description:
-          "Ich sichte Ihr Material und bespreche mit Ihnen die Vision für das fertige Video.",
+          "Ich sichte dein Material und bespreche mit dir die Vision für das fertige Video.",
       },
       {
         step: 2,
         title: "Rohschnitt",
         description:
-          "Erster Schnitt zur Struktur und Länge – Sie geben Feedback.",
+          "Erster Schnitt zur Struktur und Länge – du gibst Feedback.",
       },
       {
         step: 3,

@@ -27,14 +27,14 @@ const iconMap: Record<string, LucideIcon> = {
 const defaultHero = {
   title: "Video-Konfigurator",
   subtitle:
-    "Konfigurieren Sie Ihr Wunschvideo und erhalten Sie eine unverbindliche Preisschätzung – in nur wenigen Schritten.",
+    "Konfiguriere dein Wunschvideo und erhalte eine unverbindliche Preisschätzung – in nur wenigen Schritten.",
 };
 
 const defaultBenefits = [
   {
     icon: "calculator",
     title: "Transparente Preise",
-    description: "Erhalten Sie sofort eine realistische Preisschätzung",
+    description: "Erhalte sofort eine realistische Preisschätzung",
   },
   {
     icon: "clock",
@@ -51,23 +51,23 @@ const defaultBenefits = [
 const defaultInfoSection = {
   title: "Wie funktioniert der Konfigurator?",
   description:
-    "Der Konfigurator gibt Ihnen eine erste Orientierung zum Budget. Der finale Preis wird individuell nach einem persönlichen Gespräch festgelegt – basierend auf Ihren genauen Anforderungen.",
+    "Der Konfigurator gibt dir eine erste Orientierung zum Budget. Der finale Preis wird individuell nach einem persönlichen Gespräch festgelegt – basierend auf deinen genauen Anforderungen.",
 };
 
 const defaultSteps = [
   {
     title: "Konfigurieren",
-    description: "Wählen Sie Video-Typ, Länge, Umfang und gewünschte Extras.",
+    description: "Wähle Video-Typ, Länge, Umfang und gewünschte Extras.",
   },
   {
     title: "Preisschätzung erhalten",
     description:
-      "Sie sehen sofort eine realistische Preisspanne für Ihr Projekt.",
+      "Du siehst sofort eine realistische Preisspanne für dein Projekt.",
   },
   {
     title: "Unverbindlich anfragen",
     description:
-      "Bei Interesse senden Sie eine Anfrage – ich melde mich innerhalb von 24h.",
+      "Bei Interesse sendest du eine Anfrage – ich melde mich innerhalb von 24h.",
   },
 ];
 

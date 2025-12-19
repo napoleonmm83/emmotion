@@ -50,7 +50,7 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
         <textarea
           value={projectDetails.description || ""}
           onChange={(e) => updateField("description", e.target.value)}
-          placeholder="Beschreiben Sie kurz, was Sie sich vorstellen. Was soll das Video zeigen? Welche Botschaft soll vermittelt werden?"
+          placeholder="Beschreib kurz, was du dir vorstellst. Was soll das Video zeigen? Welche Botschaft soll vermittelt werden?"
           rows={4}
           className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 resize-none ${inputErrorClass("description")}`}
         />

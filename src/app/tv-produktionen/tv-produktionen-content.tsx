@@ -529,8 +529,8 @@ export function TVProduktionenContent({
                 Professionelle Videoproduktion
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Die gleiche Qualität, die Sie bei TV Rheintal sehen, bringe ich
-                auch in Ihr Unternehmensvideo. Kontaktieren Sie mich für ein
+                Die gleiche Qualität, die du bei TV Rheintal siehst, bringe ich
+                auch in dein Unternehmensvideo. Kontaktiere mich für ein
                 unverbindliches Gespräch.
               </p>
               <Link

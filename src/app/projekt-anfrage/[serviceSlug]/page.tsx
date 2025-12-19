@@ -32,10 +32,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${serviceLabel} anfragen | emmotion.ch`,
-    description: `Starten Sie Ihr ${serviceLabel}-Projekt mit emmotion.ch. Beantworten Sie einige Fragen und erhalten Sie einen massgeschneiderten Vertrag.`,
+    description: `Starte dein ${serviceLabel}-Projekt mit emmotion.ch. Beantworte einige Fragen und erhalte einen massgeschneiderten Vertrag.`,
     openGraph: {
       title: `${serviceLabel} anfragen | emmotion.ch`,
-      description: `Starten Sie Ihr ${serviceLabel}-Projekt mit emmotion.ch.`,
+      description: `Starte dein ${serviceLabel}-Projekt mit emmotion.ch.`,
     },
   };
 }

@@ -52,16 +52,16 @@ const DEFAULT_SUBJECT_OPTIONS = [
 
 // Default placeholders as fallback
 const DEFAULT_PLACEHOLDERS = {
-  name: "Ihr Name",
-  email: "ihre@email.ch",
+  name: "Dein Name",
+  email: "deine@email.ch",
   phone: "+41 79 123 45 67",
-  company: "Ihre Firma",
-  message: "Erzählen Sie mir von Ihrem Projekt...",
+  company: "Deine Firma",
+  message: "Erzähl mir von deinem Projekt...",
 };
 
-const DEFAULT_SUCCESS_MESSAGE = "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen.";
+const DEFAULT_SUCCESS_MESSAGE = "Vielen Dank für deine Nachricht! Ich melde mich innerhalb von 24 Stunden bei dir.";
 const DEFAULT_SUBMIT_TEXT = "Nachricht senden";
-const DEFAULT_PRIVACY_TEXT = "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten gemäss unserer Datenschutzerklärung zu.";
+const DEFAULT_PRIVACY_TEXT = "Mit dem Absenden stimmst du der Verarbeitung deiner Daten gemäss unserer Datenschutzerklärung zu.";
 
 // Turnstile Site Key (public) - Fallback für Vercel Build-Cache Probleme
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAACHcwaC7K73Z2RH3";
@@ -119,7 +119,7 @@ export function ContactForm({ className = "", variant = "default", settings }: C
     // Check Turnstile token if configured
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
       setStatus("error");
-      setErrorMessage("Bitte bestätigen Sie, dass Sie kein Roboter sind.");
+      setErrorMessage("Bitte bestätige, dass du kein Roboter bist.");
       return;
     }
 
@@ -337,7 +337,7 @@ export function ContactForm({ className = "", variant = "default", settings }: C
             onSuccess={(token) => setTurnstileToken(token)}
             onError={() => {
               setTurnstileToken(null);
-              setErrorMessage("Captcha-Fehler. Bitte laden Sie die Seite neu.");
+              setErrorMessage("Captcha-Fehler. Bitte lade die Seite neu.");
             }}
             onExpire={() => setTurnstileToken(null)}
             options={{

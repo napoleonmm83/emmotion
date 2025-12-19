@@ -76,7 +76,7 @@ export function AboutSection({ data }: AboutSectionProps) {
   const descriptionParagraphs = data?.description
     ? [data.description]
     : [
-        "Mit über zehn Jahren Erfahrung in der TV-Branche bringe ich professionelle Produktionsstandards in jedes Projekt. Von der Konzeption bis zur finalen Postproduktion – bei mir bekommen Sie alles aus einer Hand.",
+        "Mit über zehn Jahren Erfahrung in der TV-Branche bringe ich professionelle Produktionsstandards in jedes Projekt. Von der Konzeption bis zur finalen Postproduktion – bei mir bekommst du alles aus einer Hand.",
         "Meine Leidenschaft ist es, Geschichten visuell zu erzählen. Dabei verbinde ich technische Expertise mit kreativem Gespür, um Videos zu produzieren, die nicht nur professionell aussehen, sondern auch emotional berühren.",
         "Als gebürtiger Rheintaler kenne ich die Region und ihre Unternehmen bestens. Ob lokaler Handwerksbetrieb oder internationales Unternehmen in Liechtenstein – ich verstehe die individuellen Bedürfnisse und setze sie gekonnt um.",
       ];

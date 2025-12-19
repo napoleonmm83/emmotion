@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await rateLimitKonfigurator(ip);
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { error: "Zu viele Anfragen. Bitte versuch es später erneut." },
         {
           status: 429,
           headers: {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       const isValid = await verifyTurnstileToken(body.turnstileToken || "", ip);
       if (!isValid) {
         return NextResponse.json(
-          { error: "Sicherheitsüberprüfung fehlgeschlagen. Bitte versuchen Sie es erneut." },
+          { error: "Sicherheitsüberprüfung fehlgeschlagen. Bitte versuch es erneut." },
           { status: 400 }
         );
       }
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!body.name || !body.email || !body.configuration) {
       return NextResponse.json(
-        { error: "Bitte füllen Sie alle Pflichtfelder aus." },
+        { error: "Bitte füll alle Pflichtfelder aus." },
         { status: 400 }
       );
     }

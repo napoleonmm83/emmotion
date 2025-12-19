@@ -7,14 +7,14 @@ import { Container } from "@/components/shared";
 // Fallback CTA-Texte
 const defaultTexts = {
   konfigurator: {
-    title: "Was kostet Ihr Video?",
-    description: "Nutzen Sie meinen Video-Konfigurator für eine unverbindliche Preisschätzung in weniger als 2 Minuten.",
+    title: "Was kostet dein Video?",
+    description: "Nutze meinen Video-Konfigurator für eine unverbindliche Preisschätzung in weniger als 2 Minuten.",
     primaryButton: "Preis berechnen",
     secondaryButton: "Direkt anfragen",
   },
   default: {
-    title: "Bereit für Ihr Video?",
-    description: "Ich freue mich darauf, Ihre Geschichte zu erzählen. Kontaktieren Sie mich für ein unverbindliches Erstgespräch.",
+    title: "Bereit für dein Video?",
+    description: "Ich freue mich darauf, deine Geschichte zu erzählen. Kontaktiere mich für ein unverbindliches Erstgespräch.",
     primaryButton: "Projekt starten",
     secondaryButton: "Portfolio ansehen",
   },

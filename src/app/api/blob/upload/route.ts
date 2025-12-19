@@ -68,7 +68,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!rateLimitResult.success) {
     console.warn(`Rate limit exceeded for IP: ${ip}`);
     return NextResponse.json(
-      { error: "Zu viele Uploads. Bitte warten Sie eine Stunde." },
+      { error: "Zu viele Uploads. Bitte warte eine Stunde." },
       {
         status: 429,
         headers: {

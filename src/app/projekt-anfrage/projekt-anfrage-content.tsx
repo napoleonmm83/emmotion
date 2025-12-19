@@ -54,7 +54,7 @@ const defaultServices: ServiceFromSanity[] = [
   {
     title: "Eventvideo",
     slug: "eventvideo",
-    shortDescription: "Dynamische Dokumentation Ihrer Veranstaltungen und Events.",
+    shortDescription: "Dynamische Dokumentation deiner Veranstaltungen und Events.",
     icon: "Video",
     priceFrom: 1800,
     image: null,
@@ -78,7 +78,7 @@ const defaultServices: ServiceFromSanity[] = [
   {
     title: "Produktvideo",
     slug: "produktvideo",
-    shortDescription: "Präsentieren Sie Ihre Produkte im besten Licht.",
+    shortDescription: "Präsentiere deine Produkte im besten Licht.",
     icon: "Clapperboard",
     priceFrom: 800,
     image: null,
@@ -97,17 +97,17 @@ const processSteps = [
   {
     icon: CheckCircle2,
     title: "Service wählen",
-    description: "Wählen Sie die passende Leistung für Ihr Projekt.",
+    description: "Wähle die passende Leistung für dein Projekt.",
   },
   {
     icon: FileText,
     title: "Details angeben",
-    description: "Beantworten Sie einige Fragen zu Ihrem Projekt.",
+    description: "Beantworte einige Fragen zu deinem Projekt.",
   },
   {
     icon: PenLine,
     title: "Vertrag unterzeichnen",
-    description: "Prüfen und unterschreiben Sie den Vertrag digital.",
+    description: "Prüfe und unterschreibe den Vertrag digital.",
   },
 ];
 
@@ -156,8 +156,8 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                 Projekt anfragen
               </h1>
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Starten Sie Ihr Videoprojekt in wenigen Schritten. Wählen Sie die passende
-                Leistung, beantworten Sie einige Fragen und erhalten Sie direkt einen
+                Starte dein Videoprojekt in wenigen Schritten. Wähle die passende
+                Leistung, beantworte einige Fragen und erhalte direkt einen
                 massgeschneiderten Vertrag.
               </p>
             </motion.div>
@@ -198,8 +198,8 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
         <section className="py-16 md:py-24 border-t border-border">
           <Container>
             <SectionHeader
-              title="Welche Leistung benötigen Sie?"
-              subtitle="Wählen Sie einen Service, um mit dem Onboarding zu starten."
+              title="Welche Leistung benötigst du?"
+              subtitle="Wähle einen Service, um mit dem Onboarding zu starten."
             />
 
             <motion.div
@@ -289,7 +289,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                 {[
                   {
                     title: "Transparent",
-                    description: "Sie wissen von Anfang an, was Sie erwartet – keine versteckten Kosten.",
+                    description: "Du weisst von Anfang an, was dich erwartet – keine versteckten Kosten.",
                   },
                   {
                     title: "Verbindlich",
@@ -301,7 +301,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                   },
                   {
                     title: "Persönlich",
-                    description: "Ihre individuellen Anforderungen fliessen direkt in den Vertrag ein.",
+                    description: "Deine individuellen Anforderungen fliessen direkt in den Vertrag ein.",
                   },
                 ].map((benefit, index) => (
                   <motion.div
@@ -340,8 +340,8 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                 Noch unsicher?
               </h2>
               <p className="text-muted-foreground mb-8">
-                Kein Problem! Nutzen Sie den Konfigurator für eine unverbindliche Preisschätzung
-                oder kontaktieren Sie mich direkt für ein persönliches Gespräch.
+                Kein Problem! Nutze den Konfigurator für eine unverbindliche Preisschätzung
+                oder kontaktiere mich direkt für ein persönliches Gespräch.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link

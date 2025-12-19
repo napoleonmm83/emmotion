@@ -12,7 +12,7 @@ import { settingsQuery, contactPageQuery } from "@sanity/lib/queries";
 const defaultSeo = {
   title: "Kontakt | emmotion.ch",
   description:
-    "Nehmen Sie Kontakt auf für Ihr nächstes Videoprojekt. Videoproduktion im Rheintal, Liechtenstein und der Ostschweiz.",
+    "Nimm Kontakt auf für dein nächstes Videoprojekt. Videoproduktion im Rheintal, Liechtenstein und der Ostschweiz.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {

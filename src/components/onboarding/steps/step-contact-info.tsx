@@ -26,7 +26,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground mb-4">
-        Bitte geben Sie Ihre Kontaktdaten für den Vertrag an.
+        Bitte gib deine Kontaktdaten für den Vertrag an.
       </p>
 
       {/* Name & Company */}
@@ -70,7 +70,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             type="email"
             value={clientInfo.email}
             onChange={(e) => updateField("email", e.target.value)}
-            placeholder="ihre@email.ch"
+            placeholder="deine@email.ch"
             className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("email")}`}
           />
         </div>
@@ -120,7 +120,7 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
 
       <div className="bg-muted/50 rounded-lg p-4 mt-6">
         <p className="text-sm text-muted-foreground">
-          <strong className="text-foreground">Datenschutz:</strong> Ihre Daten werden
+          <strong className="text-foreground">Datenschutz:</strong> Deine Daten werden
           ausschliesslich zur Vertragsabwicklung verwendet und nicht an Dritte
           weitergegeben.
         </p>

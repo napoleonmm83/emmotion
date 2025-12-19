@@ -66,7 +66,7 @@ const defaultServices: Service[] = [
     title: "Eventvideos",
     slug: "eventvideo",
     shortDescription:
-      "Dynamische Dokumentation Ihrer Veranstaltungen – von Konferenzen über Firmenfeiern bis zu Produktlaunches.",
+      "Dynamische Dokumentation deiner Veranstaltungen – von Konferenzen über Firmenfeiern bis zu Produktlaunches.",
     image:
       "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=80",
     priceFrom: 1800,
@@ -99,7 +99,7 @@ const defaultServices: Service[] = [
     title: "Produktvideos",
     slug: "produktvideo",
     shortDescription:
-      "Präsentieren Sie Ihre Produkte im besten Licht. Von einfachen Produktaufnahmen bis zu aufwendigen Spots.",
+      "Präsentiere deine Produkte im besten Licht. Von einfachen Produktaufnahmen bis zu aufwendigen Spots.",
     image:
       "https://images.unsplash.com/photo-1551817958-c5b51e7b4a33?auto=format&fit=crop&w=800&q=80",
     priceFrom: 800,
@@ -110,7 +110,7 @@ const defaultServices: Service[] = [
     title: "Postproduktion",
     slug: "postproduktion",
     shortDescription:
-      "Professionelle Nachbearbeitung Ihrer Videos auf höchstem Niveau. Color Grading, Motion Graphics und Sound Design.",
+      "Professionelle Nachbearbeitung deiner Videos auf höchstem Niveau. Color Grading, Motion Graphics und Sound Design.",
     image:
       "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80",
     priceFrom: 500,
@@ -271,11 +271,11 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 tracking-wide">
-                Nicht sicher, was Sie brauchen?
+                Nicht sicher, was du brauchst?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Nutzen Sie meinen Video-Konfigurator für eine unverbindliche
-                Preisschätzung oder kontaktieren Sie mich direkt.
+                Nutze meinen Video-Konfigurator für eine unverbindliche
+                Preisschätzung oder kontaktiere mich direkt.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link

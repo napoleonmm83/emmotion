@@ -65,7 +65,7 @@ export function ContactSection({ settings }: ContactSectionProps) {
       <Container>
         <SectionHeader
           title="Kontakt"
-          subtitle="Bereit für Ihr nächstes Videoprojekt? Schreiben Sie mir – ich freue mich auf ein unverbindliches Gespräch."
+          subtitle="Bereit für dein nächstes Videoprojekt? Schreib mir – ich freue mich auf ein unverbindliches Gespräch."
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
@@ -80,7 +80,7 @@ export function ContactSection({ settings }: ContactSectionProps) {
               settings={{
                 subjectOptions: homeSubjectOptions,
                 placeholders: {
-                  message: "Erzählen Sie mir von Ihrem Projekt...",
+                  message: "Erzähl mir von deinem Projekt...",
                 },
               }}
             />
@@ -157,7 +157,7 @@ export function ContactSection({ settings }: ContactSectionProps) {
                 </h3>
                 <p className="text-muted-foreground">
                   Ich melde mich in der Regel innerhalb von 24 Stunden bei
-                  Ihnen. Dringende Anfragen erreichen mich am besten
+                  dir. Dringende Anfragen erreichen mich am besten
                   telefonisch.
                 </p>
               </motion.div>

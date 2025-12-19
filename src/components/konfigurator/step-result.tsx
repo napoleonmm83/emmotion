@@ -50,7 +50,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
     // Check Turnstile token if configured
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
       setRequestStatus("error");
-      setErrorMessage("Bitte bestätigen Sie, dass Sie kein Roboter sind.");
+      setErrorMessage("Bitte bestätige, dass du kein Roboter bist.");
       return;
     }
 
@@ -94,8 +94,8 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
           Anfrage gesendet!
         </h3>
         <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          Vielen Dank für Ihre Anfrage. Ich melde mich innerhalb von 24 Stunden
-          mit einem individuellen Angebot bei Ihnen.
+          Vielen Dank für deine Anfrage. Ich melde mich innerhalb von 24 Stunden
+          mit einem individuellen Angebot bei dir.
         </p>
         <Link
           href="/"
@@ -135,7 +135,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
 
       {/* Configuration Summary */}
       <div className="bg-card rounded-xl border border-border p-5">
-        <h4 className="font-medium text-foreground mb-4">Ihre Konfiguration</h4>
+        <h4 className="font-medium text-foreground mb-4">Deine Konfiguration</h4>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Video-Typ:</span>
@@ -205,7 +205,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
         </div>
       ) : (
         <form onSubmit={handleSubmitRequest} className="space-y-4">
-          <h4 className="font-medium text-foreground">Ihre Kontaktdaten</h4>
+          <h4 className="font-medium text-foreground">Deine Kontaktdaten</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
@@ -238,7 +238,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
             className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
           />
           <textarea
-            placeholder="Zusätzliche Informationen zu Ihrem Projekt (optional)"
+            placeholder="Zusätzliche Informationen zu deinem Projekt (optional)"
             rows={3}
             value={contactData.message}
             onChange={(e) =>
@@ -256,7 +256,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
                 onSuccess={(token) => setTurnstileToken(token)}
                 onError={() => {
                   setTurnstileToken(null);
-                  setErrorMessage("Captcha-Fehler. Bitte laden Sie die Seite neu.");
+                  setErrorMessage("Captcha-Fehler. Bitte lade die Seite neu.");
                 }}
                 onExpire={() => setTurnstileToken(null)}
                 options={{
@@ -270,7 +270,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
           {requestStatus === "error" && (
             <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <p className="text-sm">{errorMessage || "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."}</p>
+              <p className="text-sm">{errorMessage || "Ein Fehler ist aufgetreten. Bitte versuch es erneut."}</p>
             </div>
           )}
 

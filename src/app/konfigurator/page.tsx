@@ -11,11 +11,11 @@ import { konfiguratorPageQuery, settingsQuery } from "@sanity/lib/queries";
 export const metadata: Metadata = {
   title: "Video-Konfigurator | emmotion.ch",
   description:
-    "Berechnen Sie den Preis für Ihr Videoprojekt. Imagefilm, Recruiting-Video, Produktvideo oder Social Media Content – konfigurieren Sie Ihr Wunschvideo.",
+    "Berechne den Preis für dein Videoprojekt. Imagefilm, Recruiting-Video, Produktvideo oder Social Media Content – konfiguriere dein Wunschvideo.",
   openGraph: {
     title: "Video-Konfigurator | emmotion.ch",
     description:
-      "Berechnen Sie den Preis für Ihr Videoprojekt. Konfigurieren Sie Ihr Wunschvideo und erhalten Sie eine unverbindliche Preisschätzung.",
+      "Berechne den Preis für dein Videoprojekt. Konfiguriere dein Wunschvideo und erhalte eine unverbindliche Preisschätzung.",
   },
 };
 

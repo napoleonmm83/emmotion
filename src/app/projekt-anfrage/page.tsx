@@ -10,11 +10,11 @@ import { urlFor } from "@sanity/lib/image";
 export const metadata: Metadata = {
   title: "Projekt anfragen | emmotion.ch",
   description:
-    "Starten Sie Ihr Videoprojekt mit emmotion.ch. Füllen Sie unser Onboarding-Formular aus und erhalten Sie ein massgeschneidertes Angebot.",
+    "Starte dein Videoprojekt mit emmotion.ch. Füll unser Onboarding-Formular aus und erhalte ein massgeschneidertes Angebot.",
   openGraph: {
     title: "Projekt anfragen | emmotion.ch",
     description:
-      "Starten Sie Ihr Videoprojekt mit emmotion.ch. Füllen Sie unser Onboarding-Formular aus.",
+      "Starte dein Videoprojekt mit emmotion.ch. Füll unser Onboarding-Formular aus.",
   },
 };
 

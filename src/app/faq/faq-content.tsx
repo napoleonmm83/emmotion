@@ -105,7 +105,7 @@ export function FAQContent({ faqs }: FAQContentProps) {
             Häufig gestellte <span className="text-primary">Fragen</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Hier finden Sie Antworten auf die wichtigsten Fragen rund um
+            Hier findest du Antworten auf die wichtigsten Fragen rund um
             Videoproduktion, Ablauf und Kosten.
           </p>
         </motion.div>
@@ -143,10 +143,10 @@ export function FAQContent({ faqs }: FAQContentProps) {
           className="mt-16 text-center p-8 card-surface rounded-xl"
         >
           <h3 className="text-xl font-semibold text-foreground mb-2">
-            Ihre Frage ist nicht dabei?
+            Deine Frage ist nicht dabei?
           </h3>
           <p className="text-muted-foreground mb-6">
-            Kontaktieren Sie mich direkt – ich helfe Ihnen gerne weiter.
+            Kontaktiere mich direkt – ich helfe dir gerne weiter.
           </p>
           <a
             href="/kontakt"

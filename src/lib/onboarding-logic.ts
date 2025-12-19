@@ -268,13 +268,13 @@ export function validateClientInfo(info: ClientInfo): string[] {
   const errors: string[] = [];
 
   if (!info.name || info.name.trim().length < 2) {
-    errors.push("Bitte geben Sie Ihren Namen an");
+    errors.push("Bitte gib deinen Namen an");
   }
   if (!info.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) {
-    errors.push("Bitte geben Sie eine gültige E-Mail-Adresse an");
+    errors.push("Bitte gib eine gültige E-Mail-Adresse an");
   }
   if (!info.phone || info.phone.trim().length < 5) {
-    errors.push("Bitte geben Sie Ihre Telefonnummer an");
+    errors.push("Bitte gib deine Telefonnummer an");
   }
 
   return errors;
@@ -284,7 +284,7 @@ export function validateProjectDetails(details: ProjectDetails): string[] {
   const errors: string[] = [];
 
   if (!details.projectName || details.projectName.trim().length < 3) {
-    errors.push("Bitte geben Sie einen Projektnamen an");
+    errors.push("Bitte gib einen Projektnamen an");
   }
 
   return errors;

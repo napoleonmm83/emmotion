@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await rateLimitContact(ip);
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { error: "Zu viele Anfragen. Bitte versuch es später erneut." },
         {
           status: 429,
           headers: {
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
       const isValid = await verifyTurnstileToken(body.turnstileToken || "", ip);
       if (!isValid) {
         return NextResponse.json(
-          { error: "Sicherheitsüberprüfung fehlgeschlagen. Bitte versuchen Sie es erneut." },
+          { error: "Sicherheitsüberprüfung fehlgeschlagen. Bitte versuch es erneut." },
           { status: 400 }
         );
       }
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!body.name || !body.email || !body.subject || !body.message) {
       return NextResponse.json(
-        { error: "Bitte füllen Sie alle Pflichtfelder aus." },
+        { error: "Bitte füll alle Pflichtfelder aus." },
         { status: 400 }
       );
     }
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
     // Validate email format
     if (!validateEmail(body.email)) {
       return NextResponse.json(
-        { error: "Bitte geben Sie eine gültige E-Mail-Adresse ein." },
+        { error: "Bitte gib eine gültige E-Mail-Adresse ein." },
         { status: 400 }
       );
     }
@@ -256,7 +256,7 @@ export async function POST(request: NextRequest) {
 
     // Fetch success message from contact page settings
     let successMessage =
-      "Vielen Dank für Ihre Nachricht! Ich melde mich innerhalb von 24 Stunden bei Ihnen.";
+      "Vielen Dank für deine Nachricht! Ich melde mich innerhalb von 24 Stunden bei dir.";
 
     try {
       if (process.env.SANITY_API_TOKEN) {
@@ -286,7 +286,7 @@ export async function POST(request: NextRequest) {
       },
     });
     return NextResponse.json(
-      { error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut." },
+      { error: "Ein Fehler ist aufgetreten. Bitte versuch es später erneut." },
       { status: 500 }
     );
   }

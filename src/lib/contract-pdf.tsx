@@ -613,7 +613,7 @@ export function ContractPDF({
             <View style={styles.infoBox}>
               <Text style={styles.infoBoxTitle}>Hinweis zur Zahlung</Text>
               <Text style={styles.infoBoxText}>
-                Die Anzahlungsrechnung mit allen Zahlungsdetails (IBAN, QR-Code) erhalten Sie separat per E-Mail. Die Produktion beginnt nach Eingang der Anzahlung.
+                Die Anzahlungsrechnung mit allen Zahlungsdetails (IBAN, QR-Code) erhältst du separat per E-Mail. Die Produktion beginnt nach Eingang der Anzahlung.
               </Text>
             </View>
           </View>

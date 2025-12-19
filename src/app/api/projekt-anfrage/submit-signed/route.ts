@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     });
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Zu viele Anfragen. Bitte versuchen Sie es später erneut." },
+        { error: "Zu viele Anfragen. Bitte versuch es später erneut." },
         {
           status: 429,
           headers: {
@@ -161,14 +161,14 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!formData.clientInfo.name || !formData.clientInfo.email) {
       return NextResponse.json(
-        { error: "Bitte füllen Sie alle Pflichtfelder aus." },
+        { error: "Bitte füll alle Pflichtfelder aus." },
         { status: 400 }
       );
     }
 
     if (!signatureDataUrl) {
       return NextResponse.json(
-        { error: "Bitte unterschreiben Sie den Vertrag." },
+        { error: "Bitte unterschreibe den Vertrag." },
         { status: 400 }
       );
     }
@@ -473,7 +473,7 @@ export async function POST(request: NextRequest) {
       },
     });
     return NextResponse.json(
-      { error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut." },
+      { error: "Ein Fehler ist aufgetreten. Bitte versuch es später erneut." },
       { status: 500 }
     );
   }

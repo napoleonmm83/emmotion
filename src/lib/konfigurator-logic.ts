@@ -60,7 +60,7 @@ export const VIDEO_TYPES: Record<VideoType, { label: string; description: string
   },
   event: {
     label: "Eventvideo",
-    description: "Professionelle Dokumentation Ihrer Veranstaltung",
+    description: "Professionelle Dokumentation deiner Veranstaltung",
     icon: "Calendar",
   },
 };
@@ -106,7 +106,7 @@ export const EXTRAS_INFO: Record<keyof KonfiguratorExtras, { label: string; desc
   },
   music: {
     label: "Premium Musik",
-    description: "Hochwertige lizenzfreie Musik passend zu Ihrer Marke",
+    description: "Hochwertige lizenzfreie Musik passend zu deiner Marke",
     price: 150,
   },
   subtitles: {

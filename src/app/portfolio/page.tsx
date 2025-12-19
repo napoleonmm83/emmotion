@@ -10,11 +10,11 @@ import { urlFor } from "@sanity/lib/image";
 export const metadata: Metadata = {
   title: "Portfolio",
   description:
-    "Entdecken Sie eine Auswahl meiner Videoprojekte – von Imagefilmen über Eventvideos bis hin zu Social Media Content.",
+    "Entdecke eine Auswahl meiner Videoprojekte – von Imagefilmen über Eventvideos bis hin zu Social Media Content.",
   openGraph: {
     title: "Portfolio | emmotion.ch",
     description:
-      "Entdecken Sie eine Auswahl meiner Videoprojekte – von Imagefilmen über Eventvideos bis hin zu Social Media Content.",
+      "Entdecke eine Auswahl meiner Videoprojekte – von Imagefilmen über Eventvideos bis hin zu Social Media Content.",
   },
 };
 

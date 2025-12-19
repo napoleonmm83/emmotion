@@ -53,7 +53,7 @@ const FALLBACK_VALUES = [
     icon: "Users",
     title: "Persönlich statt Agentur",
     description:
-      "Bei mir arbeiten Sie direkt mit dem Produzenten. Keine Umwege, keine Missverständnisse – persönliche Betreuung von A bis Z.",
+      "Bei mir arbeitest du direkt mit dem Produzenten. Keine Umwege, keine Missverständnisse – persönliche Betreuung von A bis Z.",
   },
   {
     icon: "MapPin",
@@ -93,7 +93,7 @@ const FALLBACK_TIMELINE = [
 const FALLBACK_WHY_WORK = {
   title: "Warum mit mir arbeiten?",
   description:
-    "Bei einer grossen Agentur sind Sie einer von vielen. Bei mir sind Sie mein Fokus. Ich nehme mir Zeit für Ihr Projekt und liefere Qualität, die überzeugt.",
+    "Bei einer grossen Agentur bist du einer von vielen. Bei mir bist du mein Fokus. Ich nehme mir Zeit für dein Projekt und liefere Qualität, die überzeugt.",
   points: [
     "Direkte Kommunikation ohne Umwege",
     "Fixpreise statt böser Überraschungen",
@@ -247,8 +247,8 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
                     Nach Jahren beim Regionalfernsehen weiss ich, wie man
                     Geschichten erzählt, die berühren. Diese Erfahrung bringe ich
                     jetzt für Unternehmen im Rheintal, Liechtenstein und der
-                    Ostschweiz ein. Bei mir bekommen Sie keine anonyme Agentur,
-                    sondern einen persönlichen Partner für Ihr Videoprojekt.
+                    Ostschweiz ein. Bei mir bekommst du keine anonyme Agentur,
+                    sondern einen persönlichen Partner für dein Videoprojekt.
                   </p>
                 )}
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -506,11 +506,11 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
               className="text-center max-w-2xl mx-auto"
             >
               <h2 className="text-3xl md:text-4xl font-display text-foreground mb-6 tracking-wide">
-                Lernen Sie mich kennen
+                Lern mich kennen
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Haben Sie ein Videoprojekt im Kopf? Ich freue mich auf ein
-                unverbindliches Gespräch, um Ihre Ideen zu besprechen.
+                Hast du ein Videoprojekt im Kopf? Ich freue mich auf ein
+                unverbindliches Gespräch, um deine Ideen zu besprechen.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link

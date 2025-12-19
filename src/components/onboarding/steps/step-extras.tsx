@@ -71,7 +71,7 @@ export function StepExtras({ extras, serviceType, onChange }: StepExtrasProps) {
   return (
     <div className="space-y-3">
       <p className="text-sm text-muted-foreground mb-4">
-        Wählen Sie optionale Zusatzleistungen für Ihr Projekt.
+        Wähle optionale Zusatzleistungen für dein Projekt.
       </p>
 
       {availableExtras.map((option) => {

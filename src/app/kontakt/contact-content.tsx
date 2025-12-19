@@ -14,9 +14,9 @@ const defaultContact = {
 
 // Fallback Hero
 const defaultHero = {
-  title: "Starten Sie Ihr",
+  title: "Starte dein",
   titleHighlight: "Videoprojekt",
-  subtitle: "Sie haben ein Videoprojekt im Kopf? Ich freue mich darauf, mehr darüber zu erfahren. Schreiben Sie mir – unverbindlich und unkompliziert.",
+  subtitle: "Du hast ein Videoprojekt im Kopf? Ich freue mich darauf, mehr darüber zu erfahren. Schreib mir – unverbindlich und unkompliziert.",
 };
 
 // Fallback Sidebar
@@ -31,15 +31,15 @@ const defaultSidebar = {
     "Faire & transparente Preise",
   ],
   quickResponseTitle: "Schnelle Antwort garantiert",
-  quickResponseText: "Ich melde mich in der Regel innerhalb von 24 Stunden bei Ihnen. Für dringende Anfragen erreichen Sie mich am besten telefonisch.",
+  quickResponseText: "Ich melde mich in der Regel innerhalb von 24 Stunden bei dir. Für dringende Anfragen erreichst du mich am besten telefonisch.",
 };
 
 // Fallback Regions
 const defaultRegions = {
   title: "Einsatzgebiet",
-  subtitle: "Vor Ort für Sie da – in der gesamten Ostschweiz, Liechtenstein und darüber hinaus.",
+  subtitle: "Vor Ort für dich da – in der gesamten Ostschweiz, Liechtenstein und darüber hinaus.",
   regionList: ["Rheintal", "Liechtenstein", "St. Gallen", "Vorarlberg", "Appenzell", "Thurgau", "Graubünden", "Zürich"],
-  footerText: "Projekte ausserhalb dieser Region? Kein Problem – sprechen Sie mich an!",
+  footerText: "Projekte ausserhalb dieser Region? Kein Problem – sprich mich an!",
 };
 
 interface ContactFormSettings {

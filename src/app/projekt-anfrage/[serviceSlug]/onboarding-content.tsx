@@ -291,7 +291,7 @@ export function OnboardingContent({
       router.push("/projekt-anfrage/bestaetigung");
     } catch (error) {
       console.error("Error submitting:", error);
-      alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+      alert("Ein Fehler ist aufgetreten. Bitte versuche es erneut.");
     } finally {
       setIsSubmitting(false);
     }
@@ -349,7 +349,7 @@ export function OnboardingContent({
               {serviceLabel} anfragen
             </h1>
             <p className="text-muted-foreground">
-              {service?.shortDescription || `Konfigurieren Sie Ihr ${serviceLabel}-Projekt`}
+              {service?.shortDescription || `Konfiguriere dein ${serviceLabel}-Projekt`}
             </p>
           </motion.div>
 
@@ -436,7 +436,7 @@ export function OnboardingContent({
                     <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-medium text-destructive mb-2">
-                        Bitte füllen Sie folgende Pflichtfelder aus:
+                        Bitte fülle folgende Pflichtfelder aus:
                       </p>
                       <ul className="list-disc list-inside text-sm text-destructive/80 space-y-1">
                         {validationErrors.map((field) => (

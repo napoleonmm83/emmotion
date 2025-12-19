@@ -24,7 +24,7 @@ export function StepExtras({ extras, onChange }: StepExtrasProps) {
   return (
     <div className="space-y-3">
       <p className="text-sm text-muted-foreground mb-4">
-        Wählen Sie optionale Zusatzleistungen für Ihr Video.
+        Wähle optionale Zusatzleistungen für dein Video.
       </p>
 
       {(Object.entries(EXTRAS_INFO) as [keyof KonfiguratorExtras, typeof EXTRAS_INFO[keyof KonfiguratorExtras]][]).map(
