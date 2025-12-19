@@ -6,7 +6,7 @@
 
 ## Übersicht
 
-Diese Dokumentation beschreibt alle implementierten Sicherheitsmassnahmen für die emmotion.ch Website.
+Diese Dokumentation beschreibt alle implementierten Sicherheitsmassnahmen für deine emmotion.ch Website.
 
 ---
 
@@ -270,10 +270,10 @@ if (!validVideoTypes.includes(config.videoType)) {
 - [ ] Redis (Upstash) erreichbar
 
 ### Regelmässig prüfen
-- [ ] npm/pnpm audit für Dependency-Vulnerabilities
-- [ ] Rate Limit Logs auf Anomalien
-- [ ] Sanity Submissions auf Spam-Muster
-- [ ] Error Logs auf verdächtige Aktivitäten
+- [ ] `pnpm audit` für Dependency-Vulnerabilities
+- [ ] Rate Limit Logs auf Anomalien checken
+- [ ] Sanity Submissions auf Spam-Muster prüfen
+- [ ] Error Logs auf verdächtige Aktivitäten durchschauen
 
 ---
 
@@ -295,10 +295,10 @@ if (!validVideoTypes.includes(config.videoType)) {
 
 ## 13. Kontakt bei Sicherheitsproblemen
 
-Bei Entdeckung von Sicherheitslücken:
+Falls du eine Sicherheitslücke entdeckst:
 1. **Nicht öffentlich melden**
 2. E-Mail an: marcus@emmotion.ch
-3. Erwartete Antwortzeit: 24-48 Stunden
+3. Antwort innerhalb von 24-48 Stunden
 
 ---
 
