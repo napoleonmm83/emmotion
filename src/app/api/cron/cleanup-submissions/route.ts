@@ -12,17 +12,31 @@ const sanityClient = createClient({
 // Retention period in days (GDPR compliant)
 const RETENTION_DAYS = 60;
 
+/**
+ * Verify that request comes from Vercel Cron
+ * Vercel automatically sends Authorization: Bearer <CRON_SECRET> header
+ */
+function isAuthorizedCronRequest(request: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+
+  // In development without CRON_SECRET, block all requests
+  if (!cronSecret) {
+    console.error("CRON_SECRET not configured - blocking request");
+    return false;
+  }
+
+  const authHeader = request.headers.get("authorization");
+  return authHeader === `Bearer ${cronSecret}`;
+}
+
 export async function GET(request: NextRequest) {
+  // Verify cron authentication
+  if (!isAuthorizedCronRequest(request)) {
+    console.warn("Unauthorized cron access attempt");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    // Verify cron secret (Vercel sets this header for cron jobs)
-    const authHeader = request.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
-
-    // Allow if it's a Vercel cron job or has valid secret
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     // Calculate cutoff date
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - RETENTION_DAYS);

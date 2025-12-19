@@ -16,18 +16,40 @@ const sanityClient = createClient({
   token: process.env.SANITY_API_TOKEN,
 });
 
+/**
+ * Verify Sanity webhook request
+ * Sanity sends the secret in the 'sanity-webhook-secret' header
+ */
+function isAuthorizedWebhook(request: NextRequest): boolean {
+  const webhookSecret = process.env.SANITY_WEBHOOK_SECRET;
+
+  // Require webhook secret in production
+  if (!webhookSecret) {
+    console.error("SANITY_WEBHOOK_SECRET not configured - blocking request");
+    return false;
+  }
+
+  // Check both possible header names
+  const receivedSecret =
+    request.headers.get("sanity-webhook-secret") ||
+    request.headers.get("x-sanity-webhook-secret");
+
+  if (receivedSecret !== webhookSecret) {
+    console.warn("Webhook secret mismatch");
+    return false;
+  }
+
+  return true;
+}
+
 // Webhook from Sanity when regenerateContract is set to true
 export async function POST(request: NextRequest) {
-  try {
-    // Verify webhook secret (optional but recommended)
-    // Sanity sends secret in 'sanity-webhook-signature' header
-    const webhookSecret = request.headers.get("sanity-webhook-signature") || request.headers.get("x-sanity-webhook-secret");
-    if (process.env.SANITY_WEBHOOK_SECRET && webhookSecret !== process.env.SANITY_WEBHOOK_SECRET) {
-      console.log("Webhook secret mismatch - received:", webhookSecret?.substring(0, 10) + "...");
-      // For now, allow requests without secret for easier setup
-      // return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // Verify webhook authentication
+  if (!isAuthorizedWebhook(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  try {
     const body = await request.json();
 
     // Handle Sanity webhook payload

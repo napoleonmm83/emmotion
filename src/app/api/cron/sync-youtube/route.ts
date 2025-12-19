@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@sanity/client";
 import { put, list } from "@vercel/blob";
-import { fetchPlaylistData, YouTubeVideo } from "@/lib/youtube";
+import { fetchPlaylistData } from "@/lib/youtube";
 
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -11,22 +11,31 @@ const sanityClient = createClient({
   token: process.env.SANITY_API_TOKEN,
 });
 
+/**
+ * Verify that request comes from Vercel Cron
+ * Vercel automatically sends Authorization: Bearer <CRON_SECRET> header
+ */
+function isAuthorizedCronRequest(request: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+
+  // In development without CRON_SECRET, block all requests
+  if (!cronSecret) {
+    console.error("CRON_SECRET not configured - blocking request");
+    return false;
+  }
+
+  const authHeader = request.headers.get("authorization");
+  return authHeader === `Bearer ${cronSecret}`;
+}
+
 export async function GET(request: NextRequest) {
+  // Verify cron authentication
+  if (!isAuthorizedCronRequest(request)) {
+    console.warn("Unauthorized YouTube sync access attempt");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    // Verify cron secret (Vercel sets this header for cron jobs)
-    const authHeader = request.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET;
-    const { searchParams } = new URL(request.url);
-    const manualTrigger = searchParams.get("manual") === "true";
-
-    // Allow if:
-    // 1. No CRON_SECRET is set (development)
-    // 2. Valid authorization header
-    // 3. Manual trigger with Sanity token check (for admin use)
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}` && !manualTrigger) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     // Get TV Productions settings from Sanity
     const tvSettings = await sanityClient.fetch<{
       _id: string;

@@ -24,10 +24,10 @@ export function VideoUploadInput(props: StringInputProps) {
         return;
       }
 
-      // Validate file size (max 500MB for Vercel Blob)
-      const maxSize = 500 * 1024 * 1024;
+      // Validate file size (max 200MB)
+      const maxSize = 200 * 1024 * 1024;
       if (file.size > maxSize) {
-        setError("Datei ist zu gross. Maximum: 500MB");
+        setError("Datei ist zu gross. Maximum: 200MB");
         return;
       }
 
@@ -146,7 +146,7 @@ export function VideoUploadInput(props: StringInputProps) {
                     Klicken zum Auswählen
                   </Text>
                   <Text size={0} muted>
-                    MP4, WebM • Max. 500MB
+                    MP4, WebM • Max. 200MB
                   </Text>
                 </>
               )}

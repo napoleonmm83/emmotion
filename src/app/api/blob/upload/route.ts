@@ -1,8 +1,116 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
-// Client upload handler - no body size limit
+// Rate limiting: Max uploads per IP per hour
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 10; // Max 10 uploads per hour
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
+
+function getClientIP(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const realIP = request.headers.get("x-real-ip");
+
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  if (realIP) {
+    return realIP;
+  }
+  return "unknown";
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return false;
+  }
+
+  if (record.count >= RATE_LIMIT) {
+    return true;
+  }
+
+  record.count++;
+  return false;
+}
+
+function isValidOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin") || "";
+  const referer = request.headers.get("referer") || "";
+
+  // Erlaubte Quellen
+  const allowedPatterns = [
+    /^https?:\/\/localhost(:\d+)?/,           // Lokale Entwicklung
+    /^https?:\/\/127\.0\.0\.1(:\d+)?/,        // Lokale Entwicklung
+    /^https:\/\/emmotion\.ch/,                 // Produktion
+    /^https:\/\/.*\.emmotion\.ch/,            // Subdomains
+    /^https:\/\/.*\.vercel\.app/,             // Vercel Preview
+  ];
+
+  // Prüfe Origin oder Referer
+  const sourceUrl = origin || referer;
+
+  if (!sourceUrl) {
+    // Kein Origin/Referer - nur in Entwicklung erlauben
+    return process.env.NODE_ENV === "development";
+  }
+
+  // Muss aus dem Studio kommen
+  const isFromStudio = referer.includes("/studio");
+  if (!isFromStudio && process.env.NODE_ENV !== "development") {
+    console.warn("Upload attempt not from studio:", referer);
+    return false;
+  }
+
+  return allowedPatterns.some(pattern => pattern.test(sourceUrl));
+}
+
+// Upload Secret für zusätzliche Sicherheit (optional)
+const UPLOAD_SECRET = process.env.BLOB_UPLOAD_SECRET;
+
+function hasValidSecret(request: Request): boolean {
+  if (!UPLOAD_SECRET) {
+    // Wenn kein Secret konfiguriert, überspringen
+    return true;
+  }
+
+  const authHeader = request.headers.get("x-upload-secret");
+  return authHeader === UPLOAD_SECRET;
+}
+
+// Client upload handler
 export async function POST(request: Request): Promise<NextResponse> {
+  const ip = getClientIP(request);
+
+  // 1. Rate Limiting prüfen
+  if (isRateLimited(ip)) {
+    console.warn(`Rate limit exceeded for IP: ${ip}`);
+    return NextResponse.json(
+      { error: "Zu viele Uploads. Bitte warten Sie eine Stunde." },
+      { status: 429 }
+    );
+  }
+
+  // 2. Origin validieren
+  if (!isValidOrigin(request)) {
+    console.warn(`Invalid origin for upload from IP: ${ip}`);
+    return NextResponse.json(
+      { error: "Nicht autorisiert" },
+      { status: 403 }
+    );
+  }
+
+  // 3. Optional: Upload Secret prüfen
+  if (!hasValidSecret(request)) {
+    console.warn(`Invalid upload secret from IP: ${ip}`);
+    return NextResponse.json(
+      { error: "Nicht autorisiert" },
+      { status: 403 }
+    );
+  }
+
   const body = (await request.json()) as HandleUploadBody;
 
   try {
@@ -10,14 +118,20 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async () => {
-        // Hier könnte Auth-Check stattfinden
         return {
-          allowedContentTypes: ["video/mp4", "video/webm", "video/quicktime", "video/x-msvideo"],
-          maximumSizeInBytes: 500 * 1024 * 1024, // 500MB
+          // Nur Video-Dateien erlauben
+          allowedContentTypes: [
+            "video/mp4",
+            "video/webm",
+            "video/quicktime",
+            "video/x-msvideo",
+          ],
+          // Reduziert von 500MB auf 200MB
+          maximumSizeInBytes: 200 * 1024 * 1024,
         };
       },
       onUploadCompleted: async ({ blob }) => {
-        console.log("Video uploaded:", blob.url);
+        console.log(`Video uploaded by ${ip}:`, blob.url);
       },
     });
 
@@ -25,7 +139,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     console.error("Blob upload error:", error);
     return NextResponse.json(
-      { error: "Upload failed" },
+      { error: "Upload fehlgeschlagen" },
       { status: 500 }
     );
   }
