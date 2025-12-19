@@ -175,12 +175,15 @@ async function getTVProductionsPreview() {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     if (!data?.enabled || !data.cachedData?.videos?.length) return null;
 
-    // Random thumbnail aus den TV-Projekten
+    // Deterministisches Thumbnail basierend auf dem aktuellen Tag
+    // Wechselt täglich, aber ist konsistent zwischen Server und Client
     const videos = data.cachedData.videos;
-    const randomVideo = videos[Math.floor(Math.random() * Math.min(videos.length, 20))];
+    const dayOfYear = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+    const index = dayOfYear % Math.min(videos.length, 20);
+    const selectedVideo = videos[index];
 
     return {
-      thumbnail: randomVideo?.thumbnailUrl || null,
+      thumbnail: selectedVideo?.thumbnailUrl || null,
       totalVideos: data.cachedData.totalVideos,
       totalViews: data.cachedData.totalViews,
     };
