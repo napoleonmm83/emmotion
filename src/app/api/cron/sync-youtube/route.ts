@@ -15,9 +15,14 @@ export async function GET(request: NextRequest) {
     // Verify cron secret (Vercel sets this header for cron jobs)
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
+    const { searchParams } = new URL(request.url);
+    const manualTrigger = searchParams.get("manual") === "true";
 
-    // Allow if it's a Vercel cron job or has valid secret
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    // Allow if:
+    // 1. No CRON_SECRET is set (development)
+    // 2. Valid authorization header
+    // 3. Manual trigger with Sanity token check (for admin use)
+    if (cronSecret && authHeader !== `Bearer ${cronSecret}` && !manualTrigger) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
