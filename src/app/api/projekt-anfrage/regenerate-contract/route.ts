@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
         "settings": *[_id == "siteSettings"][0] {
           contact {
             companyName,
+            companyTagline,
             ownerName,
             email,
             phone,
@@ -90,6 +91,7 @@ export async function POST(request: NextRequest) {
     // Merge company info from global settings
     const companyInfo = result.settings?.contact ? {
       name: result.settings.contact.companyName || "emmotion.ch",
+      tagline: result.settings.contact.companyTagline || "Videoproduktion für Unternehmen",
       owner: result.settings.contact.ownerName || "Marcus Martini",
       address: [result.settings.contact.street, result.settings.contact.city].filter(Boolean).join(", ") || "Rheintal, Schweiz",
       email: result.settings.contact.email || "marcus@emmotion.ch",
