@@ -227,7 +227,7 @@ function StatCard({
   );
 }
 
-function VideoCard({ video, priority = false }: { video: Video; priority?: boolean }) {
+function VideoCard({ video, priority = false, number }: { video: Video; priority?: boolean; number?: number }) {
   const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
   const [imgSrc, setImgSrc] = useState(video.thumbnailUrl);
   const [imgError, setImgError] = useState(false);
@@ -266,6 +266,12 @@ function VideoCard({ video, priority = false }: { video: Video; priority?: boole
         <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white font-medium">
           {video.duration}
         </div>
+        {/* Number badge */}
+        {number && (
+          <div className="absolute top-2 left-2 bg-black/60 px-1.5 py-0.5 rounded text-[10px] text-white/60 font-medium">
+            #{number}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -659,6 +665,7 @@ export function TVProduktionenContent({
                       key={video.youtubeId}
                       video={video}
                       priority={index < 6}
+                      number={index + 1}
                     />
                   ))}
                 </motion.div>
