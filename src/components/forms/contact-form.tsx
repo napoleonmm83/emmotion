@@ -338,9 +338,9 @@ export function ContactForm({ className = "", variant = "default", settings }: C
         />
       </div>
 
-      {/* Cloudflare Turnstile */}
+      {/* Cloudflare Turnstile - suppressHydrationWarning wegen dynamischer Widget-Injektion */}
       {TURNSTILE_SITE_KEY && (
-        <div className="flex justify-center">
+        <div className="flex justify-center" suppressHydrationWarning>
           <Turnstile
             ref={turnstileRef}
             siteKey={TURNSTILE_SITE_KEY}
