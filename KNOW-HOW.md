@@ -1268,6 +1268,64 @@ const spamPatterns = [
 
 ---
 
+### Security Headers (next.config.ts)
+
+Alle wichtigen Sicherheitsheader sind in `next.config.ts` konfiguriert:
+
+**HSTS (HTTP Strict Transport Security):**
+```typescript
+{
+  key: "Strict-Transport-Security",
+  value: "max-age=31536000; includeSubDomains; preload",
+}
+```
+- `max-age=31536000` = 1 Jahr
+- `includeSubDomains` = Gilt für alle Subdomains
+- `preload` = Ermöglicht Aufnahme in Browser-Preload-Liste
+
+**Cross-Origin-Opener-Policy (COOP):**
+```typescript
+{
+  key: "Cross-Origin-Opener-Policy",
+  value: "same-origin-allow-popups",
+}
+```
+- Schützt vor Spectre-ähnlichen Angriffen
+- `same-origin-allow-popups` erlaubt OAuth/Payment Popups
+
+**Content Security Policy (CSP):**
+Konfiguriert für Sanity CDN, YouTube Embeds, Turnstile, Vercel Blob, etc.
+
+**Weitere Header:**
+- `X-Frame-Options: SAMEORIGIN` - Clickjacking-Schutz
+- `X-Content-Type-Options: nosniff` - MIME-Sniffing verhindern
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy` - Browser-Features einschränken
+
+**Hinweis:** React Error #418 (Hydration Mismatch) kann durch Cloudflare Turnstile verursacht werden, da es dynamisch Inhalte injiziert. Dies ist ein bekanntes Verhalten und nicht kritisch.
+
+---
+
+### Video Player Error Handling
+
+VideoPlayer zeigt automatisch das Poster-Bild als Fallback, wenn das Video nicht geladen werden kann:
+
+```typescript
+const [hasError, setHasError] = useState(false);
+
+<video
+  onError={() => setHasError(true)}
+/>
+
+{hasError && poster && (
+  <div className="absolute inset-0">
+    <img src={poster} alt="" className="w-full h-full object-cover" />
+  </div>
+)}
+```
+
+---
+
 ## Bexio API Integration
 
 ### API Versionen
