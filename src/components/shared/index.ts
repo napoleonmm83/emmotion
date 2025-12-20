@@ -1,6 +1,7 @@
 export { Container } from "./container";
 export { SectionHeader } from "./section-header";
 export { VideoPlayer } from "./video-player";
+export { ImageWithFallback } from "./image-with-fallback";
 export { YouTubeEmbed, isEmbeddableVideo, getVideoProvider } from "./youtube-embed";
 export { VideoThumbnail } from "./video-thumbnail";
 export { VideoLightbox } from "./video-lightbox";

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Container, SectionHeader } from "@/components/shared";
+import { Container, SectionHeader, ImageWithFallback } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 
 const iconMap = {
@@ -142,13 +142,14 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                 className="relative"
               >
                 <Card className="aspect-video">
-                  <Image
+                  <ImageWithFallback
                     src={service.image}
                     alt={service.title}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     priority
+                    fallbackClassName="absolute inset-0 rounded-lg"
                   />
                 </Card>
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-xl gradient-primary opacity-20 blur-2xl" />

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+
 import {
   Film,
   Video,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Container } from "@/components/shared";
+import { Container, ImageWithFallback } from "@/components/shared";
 import { Card } from "@/components/ui/card";
 
 // Icon mapping for dynamic icons from Sanity
@@ -207,12 +207,13 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
                     >
                       {/* Image */}
                       <div className="relative w-full md:w-2/5 aspect-video md:aspect-auto overflow-hidden">
-                        <Image
+                        <ImageWithFallback
                           src={service.image}
                           alt={service.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-700"
                           sizes="(max-width: 768px) 100vw, 40vw"
+                          fallbackClassName="absolute inset-0 h-full min-h-[200px]"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-background/20" />
                       </div>

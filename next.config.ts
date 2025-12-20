@@ -39,16 +39,16 @@ const securityHeaders = [
     value: [
       // Standardmässig nur von eigener Domain laden
       "default-src 'self'",
-      // Scripts: eigene Domain + Turnstile
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com",
+      // Scripts: eigene Domain + Turnstile + Vercel Analytics
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://va.vercel-scripts.com",
       // Styles: eigene Domain + inline (für Tailwind)
       "style-src 'self' 'unsafe-inline'",
       // Bilder: eigene Domain + CDNs
       "img-src 'self' data: blob: https://cdn.sanity.io https://i.ytimg.com https://images.unsplash.com https://*.public.blob.vercel-storage.com",
       // Fonts: eigene Domain
       "font-src 'self'",
-      // API-Verbindungen
-      "connect-src 'self' https://*.sanity.io https://challenges.cloudflare.com https://plausible.io wss://*.sanity.io",
+      // API-Verbindungen + Vercel Analytics
+      "connect-src 'self' https://*.sanity.io https://challenges.cloudflare.com https://plausible.io wss://*.sanity.io https://vitals.vercel-insights.com",
       // Video/Audio Medien
       "media-src 'self' https://*.public.blob.vercel-storage.com https://cdn.sanity.io blob:",
       // Frames: YouTube Embeds + Turnstile
