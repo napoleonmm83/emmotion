@@ -642,7 +642,7 @@ const Icon = iconMap[service.icon as keyof typeof iconMap] || Film;
 
 ### VideoLightbox
 
-Desktop-Lightbox für Videos im Portfolio. Auf Mobile wird zum Fallback (Link zur Detailseite) gewechselt.
+Desktop-Lightbox für Videos im Portfolio und TV-Produktionen. Auf Mobile wird zum Fallback (Link zur Detailseite) gewechselt.
 
 ```tsx
 import { VideoLightbox } from "@/components/shared";
@@ -660,8 +660,114 @@ import { VideoLightbox } from "@/components/shared";
 ```
 
 **Verhalten:**
-- **Desktop (md+):** Klick öffnet Video-Modal mit autoplay
+- **Desktop (md+):** Klick öffnet Video-Modal (70% Viewport) mit autoplay
 - **Mobile:** Klick führt zur Detailseite (via fallbackWrapper)
+
+**Lightbox-Grösse anpassen:**
+```tsx
+// In DialogContent className:
+className="w-[70vw] h-[70vh] !max-w-none ..."
+// !max-w-none überschreibt shadcn's sm:max-w-lg
+```
+
+---
+
+### Dialog Backdrop Blur
+
+Der Dialog-Hintergrund ist standardmässig mit Blur versehen:
+
+```tsx
+// components/ui/dialog.tsx - DialogOverlay
+className="... bg-black/60 backdrop-blur-sm"
+```
+
+Für stärkeren Blur: `backdrop-blur-md` oder `backdrop-blur-lg`
+
+---
+
+### TV-Produktionen Patterns
+
+#### Video-Nummerierung
+
+Chronologische Nummerierung (ältestes Video = #1):
+
+```tsx
+{sortedVideos.map((video, index) => (
+  <VideoCard
+    key={video.youtubeId}
+    video={video}
+    number={sortedVideos.length - index}  // Umgekehrte Nummerierung
+  />
+))}
+```
+
+Anzeige in der Card (Datumszeile, rechts):
+```tsx
+<div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
+  <div className="flex items-center gap-1">
+    <Calendar className="w-3 h-3" />
+    {formatDate(video.publishedAt)}
+  </div>
+  {number && (
+    <span className="text-muted-foreground/50">#{number}</span>
+  )}
+</div>
+```
+
+#### Duplikat-Entfernung
+
+YouTube-Playlists können Videos mehrfach enthalten. Duplikate werden client-seitig entfernt:
+
+```typescript
+const videos = useMemo(() => {
+  const raw = tvData.cachedData?.videos || [];
+  const seen = new Set<string>();
+  return raw.filter((video) => {
+    if (seen.has(video.youtubeId)) return false;
+    seen.add(video.youtubeId);
+    return true;
+  });
+}, [tvData.cachedData?.videos]);
+```
+
+#### Lightbox für YouTube-Videos
+
+TV-Produktionen verwendet eine eigene Lightbox-Implementation:
+
+```tsx
+function VideoCard({ video, number }: { video: Video; number?: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
+
+  return (
+    <>
+      {/* Desktop: Opens lightbox */}
+      <motion.div
+        className="hidden md:block cursor-pointer ..."
+        onClick={() => setIsOpen(true)}
+      >
+        {cardContent}
+      </motion.div>
+
+      {/* Mobile: Direct YouTube link */}
+      <motion.a
+        href={youtubeUrl}
+        target="_blank"
+        className="md:hidden ..."
+      >
+        {cardContent}
+      </motion.a>
+
+      {/* Lightbox Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="w-[70vw] h-[70vh] !max-w-none ...">
+          <VideoPlayer src={youtubeUrl} ... />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+```
 
 ---
 
@@ -932,8 +1038,12 @@ TURNSTILE_SECRET_KEY=xxx             # Privat, für Backend-Verifikation
 # Vercel Blob (Video-Upload)
 BLOB_READ_WRITE_TOKEN=xxx
 
+# YouTube API
+YOUTUBE_API_KEY=xxx  # YouTube Data API v3 Key
+
 # Cron Jobs (Sicherheit)
-CRON_SECRET=xxx  # Zufälliger String für Cron-Job-Authentifizierung
+CRON_SECRET=xxx               # Für automatische Vercel Cron Jobs
+NEXT_PUBLIC_SYNC_SECRET=xxx   # Für manuelle Syncs vom CMS
 
 # Site
 NEXT_PUBLIC_SITE_URL=https://emmotion.ch
@@ -987,6 +1097,56 @@ export async function GET(request: NextRequest) {
 ```
 
 Vercel fügt automatisch den `Authorization: Bearer <CRON_SECRET>` Header hinzu, wenn der Cron-Job ausgeführt wird.
+
+---
+
+### YouTube Sync - Manuelle Authentifizierung
+
+Für manuelle Syncs vom CMS (Sanity Studio) wird ein separates Secret verwendet:
+
+**Environment Variables:**
+```env
+CRON_SECRET=xxx               # Für automatische Vercel Cron Jobs (Header-Auth)
+NEXT_PUBLIC_SYNC_SECRET=xxx   # Für manuelle Syncs vom CMS (URL-Parameter)
+```
+
+**API Route (`/api/cron/sync-youtube`):**
+```typescript
+function isAuthorizedRequest(request: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+  const syncSecret = process.env.NEXT_PUBLIC_SYNC_SECRET;
+  const authHeader = request.headers.get("authorization");
+
+  // Vercel Cron auth header
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    return true;
+  }
+
+  // Manual sync with secret (CMS button)
+  const providedSecret = request.nextUrl.searchParams.get("secret");
+  if (providedSecret) {
+    if ((cronSecret && providedSecret === cronSecret) ||
+        (syncSecret && providedSecret === syncSecret)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+```
+
+**CMS Sync Button:**
+```typescript
+// sanity/components/YouTubeSyncButton.tsx
+const syncSecret = process.env.NEXT_PUBLIC_SYNC_SECRET;
+const url = `${baseUrl}/api/cron/sync-youtube?secret=${syncSecret}`;
+await fetch(url);
+```
+
+**Secret generieren:**
+```bash
+openssl rand -hex 32
+```
 
 ---
 
