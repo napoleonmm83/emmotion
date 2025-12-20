@@ -191,17 +191,13 @@ export async function fetchPlaylistData(playlistId: string): Promise<PlaylistDat
   let totalViews = 0;
   let totalLikes = 0;
   let totalComments = 0;
-  const skippedVideos: string[] = [];
 
   const videos: YouTubeVideo[] = playlistItems
     .map((item) => {
       const videoId = item.snippet.resourceId.videoId;
       const details = videoDetails.get(videoId);
 
-      if (!details) {
-        skippedVideos.push(`${item.snippet.title} (${videoId}) - keine Details verfügbar`);
-        return null;
-      }
+      if (!details) return null;
 
       const viewCount = parseInt(details.statistics.viewCount || "0", 10);
       const likeCount = parseInt(details.statistics.likeCount || "0", 10);
@@ -225,13 +221,6 @@ export async function fetchPlaylistData(playlistId: string): Promise<PlaylistDat
       };
     })
     .filter((video): video is YouTubeVideo => video !== null);
-
-  // Log skipped videos for debugging
-  if (skippedVideos.length > 0) {
-    console.log(`Skipped ${skippedVideos.length} videos (deleted/private/unavailable):`);
-    skippedVideos.forEach((v) => console.log(`  - ${v}`));
-  }
-  console.log(`Playlist total: ${playlistItems.length}, Available: ${videos.length}, Skipped: ${skippedVideos.length}`);
 
   return {
     videos,

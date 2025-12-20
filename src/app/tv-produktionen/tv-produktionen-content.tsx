@@ -387,19 +387,11 @@ export function TVProduktionenContent({
   const videos = useMemo(() => {
     const raw = tvData.cachedData?.videos || [];
     const seen = new Set<string>();
-    const duplicates: string[] = [];
-    const filtered = raw.filter((video) => {
-      if (seen.has(video.youtubeId)) {
-        duplicates.push(video.title);
-        return false;
-      }
+    return raw.filter((video) => {
+      if (seen.has(video.youtubeId)) return false;
       seen.add(video.youtubeId);
       return true;
     });
-    if (duplicates.length > 0) {
-      console.log(`Duplikate entfernt (${duplicates.length}):`, duplicates);
-    }
-    return filtered;
   }, [tvData.cachedData?.videos]);
 
   // Verfügbare Jahre aus den Videos extrahieren (absteigend sortiert)
