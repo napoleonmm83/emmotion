@@ -564,20 +564,33 @@ export async function POST(request: Request) {
 
 ## Styling Patterns
 
-### Card Surface
-
-```css
-/* globals.css */
-.card-surface {
-  background: hsl(var(--muted) / 0.3);
-  border: 1px solid hsl(var(--border));
-}
-```
+### Card Component (shadcn/ui)
 
 ```tsx
-<div className="card-surface rounded-xl p-6">
+import { Card } from "@/components/ui/card";
+
+// Basic usage
+<Card className="p-6">
   {/* Content */}
-</div>
+</Card>
+
+// With hover effect
+<Card className="p-6 hover:border-primary/30">
+  {/* Content */}
+</Card>
+
+// For animated cards, wrap Card inside motion.div
+<motion.div variants={itemVariants}>
+  <Card className="p-6 h-full">
+    {/* Content */}
+  </Card>
+</motion.div>
+
+// Edge-to-edge images (Card has overflow-hidden)
+<Card>
+  <Image src="..." fill className="object-cover" />
+  <div className="p-6">{/* Text content */}</div>
+</Card>
 ```
 
 ### Gradient Primary
