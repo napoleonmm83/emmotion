@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 import type { PortableTextBlock } from "@portabletext/types";
 
 interface FAQ {
@@ -74,7 +75,7 @@ export function FAQContent({ faqs }: FAQContentProps) {
               <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 pb-3 border-b-2 border-primary/20">
                 {CATEGORY_LABELS[category] || category}
               </h2>
-              <div className="card-surface rounded-xl px-5 md:px-6">
+              <Card className="px-5 md:px-6">
                 <Accordion type="multiple">
                   {groupedFaqs[category].map((faq) => (
                     <AccordionItem key={faq._id} value={faq._id} className="border-border">
@@ -87,7 +88,7 @@ export function FAQContent({ faqs }: FAQContentProps) {
                     </AccordionItem>
                   ))}
                 </Accordion>
-              </div>
+              </Card>
             </div>
           ))}
         </motion.div>
@@ -97,20 +98,22 @@ export function FAQContent({ faqs }: FAQContentProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 text-center p-8 card-surface rounded-xl"
+          className="mt-16"
         >
-          <h3 className="text-xl font-semibold text-foreground mb-2">
-            Deine Frage ist nicht dabei?
-          </h3>
-          <p className="text-muted-foreground mb-6">
-            Kontaktiere mich direkt – ich helfe dir gerne weiter.
-          </p>
-          <a
-            href="/kontakt"
-            className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-          >
-            Kontakt aufnehmen
-          </a>
+          <Card className="p-8 text-center">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Deine Frage ist nicht dabei?
+            </h3>
+            <p className="text-muted-foreground mb-6">
+              Kontaktiere mich direkt – ich helfe dir gerne weiter.
+            </p>
+            <a
+              href="/kontakt"
+              className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            >
+              Kontakt aufnehmen
+            </a>
+          </Card>
         </motion.div>
       </Container>
     </section>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Container, SectionHeader } from "@/components/shared";
 import { ContactForm } from "@/components/forms/contact-form";
+import { Card } from "@/components/ui/card";
 
 // Fallback Kontaktdaten
 const defaultContact = {
@@ -99,67 +100,65 @@ export function ContactSection({ settings }: ContactSectionProps) {
               viewport={{ once: true }}
               className="space-y-8"
             >
-              <motion.div
-                variants={itemVariants}
-                className="card-surface rounded-xl p-8"
-              >
-                <h3 className="text-xl font-medium text-foreground mb-6">
-                  Kontaktdaten
-                </h3>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                      <Mail className="w-5 h-5 text-primary" />
+              <motion.div variants={itemVariants}>
+                <Card className="p-8">
+                  <h3 className="text-xl font-medium text-foreground mb-6">
+                    Kontaktdaten
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <Mail className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          E-Mail
+                        </p>
+                        <a href={`mailto:${contact.email}`} className="text-foreground hover:text-primary transition-colors">
+                          {contact.email}
+                        </a>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        E-Mail
-                      </p>
-                      <a href={`mailto:${contact.email}`} className="text-foreground hover:text-primary transition-colors">
-                        {contact.email}
-                      </a>
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <Phone className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          Telefon
+                        </p>
+                        <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary transition-colors">
+                          {contact.phone}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <MapPin className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          Region
+                        </p>
+                        <p className="text-foreground">
+                          {contact.region}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                      <Phone className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        Telefon
-                      </p>
-                      <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-foreground hover:text-primary transition-colors">
-                        {contact.phone}
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                      <MapPin className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        Region
-                      </p>
-                      <p className="text-foreground">
-                        {contact.region}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                </Card>
               </motion.div>
-              <motion.div
-                variants={itemVariants}
-                className="card-surface rounded-xl p-8"
-              >
-                <h3 className="text-xl font-medium text-foreground mb-4">
-                  Antwortzeit
-                </h3>
-                <p className="text-muted-foreground">
-                  Ich melde mich in der Regel innerhalb von 24 Stunden bei
-                  dir. Dringende Anfragen erreichen mich am besten
-                  telefonisch.
-                </p>
+              <motion.div variants={itemVariants}>
+                <Card className="p-8">
+                  <h3 className="text-xl font-medium text-foreground mb-4">
+                    Antwortzeit
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Ich melde mich in der Regel innerhalb von 24 Stunden bei
+                    dir. Dringende Anfragen erreichen mich am besten
+                    telefonisch.
+                  </p>
+                </Card>
               </motion.div>
             </motion.div>
           </motion.div>

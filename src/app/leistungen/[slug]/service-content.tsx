@@ -17,6 +17,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container, SectionHeader } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 const iconMap = {
   Film,
@@ -140,7 +141,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="relative"
               >
-                <div className="aspect-video rounded-xl overflow-hidden card-surface">
+                <Card className="aspect-video">
                   <Image
                     src={service.image}
                     alt={service.title}
@@ -149,7 +150,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     priority
                   />
-                </div>
+                </Card>
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-xl gradient-primary opacity-20 blur-2xl" />
               </motion.div>
             </div>
@@ -172,21 +173,22 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="card-surface rounded-xl p-6 lg:p-8 group hover:border-primary/30 transition-colors duration-400"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-primary/10 mt-1">
-                      <Check className="w-5 h-5 text-primary" />
+                  <Card className="p-6 lg:p-8 h-full group hover:border-primary/30 transition-colors duration-400">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2 rounded-lg bg-primary/10 mt-1">
+                        <Check className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-medium text-foreground mb-2">
+                          {benefit.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {benefit.description}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">
-                        {benefit.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        {benefit.description}
-                      </p>
-                    </div>
-                  </div>
+                  </Card>
                 </motion.div>
               ))}
             </div>
@@ -214,25 +216,26 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="card-surface rounded-xl overflow-hidden"
                     >
-                      <div className="aspect-video">
-                        <iframe
-                          src={`https://www.youtube.com/embed/${videoId}`}
-                          title={video.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          className="w-full h-full"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-medium text-foreground">{video.title}</h3>
-                        {video.description && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {video.description}
-                          </p>
-                        )}
-                      </div>
+                      <Card>
+                        <div className="aspect-video">
+                          <iframe
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            title={video.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="w-full h-full"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-medium text-foreground">{video.title}</h3>
+                          {video.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {video.description}
+                            </p>
+                          )}
+                        </div>
+                      </Card>
                     </motion.div>
                   );
                 })}
@@ -259,7 +262,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="relative"
                 >
-                  <div className="card-surface rounded-xl p-6 h-full">
+                  <Card className="p-6 h-full">
                     <div className="text-4xl font-display text-primary/20 mb-4">
                       {String(step.step).padStart(2, "0")}
                     </div>
@@ -269,7 +272,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       {step.description}
                     </p>
-                  </div>
+                  </Card>
                   {index < service.process.length - 1 && (
                     <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-px bg-border" />
                   )}
@@ -296,14 +299,15 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="card-surface rounded-xl p-6"
                   >
-                    <h3 className="text-lg font-medium text-foreground mb-3">
-                      {item.question}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {item.answer}
-                    </p>
+                    <Card className="p-6">
+                      <h3 className="text-lg font-medium text-foreground mb-3">
+                        {item.question}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {item.answer}
+                      </p>
+                    </Card>
                   </motion.div>
                 ))}
               </div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Clock, MessageSquare, type LucideIcon } from "lucide-react";
 import { Container, SectionHeader } from "@/components/shared";
 import { ContactForm } from "@/components/forms/contact-form";
+import { Card } from "@/components/ui/card";
 
 // Fallback Kontaktdaten
 const defaultContact = {
@@ -213,7 +214,7 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
               transition={{ duration: 0.6, delay: 0.2 }}
               className="lg:col-span-3"
             >
-              <div className="card-surface rounded-xl p-6 md:p-8">
+              <Card className="p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 rounded-lg bg-primary/10">
                     <MessageSquare className="w-5 h-5 text-primary" />
@@ -223,7 +224,7 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
                   </h2>
                 </div>
                 <ContactForm variant="default" settings={formSettings} />
-              </div>
+              </Card>
             </motion.div>
 
             {/* Sidebar */}
@@ -234,10 +235,8 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
               className="lg:col-span-2 space-y-6"
             >
               {/* Contact Info Card */}
-              <motion.div
-                variants={itemVariants}
-                className="card-surface rounded-xl p-6 md:p-8"
-              >
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 md:p-8">
                 <h3 className="text-lg font-medium text-foreground mb-6">
                   {sidebar.contactTitle}
                 </h3>
@@ -265,13 +264,12 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
                     </div>
                   ))}
                 </div>
+                </Card>
               </motion.div>
 
               {/* Why Contact Card */}
-              <motion.div
-                variants={itemVariants}
-                className="card-surface rounded-xl p-6 md:p-8"
-              >
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 md:p-8">
                 <h3 className="text-lg font-medium text-foreground mb-4">
                   {sidebar.whyTitle}
                 </h3>
@@ -286,19 +284,19 @@ export function ContactPageContent({ settings, pageData }: ContactPageContentPro
                     </li>
                   ))}
                 </ul>
+                </Card>
               </motion.div>
 
               {/* Quick Response Card */}
-              <motion.div
-                variants={itemVariants}
-                className="card-surface rounded-xl p-6 md:p-8 border-primary/20"
-              >
-                <h3 className="text-lg font-medium text-foreground mb-2">
-                  {sidebar.quickResponseTitle}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {sidebar.quickResponseText}
-                </p>
+              <motion.div variants={itemVariants}>
+                <Card className="p-6 md:p-8 border-primary/20">
+                  <h3 className="text-lg font-medium text-foreground mb-2">
+                    {sidebar.quickResponseTitle}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {sidebar.quickResponseText}
+                  </p>
+                </Card>
               </motion.div>
             </motion.div>
           </div>

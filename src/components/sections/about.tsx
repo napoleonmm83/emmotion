@@ -5,6 +5,7 @@ import { Tv, Award, Users, MapPin, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, AnimatedCounter } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 interface StatFromCMS {
   value: string;
@@ -105,7 +106,7 @@ export function AboutSection({ data }: AboutSectionProps) {
             transition={{ duration: 0.7 }}
             className="relative order-2 lg:order-1"
           >
-            <div className="aspect-[4/5] rounded-xl overflow-hidden card-surface relative">
+            <Card className="aspect-[4/5] relative">
               <Image
                 src={profileImage}
                 alt={name}
@@ -113,7 +114,7 @@ export function AboutSection({ data }: AboutSectionProps) {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-            </div>
+            </Card>
             <div className="absolute -bottom-6 -right-6 w-48 h-48 rounded-xl gradient-primary opacity-20 blur-2xl" />
           </motion.div>
 
@@ -149,24 +150,22 @@ export function AboutSection({ data }: AboutSectionProps) {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6 mt-16 lg:mt-24"
         >
           {stats.map((stat) => (
-            <motion.div
-              key={stat.label}
-              variants={itemVariants}
-              className="card-surface rounded-xl p-5 lg:p-6 text-center group hover:border-primary/30 transition-colors duration-400"
-            >
-              <stat.icon className="w-7 h-7 lg:w-8 lg:h-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform duration-400" />
-              {stat.value > 0 ? (
-                <AnimatedCounter
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  className="text-2xl lg:text-3xl font-display text-foreground mb-1 block"
-                />
-              ) : (
-                <span className="text-2xl lg:text-3xl font-display text-foreground mb-1 block">
-                  {stat.suffix}
-                </span>
-              )}
-              <p className="text-xs lg:text-sm text-muted-foreground">{stat.label}</p>
+            <motion.div key={stat.label} variants={itemVariants}>
+              <Card className="p-5 lg:p-6 text-center group hover:border-primary/30">
+                <stat.icon className="w-7 h-7 lg:w-8 lg:h-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform duration-400" />
+                {stat.value > 0 ? (
+                  <AnimatedCounter
+                    value={stat.value}
+                    suffix={stat.suffix}
+                    className="text-2xl lg:text-3xl font-display text-foreground mb-1 block"
+                  />
+                ) : (
+                  <span className="text-2xl lg:text-3xl font-display text-foreground mb-1 block">
+                    {stat.suffix}
+                  </span>
+                )}
+                <p className="text-xs lg:text-sm text-muted-foreground">{stat.label}</p>
+              </Card>
             </motion.div>
           ))}
         </motion.div>

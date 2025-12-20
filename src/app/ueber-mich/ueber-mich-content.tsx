@@ -18,6 +18,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 import { urlFor } from "@sanity/lib/image";
 import { PortableText } from "@sanity/lib/portable-text";
 import type { PortableTextBlock } from "@portabletext/types";
@@ -361,24 +362,22 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
               {values.map((value) => {
                 const IconComponent = iconMap[value.icon] || Heart;
                 return (
-                  <motion.div
-                    key={value.title}
-                    variants={itemVariants}
-                    className="card-surface rounded-xl p-6 md:p-8"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-lg bg-primary/10 flex-shrink-0">
-                        <IconComponent className="w-6 h-6 text-primary" />
+                  <motion.div key={value.title} variants={itemVariants}>
+                    <Card className="p-6 md:p-8 h-full">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-lg bg-primary/10 flex-shrink-0">
+                          <IconComponent className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold text-foreground mb-2">
+                            {value.title}
+                          </h3>
+                          <p className="text-muted-foreground leading-relaxed">
+                            {value.description}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-foreground mb-2">
-                          {value.title}
-                        </h3>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {value.description}
-                        </p>
-                      </div>
-                    </div>
+                    </Card>
                   </motion.div>
                 );
               })}

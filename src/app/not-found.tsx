@@ -6,6 +6,7 @@ import { Home, ArrowLeft, Search, Video } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 export default function NotFound() {
   return (
@@ -69,8 +70,8 @@ export default function NotFound() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
-              className="card-surface rounded-xl p-6 md:p-8"
             >
+              <Card className="p-6 md:p-8">
               <p className="text-muted-foreground mb-4">
                 Vielleicht suchst du eine dieser Seiten:
               </p>
@@ -103,6 +104,7 @@ export default function NotFound() {
                   </span>
                 </Link>
               </div>
+              </Card>
             </motion.div>
           </div>
         </Container>

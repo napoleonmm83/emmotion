@@ -22,6 +22,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
 import {
   KonfiguratorInput,
   PriceResult,
@@ -158,7 +159,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
       </div>
 
       {/* Configuration Summary */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <Card className="p-5">
         <h4 className="font-medium text-foreground mb-4">Deine Konfiguration</h4>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
@@ -180,10 +181,10 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
             </span>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Price Breakdown */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <Card className="p-5">
         <h4 className="font-medium text-foreground mb-4">Preisaufstellung</h4>
         <div className="space-y-2">
           {priceResult.breakdown.map((item, index) => (
@@ -207,7 +208,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
             </span>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4">

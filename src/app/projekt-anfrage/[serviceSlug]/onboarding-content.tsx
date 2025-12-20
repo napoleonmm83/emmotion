@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Check, AlertCircle } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 import { StepProjectDetails } from "@/components/onboarding/steps/step-project-details";
 import { StepServiceQuestions } from "@/components/onboarding/steps/step-service-questions";
 import { StepExtras } from "@/components/onboarding/steps/step-extras";
@@ -414,7 +415,7 @@ export function OnboardingContent({
             </div>
 
             {/* Step Content */}
-            <div className="card-surface rounded-xl p-6 md:p-8 overflow-hidden min-h-[450px] relative">
+            <Card className="p-6 md:p-8 min-h-[450px] relative">
               {/* Step Header */}
               <div className="mb-6">
                 <h2 className="text-xl md:text-2xl font-semibold text-foreground">
@@ -507,7 +508,7 @@ export function OnboardingContent({
                   )}
                 </motion.div>
               </AnimatePresence>
-            </div>
+            </Card>
 
             {/* Navigation Buttons */}
             <div className="mt-6 flex items-center justify-between">

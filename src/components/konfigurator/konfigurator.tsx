@@ -13,6 +13,7 @@ import {
   DEFAULT_KONFIGURATOR_INPUT,
   calculatePrice,
 } from "@/lib/konfigurator-logic";
+import { Card } from "@/components/ui/card";
 
 const STEPS = [
   { id: 1, title: "Video-Typ", description: "Was möchtest du produzieren?" },
@@ -168,7 +169,7 @@ export function Konfigurator() {
       </div>
 
       {/* Step Content */}
-      <div className="card-surface rounded-xl p-6 md:p-8 overflow-hidden min-h-[400px] relative">
+      <Card className="p-6 md:p-8 min-h-[400px] relative">
         {/* Step Header */}
         <div className="mb-6">
           <h2 className="text-xl md:text-2xl font-semibold text-foreground">
@@ -215,7 +216,7 @@ export function Konfigurator() {
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
+      </Card>
 
       {/* Navigation Buttons */}
       <div className="mt-6 flex items-center justify-between">

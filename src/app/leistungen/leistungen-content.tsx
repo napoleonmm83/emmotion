@@ -17,6 +17,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 // Icon mapping for dynamic icons from Sanity
 const iconMap: Record<string, LucideIcon> = {
@@ -199,8 +200,8 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
               {services.map((service, index) => (
                 <motion.div key={service.slug} variants={itemVariants}>
                   <Link href={`/leistungen/${service.slug}`}>
-                    <div
-                      className={`card-surface rounded-xl overflow-hidden group hover:border-primary/50 transition-colors duration-400 ${
+                    <Card
+                      className={`group hover:border-primary/50 transition-colors duration-400 ${
                         index % 2 === 0 ? "" : "md:flex-row-reverse"
                       } md:flex`}
                     >
@@ -252,7 +253,7 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
                           <ArrowRight className="w-5 h-5" />
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   </Link>
                 </motion.div>
               ))}

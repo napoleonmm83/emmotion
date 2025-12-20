@@ -21,6 +21,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container, SectionHeader } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 // Icon mapping for dynamic icons from Sanity
 const iconMap: Record<string, LucideIcon> = {
@@ -223,7 +224,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                       className="block h-full"
                       onClick={() => handleServiceClick(service.slug, service.title)}
                     >
-                      <div className="card-surface rounded-xl overflow-hidden h-full group hover:border-primary/50 transition-all duration-300">
+                      <Card className="h-full group hover:border-primary/50 transition-all duration-300">
                         {/* Image or Gradient */}
                         <div className="relative h-40 bg-gradient-to-br from-primary/20 to-secondary/20">
                           {service.image && (
@@ -260,7 +261,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                             <ArrowRight className="w-4 h-4" />
                           </div>
                         </div>
-                      </div>
+                      </Card>
                     </Link>
                   </motion.div>
                 );

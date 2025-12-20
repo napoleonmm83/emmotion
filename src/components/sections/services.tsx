@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Container, SectionHeader } from "@/components/shared";
+import { Card } from "@/components/ui/card";
 
 // Icon-Mapping von CMS-Namen zu Lucide-Icons
 const iconMap: Record<string, LucideIcon> = {
@@ -168,36 +169,34 @@ export function ServicesSection({ data }: ServicesSectionProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
           {services.map((service) => (
-            <motion.div
-              key={service.title}
-              variants={itemVariants}
-              className="card-surface rounded-xl p-6 lg:p-8 hover:border-primary/50 transition-colors duration-300 group flex flex-col"
-            >
-              <service.icon className="w-10 h-10 lg:w-12 lg:h-12 text-primary mb-5 group-hover:scale-110 transition-transform duration-400" />
-              <h3 className="text-lg lg:text-xl font-medium text-foreground mb-3">
-                {service.title}
-              </h3>
-              <p className="text-muted-foreground text-sm mb-5 leading-relaxed flex-grow">
-                {service.description}
-              </p>
-              <ul className="space-y-2 mb-6">
-                {service.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="text-sm text-muted-foreground flex items-center gap-2"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={`/leistungen/${service.slug}`}
-                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors group/link"
-              >
-                Mehr erfahren
-                <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-              </Link>
+            <motion.div key={service.title} variants={itemVariants}>
+              <Card className="p-6 lg:p-8 hover:border-primary/50 group flex flex-col h-full">
+                <service.icon className="w-10 h-10 lg:w-12 lg:h-12 text-primary mb-5 group-hover:scale-110 transition-transform duration-400" />
+                <h3 className="text-lg lg:text-xl font-medium text-foreground mb-3">
+                  {service.title}
+                </h3>
+                <p className="text-muted-foreground text-sm mb-5 leading-relaxed flex-grow">
+                  {service.description}
+                </p>
+                <ul className="space-y-2 mb-6">
+                  {service.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="text-sm text-muted-foreground flex items-center gap-2"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={`/leistungen/${service.slug}`}
+                  className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors group/link"
+                >
+                  Mehr erfahren
+                  <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                </Link>
+              </Card>
             </motion.div>
           ))}
         </motion.div>
