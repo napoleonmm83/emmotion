@@ -345,6 +345,98 @@ async function getService(slug: string): Promise<ServiceDetail | null> {
 
 ---
 
+### Dynamischer Filter mit animierten Statistiken
+
+Pattern für Filter-Dropdowns mit dynamisch berechneten Statistiken (z.B. TV-Produktionen Jahresfilter).
+
+```typescript
+// State für Filter
+const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+// Verfügbare Jahre aus Daten extrahieren (absteigend sortiert)
+const availableYears = useMemo(() => {
+  const years = new Set<number>();
+  videos.forEach((video) => {
+    const year = new Date(video.publishedAt).getFullYear();
+    years.add(year);
+  });
+  return Array.from(years).sort((a, b) => b - a);
+}, [videos]);
+
+// Daten nach Jahr filtern
+const filteredData = useMemo(() => {
+  if (!selectedYear) return data;
+  return data.filter((item) => {
+    const year = new Date(item.publishedAt).getFullYear();
+    return year === selectedYear;
+  });
+}, [data, selectedYear]);
+
+// Dynamische Statistiken basierend auf gefiltertem Jahr
+const stats = useMemo(() => ({
+  totalItems: filteredData.length,
+  totalViews: filteredData.reduce((sum, v) => sum + v.viewCount, 0),
+  // ... weitere Statistiken
+}), [filteredData]);
+```
+
+**Dropdown UI:**
+```tsx
+<select
+  value={selectedYear || ""}
+  onChange={(e) => setSelectedYear(e.target.value ? Number(e.target.value) : null)}
+  className="px-3 py-2 rounded-lg bg-card border border-border"
+>
+  <option value="">Alle Jahre</option>
+  {availableYears.map((year) => (
+    <option key={year} value={year}>{year}</option>
+  ))}
+</select>
+```
+
+**AnimatedCounter für smooth Updates:**
+```typescript
+function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
+  const [displayValue, setDisplayValue] = useState(0);
+  const previousValueRef = useRef<number>(0);
+  const animationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+    const startValue = previousValueRef.current;
+    previousValueRef.current = value;
+    if (startValue === value) return;
+
+    const animDuration = startValue === 0 ? duration * 1000 : 500; // Schneller bei Updates
+    const startTime = performance.now();
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+    const animate = (currentTime: number) => {
+      const progress = Math.min((currentTime - startTime) / animDuration, 1);
+      setDisplayValue(Math.floor(startValue + (value - startValue) * easeOutQuart(progress)));
+      if (progress < 1) animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
+  }, [value, duration]);
+
+  return <span>{displayValue.toLocaleString("de-CH")}</span>;
+}
+```
+
+**Wichtig:** Bei AnimatePresence den Key mit Filter-State kombinieren:
+```tsx
+<AnimatePresence mode="wait">
+  <motion.div key={`${sortBy}-${searchQuery}-${selectedYear || "all"}`}>
+    {/* Gefilterte Inhalte */}
+  </motion.div>
+</AnimatePresence>
+```
+
+---
+
 ## Konfigurator / Multi-Step Form
 
 ### Preisberechnung Logik
