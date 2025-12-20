@@ -638,6 +638,33 @@ const Icon = iconMap[service.icon as keyof typeof iconMap] || Film;
 
 ---
 
+## Video Components
+
+### VideoLightbox
+
+Desktop-Lightbox für Videos im Portfolio. Auf Mobile wird zum Fallback (Link zur Detailseite) gewechselt.
+
+```tsx
+import { VideoLightbox } from "@/components/shared";
+
+<VideoLightbox
+  videoUrl={project.videoUrl}           // YouTube, Vimeo oder direkte URL
+  thumbnail={project.thumbnail}          // Poster-Bild
+  title={project.title}
+  category="Imagefilm"                   // Optional
+  priority={true}                        // Für above-the-fold
+  fallbackWrapper={(children) => (       // Für Mobile: Link zur Detailseite
+    <Link href={`/portfolio/${project.slug}`}>{children}</Link>
+  )}
+/>
+```
+
+**Verhalten:**
+- **Desktop (md+):** Klick öffnet Video-Modal mit autoplay
+- **Mobile:** Klick führt zur Detailseite (via fallbackWrapper)
+
+---
+
 ## Projektstruktur
 
 ```

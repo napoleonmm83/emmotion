@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Container, VideoThumbnail } from "@/components/shared";
+import { Container, VideoLightbox } from "@/components/shared";
 import { Tv, Film, Eye, Play } from "lucide-react";
 import Image from "next/image";
 
@@ -390,21 +390,25 @@ export function PortfolioPageContent({
 
                 {filteredProjects.map((project, index) => (
                   <motion.div key={project.slug} variants={itemVariants}>
-                    <Link href={`/portfolio/${project.slug}`}>
-                      <VideoThumbnail
-                        src={project.thumbnail}
-                        alt={project.title}
-                        title={project.title}
-                        category={project.category
-                          .replace("-", " ")
-                          .replace(/\b\w/g, (l) => l.toUpperCase())}
-                        priority={index < 6}
-                      />
-                    </Link>
+                    <VideoLightbox
+                      videoUrl={project.videoUrl}
+                      thumbnail={project.thumbnail}
+                      title={project.title}
+                      category={project.category
+                        .replace("-", " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase())}
+                      priority={index < 6}
+                      fallbackWrapper={(children) => (
+                        <Link href={`/portfolio/${project.slug}`}>{children}</Link>
+                      )}
+                    />
                     <div className="mt-3 px-1">
-                      <p className="text-sm text-muted-foreground">
+                      <Link
+                        href={`/portfolio/${project.slug}`}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
                         {project.client} · {project.year}
-                      </p>
+                      </Link>
                     </div>
                   </motion.div>
                 ))}
