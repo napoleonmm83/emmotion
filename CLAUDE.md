@@ -30,6 +30,19 @@ Bei Implementierungen zuerst in `KNOW-HOW.md` nachschauen, ob bereits ein Patter
 
 ---
 
+## WICHTIG: Vercel Deployment
+
+**Nur `git push` verwenden - KEIN manuelles `npx vercel --prod`!**
+
+- Vercel GitHub-Integration baut automatisch bei jedem Push
+- Manuelles `npx vercel --prod` erzeugt doppelte Builds
+- Nach `git push` einfach warten bis Vercel fertig ist
+- Build-Status sichtbar unter: https://vercel.com/napoleonmm83s-projects/emmotion
+
+**Vercel Projekt-ID:** `prj_kkyo7VBwuhg9leTLI4WrDAH00fXa`
+
+---
+
 ## PROJEKTÜBERSICHT
 
 **Projekt:** emmotion.ch – Website für Videoproduktion
