@@ -15,6 +15,14 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
   KonfiguratorInput,
   PriceResult,
   VIDEO_TYPES,
@@ -33,7 +41,7 @@ type RequestStatus = "idle" | "submitting" | "success" | "error";
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAACHcwaC7K73Z2RH3";
 
 export function StepResult({ formData, priceResult }: StepResultProps) {
-  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [contactData, setContactData] = useState({
@@ -44,6 +52,19 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
   });
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      // Reset form when dialog closes
+      setTurnstileToken(null);
+      turnstileRef.current?.reset();
+      if (requestStatus === "error") {
+        setRequestStatus("idle");
+        setErrorMessage("");
+      }
+    }
+  };
 
   const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +97,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
         throw new Error(result.error || "Anfrage fehlgeschlagen");
       }
 
+      setDialogOpen(false);
       setRequestStatus("success");
     } catch (error) {
       setRequestStatus("error");
@@ -90,18 +112,18 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
 
   if (requestStatus === "success") {
     return (
-      <div className="text-center py-8">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h3 className="text-2xl font-semibold text-foreground mb-2">
-          Anfrage gesendet!
-        </h3>
-        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          Vielen Dank für deine Anfrage. Ich melde mich innerhalb von 24 Stunden
-          mit einem individuellen Angebot bei dir.
-        </p>
+      <div className="space-y-6 py-4">
+        <Alert variant="success" className="py-6">
+          <CheckCircle className="h-5 w-5" />
+          <AlertDescription className="text-base">
+            <strong className="block mb-1">Anfrage gesendet!</strong>
+            Vielen Dank für deine Anfrage. Ich melde mich innerhalb von 24 Stunden
+            mit einem individuellen Angebot bei dir.
+          </AlertDescription>
+        </Alert>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           Zurück zur Startseite
         </Link>
@@ -187,123 +209,129 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
         </div>
       </div>
 
-      {/* Request Form Toggle */}
-      {!showRequestForm ? (
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button
-            onClick={() => setShowRequestForm(true)}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-          >
-            <Send className="w-5 h-5" />
-            Unverbindlich anfragen
-          </button>
-          <Link
-            href="/kontakt"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 border border-border rounded-lg hover:bg-muted transition-colors font-medium text-foreground"
-          >
-            <MessageSquare className="w-5 h-5" />
-            Lieber direkt kontaktieren
-          </Link>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmitRequest} className="space-y-4">
-          <h4 className="font-medium text-foreground">Deine Kontaktdaten</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              type="text"
-              placeholder="Name *"
-              required
-              value={contactData.name}
-              onChange={(e) =>
-                setContactData({ ...contactData, name: e.target.value })
-              }
-            />
-            <Input
-              type="email"
-              placeholder="E-Mail *"
-              required
-              value={contactData.email}
-              onChange={(e) =>
-                setContactData({ ...contactData, email: e.target.value })
-              }
-            />
-          </div>
-          <Input
-            type="tel"
-            placeholder="Telefon (optional)"
-            value={contactData.phone}
-            onChange={(e) =>
-              setContactData({ ...contactData, phone: e.target.value })
-            }
-          />
-          <Textarea
-            placeholder="Zusätzliche Informationen zu deinem Projekt (optional)"
-            rows={3}
-            value={contactData.message}
-            onChange={(e) =>
-              setContactData({ ...contactData, message: e.target.value })
-            }
-          />
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button
+          onClick={() => setDialogOpen(true)}
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+        >
+          <Send className="w-5 h-5" />
+          Unverbindlich anfragen
+        </button>
+        <Link
+          href="/kontakt"
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 border border-border rounded-lg hover:bg-muted transition-colors font-medium text-foreground"
+        >
+          <MessageSquare className="w-5 h-5" />
+          Lieber direkt kontaktieren
+        </Link>
+      </div>
 
-          {/* Cloudflare Turnstile */}
-          {TURNSTILE_SITE_KEY && (
-            <div className="flex justify-center">
-              <Turnstile
-                ref={turnstileRef}
-                siteKey={TURNSTILE_SITE_KEY}
-                onSuccess={(token) => setTurnstileToken(token)}
-                onError={() => {
-                  setTurnstileToken(null);
-                  setErrorMessage("Captcha-Fehler. Bitte lade die Seite neu.");
-                }}
-                onExpire={() => setTurnstileToken(null)}
-                options={{
-                  theme: "auto",
-                  size: "normal",
-                }}
+      {/* Request Form Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Unverbindliche Anfrage</DialogTitle>
+            <DialogDescription>
+              Teile uns deine Kontaktdaten mit und wir melden uns innerhalb von 24 Stunden bei dir.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitRequest} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                placeholder="Name *"
+                required
+                value={contactData.name}
+                onChange={(e) =>
+                  setContactData({ ...contactData, name: e.target.value })
+                }
+              />
+              <Input
+                type="email"
+                placeholder="E-Mail *"
+                required
+                value={contactData.email}
+                onChange={(e) =>
+                  setContactData({ ...contactData, email: e.target.value })
+                }
               />
             </div>
-          )}
+            <Input
+              type="tel"
+              placeholder="Telefon (optional)"
+              value={contactData.phone}
+              onChange={(e) =>
+                setContactData({ ...contactData, phone: e.target.value })
+              }
+            />
+            <Textarea
+              placeholder="Zusätzliche Informationen zu deinem Projekt (optional)"
+              rows={3}
+              value={contactData.message}
+              onChange={(e) =>
+                setContactData({ ...contactData, message: e.target.value })
+              }
+            />
 
-          {requestStatus === "error" && (
-            <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <p className="text-sm">{errorMessage || "Ein Fehler ist aufgetreten. Bitte versuch es erneut."}</p>
+            {/* Cloudflare Turnstile */}
+            {TURNSTILE_SITE_KEY && (
+              <div className="flex justify-center">
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={TURNSTILE_SITE_KEY}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => {
+                    setTurnstileToken(null);
+                    setErrorMessage("Captcha-Fehler. Bitte lade die Seite neu.");
+                  }}
+                  onExpire={() => setTurnstileToken(null)}
+                  options={{
+                    theme: "auto",
+                    size: "normal",
+                  }}
+                />
+              </div>
+            )}
+
+            {requestStatus === "error" && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {errorMessage || "Ein Fehler ist aufgetreten. Bitte versuch es erneut."}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDialogOpen(false)}
+                className="px-6 py-3 border border-border rounded-lg hover:bg-muted transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                disabled={requestStatus === "submitting" || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {requestStatus === "submitting" ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Wird gesendet...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Anfrage senden
+                  </>
+                )}
+              </button>
             </div>
-          )}
-
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                setShowRequestForm(false);
-                setTurnstileToken(null);
-                turnstileRef.current?.reset();
-              }}
-              className="px-6 py-3 border border-border rounded-lg hover:bg-muted transition-colors"
-            >
-              Abbrechen
-            </button>
-            <button
-              type="submit"
-              disabled={requestStatus === "submitting" || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {requestStatus === "submitting" ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Wird gesendet...
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  Anfrage senden
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      )}
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

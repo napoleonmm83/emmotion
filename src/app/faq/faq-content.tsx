@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 import { Container } from "@/components/shared";
 import { PortableText } from "@sanity/lib/portable-text";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import type { PortableTextBlock } from "@portabletext/types";
 
 interface FAQ {
@@ -27,58 +31,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const CATEGORY_ORDER = ["allgemein", "kosten", "ablauf", "technik"];
 
-function FAQItem({ faq, isOpen, onToggle }: { faq: FAQ; isOpen: boolean; onToggle: () => void }) {
-  return (
-    <div className="border-b border-border last:border-b-0 px-5 md:px-6">
-      <button
-        onClick={onToggle}
-        className="w-full py-5 flex items-start justify-between gap-4 text-left hover:text-primary transition-colors"
-      >
-        <span className="text-base md:text-lg font-medium text-foreground">
-          {faq.question}
-        </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-shrink-0 mt-1"
-        >
-          <ChevronDown className="w-5 h-5 text-muted-foreground" />
-        </motion.div>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="pb-6 pr-10">
-              <PortableText value={faq.answer} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 export function FAQContent({ faqs }: FAQContentProps) {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
-
-  const toggleItem = (id: string) => {
-    setOpenItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   // Group FAQs by category
   const groupedFaqs = faqs.reduce((acc, faq) => {
     const category = faq.category || "allgemein";
@@ -121,15 +74,19 @@ export function FAQContent({ faqs }: FAQContentProps) {
               <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-6 pb-3 border-b-2 border-primary/20">
                 {CATEGORY_LABELS[category] || category}
               </h2>
-              <div className="card-surface rounded-xl">
-                {groupedFaqs[category].map((faq) => (
-                  <FAQItem
-                    key={faq._id}
-                    faq={faq}
-                    isOpen={openItems.has(faq._id)}
-                    onToggle={() => toggleItem(faq._id)}
-                  />
-                ))}
+              <div className="card-surface rounded-xl px-5 md:px-6">
+                <Accordion type="multiple">
+                  {groupedFaqs[category].map((faq) => (
+                    <AccordionItem key={faq._id} value={faq._id} className="border-border">
+                      <AccordionTrigger className="text-base md:text-lg text-foreground">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="pr-10">
+                        <PortableText value={faq.answer} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
             </div>
           ))}

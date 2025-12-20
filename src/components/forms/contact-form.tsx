@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // CMS Contact Form Settings Interface
 interface ContactFormSettings {
@@ -182,15 +183,17 @@ export function ContactForm({ className = "", variant = "default", settings }: C
 
   if (status === "success") {
     return (
-      <div className={`card-surface rounded-xl p-8 text-center ${className}`}>
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h3 className="text-xl font-medium text-foreground mb-2">
-          Nachricht gesendet!
-        </h3>
-        <p className="text-muted-foreground mb-6">{successMessage}</p>
+      <div className={`space-y-4 ${className}`}>
+        <Alert variant="success" className="py-6">
+          <CheckCircle className="h-5 w-5" />
+          <AlertDescription className="text-base">
+            <strong className="block mb-1">Nachricht gesendet!</strong>
+            {successMessage}
+          </AlertDescription>
+        </Alert>
         <button
           onClick={() => setStatus("idle")}
-          className="px-6 py-2 text-sm text-primary hover:text-primary/80 transition-colors"
+          className="w-full px-6 py-3 text-sm text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
         >
           Weitere Nachricht senden
         </button>
@@ -356,10 +359,10 @@ export function ContactForm({ className = "", variant = "default", settings }: C
       )}
 
       {status === "error" && (
-        <div className="flex items-center gap-2 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-          <p className="text-sm">{errorMessage}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
       )}
 
       <button

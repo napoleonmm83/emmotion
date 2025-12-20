@@ -1,6 +1,7 @@
 "use client";
 
-import { Plane, Music, Subtitles, LayoutGrid, Zap, Check } from "lucide-react";
+import { Plane, Music, Subtitles, LayoutGrid, Zap } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { KonfiguratorExtras, EXTRAS_INFO } from "@/lib/konfigurator-logic";
 
 const ICONS: Record<keyof KonfiguratorExtras, typeof Plane> = {
@@ -33,10 +34,9 @@ export function StepExtras({ extras, onChange }: StepExtrasProps) {
           const isSelected = extras[key];
 
           return (
-            <button
+            <label
               key={key}
-              onClick={() => toggleExtra(key)}
-              className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 ${
+              className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 cursor-pointer block ${
                 isSelected
                   ? "border-primary bg-primary/5"
                   : "border-border hover:border-primary/50 bg-card"
@@ -74,17 +74,13 @@ export function StepExtras({ extras, onChange }: StepExtrasProps) {
                   </p>
                 </div>
 
-                <div
-                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
-                    isSelected
-                      ? "border-primary bg-primary"
-                      : "border-muted-foreground/30"
-                  }`}
-                >
-                  {isSelected && <Check className="w-4 h-4 text-white" />}
-                </div>
+                <Checkbox
+                  checked={isSelected}
+                  onCheckedChange={() => toggleExtra(key)}
+                  className="w-6 h-6 rounded-md border-2"
+                />
               </div>
-            </button>
+            </label>
           );
         }
       )}
