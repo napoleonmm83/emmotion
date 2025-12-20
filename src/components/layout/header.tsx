@@ -6,12 +6,12 @@ import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
-// Navigation für Startseite (Mix aus Seiten-Links und Scroll-Ankern)
+// Navigation für Startseite (Scroll-Anker zu Sektionen)
 const homeNavItems = [
-  { name: "Leistungen", href: "/leistungen" },
+  { name: "Leistungen", href: "#leistungen" },
   { name: "Portfolio", href: "#portfolio" },
-  { name: "Über mich", href: "/ueber-mich" },
-  { name: "Kontakt", href: "/kontakt" },
+  { name: "Über mich", href: "#ueber-mich" },
+  { name: "Kontakt", href: "#kontakt" },
 ];
 
 // Navigation für Unterseiten (Links)
