@@ -253,7 +253,7 @@ export function ProjectPageContent({
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
                 >
                   Projekt anfragen

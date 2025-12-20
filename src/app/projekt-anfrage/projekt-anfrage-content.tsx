@@ -352,7 +352,7 @@ export function ProjektAnfrageContent({ services: sanityServices, settings }: Pr
                   Preis berechnen
                 </Link>
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-300"
                 >
                   Kontakt aufnehmen

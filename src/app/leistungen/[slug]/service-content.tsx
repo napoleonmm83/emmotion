@@ -120,7 +120,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link
-                    href="/#kontakt"
+                    href="/kontakt"
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
                   >
                     Anfrage starten
@@ -324,7 +324,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
                   Weitere Fragen? Ich bin für dich da.
                 </p>
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="text-primary hover:text-primary/80 font-medium inline-flex items-center gap-2 transition-colors"
                 >
                   Kontakt aufnehmen
@@ -356,7 +356,7 @@ export function ServicePageContent({ service, settings }: ServicePageContentProp
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
                 >
                   Jetzt anfragen
