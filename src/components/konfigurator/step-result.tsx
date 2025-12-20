@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -52,7 +52,13 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
     message: "",
   });
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const turnstileRef = useRef<TurnstileInstance>(null);
+
+  // Set mounted state to prevent Turnstile hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
@@ -275,9 +281,9 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
               }
             />
 
-            {/* Cloudflare Turnstile - suppressHydrationWarning wegen dynamischer Widget-Injektion */}
-            {TURNSTILE_SITE_KEY && (
-              <div className="flex justify-center" suppressHydrationWarning>
+            {/* Cloudflare Turnstile - nur nach Mount rendern um Hydration-Mismatch zu vermeiden */}
+            {TURNSTILE_SITE_KEY && isMounted && (
+              <div className="flex justify-center">
                 <Turnstile
                   ref={turnstileRef}
                   siteKey={TURNSTILE_SITE_KEY}
