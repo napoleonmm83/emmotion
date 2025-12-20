@@ -288,7 +288,7 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
-                  href="/#kontakt"
+                  href="/kontakt"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent text-foreground font-medium rounded-lg border border-foreground/30 hover:border-foreground/60 hover:bg-foreground/5 transition-all duration-400"
                 >
                   Kontakt aufnehmen
