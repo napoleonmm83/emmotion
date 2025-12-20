@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Container } from "@/components/shared";
+import { Container, VideoPlayer } from "@/components/shared";
 import {
   Select,
   SelectContent,
@@ -14,6 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Play,
@@ -25,6 +30,7 @@ import {
   ArrowUpDown,
   TrendingUp,
   Filter,
+  X,
 } from "lucide-react";
 
 interface Video {
@@ -225,6 +231,7 @@ function VideoCard({ video, priority = false }: { video: Video; priority?: boole
   const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
   const [imgSrc, setImgSrc] = useState(video.thumbnailUrl);
   const [imgError, setImgError] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Fallback-Kette für Thumbnails
   const handleImageError = () => {
@@ -235,14 +242,8 @@ function VideoCard({ video, priority = false }: { video: Video; priority?: boole
     }
   };
 
-  return (
-    <motion.a
-      href={youtubeUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      variants={itemVariants}
-      className="group block bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
-    >
+  const cardContent = (
+    <>
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-muted">
         <Image
@@ -295,7 +296,75 @@ function VideoCard({ video, priority = false }: { video: Video; priority?: boole
           {formatDate(video.publishedAt)}
         </div>
       </CardContent>
-    </motion.a>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop: Opens lightbox */}
+      <motion.div
+        variants={itemVariants}
+        className="hidden md:block group cursor-pointer bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
+        onClick={() => setIsOpen(true)}
+      >
+        {cardContent}
+      </motion.div>
+
+      {/* Mobile: Direct link to YouTube */}
+      <motion.a
+        href={youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        variants={itemVariants}
+        className="md:hidden group block bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300"
+      >
+        {cardContent}
+      </motion.a>
+
+      {/* Lightbox Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="max-w-[90vw] w-[90vw] h-[85vh] p-0 bg-black border-none overflow-hidden flex flex-col">
+          {/* Screen reader only title */}
+          <DialogTitle className="sr-only">{video.title}</DialogTitle>
+
+          {/* Close Button */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Video Player - fills available space */}
+          <div className="flex-1 min-h-0">
+            <VideoPlayer
+              src={youtubeUrl}
+              poster={imgSrc}
+              title={video.title}
+              aspectRatio="video"
+              showControls
+              className="w-full h-full"
+            />
+          </div>
+
+          {/* Title Bar */}
+          <div className="p-4 bg-black/90 flex-shrink-0">
+            <h3 className="text-lg font-medium text-white">{video.title}</h3>
+            <div className="flex items-center gap-4 text-sm text-white/60 mt-1">
+              <span className="flex items-center gap-1">
+                <Eye className="w-4 h-4" />
+                {formatNumber(video.viewCount)} Views
+              </span>
+              <span className="flex items-center gap-1">
+                <ThumbsUp className="w-4 h-4" />
+                {formatNumber(video.likeCount)} Likes
+              </span>
+              <span>{video.duration}</span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
