@@ -718,6 +718,50 @@ className="w-[70vw] h-[70vh] !max-w-none ..."
 
 ---
 
+
+
+#### ⚠️ YouTube-Videos in Lightboxen
+
+**Wichtig:** YouTube-URLs dürfen NICHT als `<video src>` verwendet werden! Das verletzt die CSP und funktioniert nicht.
+
+```tsx
+// FALSCH - CSP-Fehler, Video lädt nicht
+<video src={videoUrl} controls />
+
+// RICHTIG - YouTube-URLs prüfen und als iframe einbetten
+import { YouTubeEmbed, isEmbeddableVideo } from "@/components/shared";
+
+{isEmbeddableVideo(videoUrl) ? (
+  <YouTubeEmbed url={videoUrl} title={title} />
+) : (
+  <video src={videoUrl} controls />
+)}
+```
+
+---
+
+### ImageWithFallback
+
+Komponente für Bilder mit graceful error handling. Zeigt Skeleton während dem Laden und einen Placeholder bei 404-Fehlern (z.B. gelöschte Sanity-Assets).
+
+```tsx
+import { ImageWithFallback } from "@/components/shared";
+
+<ImageWithFallback
+  src={imageUrl}
+  alt="Beschreibung"
+  fill
+  className="object-cover"
+  sizes="(max-width: 768px) 100vw, 50vw"
+  fallbackClassName="absolute inset-0 h-full min-h-[200px]"
+/>
+```
+
+**Verhalten:**
+- **Laden:** Zeigt animiertes Skeleton
+- **Erfolg:** Zeigt Bild mit Fade-in Animation
+- **Fehler/404:** Zeigt "Bild nicht verfügbar" Placeholder mit Icon
+
 ### Dialog Backdrop Blur
 
 Der Dialog-Hintergrund ist standardmässig mit Blur versehen:
