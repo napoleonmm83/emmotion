@@ -51,6 +51,7 @@ export function VideoLightbox({
         {fallbackWrapper ? fallbackWrapper(thumbnailElement) : thumbnailElement}
       </div>
 
+      {/* Dialog only renders on desktop (md+) */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
           {/* Screen reader only title */}

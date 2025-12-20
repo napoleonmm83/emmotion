@@ -135,6 +135,12 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    // Add _key to each video for Sanity array compatibility
+    const videosWithKeys = videosWithBlobThumbnails.map((video) => ({
+      _key: video.youtubeId,  // Use YouTube ID as unique key
+      ...video,
+    }));
+
     // Update Sanity document with cached data
     await sanityClient
       .patch(tvSettings._id)
@@ -145,7 +151,7 @@ export async function GET(request: NextRequest) {
           totalViews: playlistData.totalViews,
           totalLikes: playlistData.totalLikes,
           totalComments: playlistData.totalComments,
-          videos: videosWithBlobThumbnails,
+          videos: videosWithKeys,
         },
       })
       .commit();
