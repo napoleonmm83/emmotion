@@ -17,6 +17,7 @@ import {
   ExternalLink,
   ArrowUpDown,
   TrendingUp,
+  Filter,
 } from "lucide-react";
 
 interface Video {
@@ -111,41 +112,66 @@ function formatNumber(num: number): string {
 }
 
 function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
-  const [count, setCount] = useState(0);
+  const [displayValue, setDisplayValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const hasAnimated = useRef(false);
+  const animationRef = useRef<number | null>(null);
+  const previousValueRef = useRef<number>(0);
 
   useEffect(() => {
-    if (!isInView || hasAnimated.current) return;
-    hasAnimated.current = true;
+    // Cancel any ongoing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
+    // Skip if not in view yet
+    if (!isInView) return;
 
     const startTime = performance.now();
-    const startValue = 0;
+    const startValue = previousValueRef.current;
     const endValue = value;
+
+    // Store current value for next animation
+    previousValueRef.current = value;
+
+    // If same value, just set it
+    if (startValue === endValue) {
+      setDisplayValue(endValue);
+      return;
+    }
+
+    // Faster animation for updates (500ms), slower for initial (duration * 1000)
+    const animDuration = startValue === 0 ? duration * 1000 : 500;
 
     // Easing function for smooth deceleration
     const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / (duration * 1000), 1);
+      const progress = Math.min(elapsed / animDuration, 1);
       const easedProgress = easeOutQuart(progress);
       const currentValue = Math.floor(startValue + (endValue - startValue) * easedProgress);
 
-      setCount(currentValue);
+      setDisplayValue(currentValue);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       } else {
-        setCount(endValue);
+        setDisplayValue(endValue);
+        animationRef.current = null;
       }
     };
 
-    requestAnimationFrame(animate);
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, [isInView, value, duration]);
 
-  return <span ref={ref}>{formatNumber(count)}</span>;
+  return <span ref={ref}>{formatNumber(displayValue)}</span>;
 }
 
 function formatDate(dateString: string): string {
@@ -271,8 +297,7 @@ export function TVProduktionenContent({
 }: TVProduktionenContentProps) {
   const [sortBy, setSortBy] = useState<SortOption>("date");
   const [searchQuery, setSearchQuery] = useState("");
-
-  const stats = tvData.cachedData;
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   // Duplikate entfernen (falls Video mehrfach in Playlist)
   const videos = useMemo(() => {
@@ -285,9 +310,40 @@ export function TVProduktionenContent({
     });
   }, [tvData.cachedData?.videos]);
 
+  // Verfügbare Jahre aus den Videos extrahieren (absteigend sortiert)
+  const availableYears = useMemo(() => {
+    const years = new Set<number>();
+    videos.forEach((video) => {
+      const year = new Date(video.publishedAt).getFullYear();
+      years.add(year);
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  }, [videos]);
+
+  // Videos nach Jahr filtern
+  const videosFilteredByYear = useMemo(() => {
+    if (!selectedYear) return videos;
+    return videos.filter((video) => {
+      const year = new Date(video.publishedAt).getFullYear();
+      return year === selectedYear;
+    });
+  }, [videos, selectedYear]);
+
+  // Dynamische Statistiken basierend auf gefiltertem Jahr
+  const stats = useMemo(() => {
+    const baseVideos = videosFilteredByYear;
+    return {
+      totalVideos: baseVideos.length,
+      totalViews: baseVideos.reduce((sum, v) => sum + v.viewCount, 0),
+      totalLikes: baseVideos.reduce((sum, v) => sum + v.likeCount, 0),
+      totalComments: baseVideos.reduce((sum, v) => sum + v.commentCount, 0),
+      lastSyncedAt: tvData.cachedData?.lastSyncedAt,
+    };
+  }, [videosFilteredByYear, tvData.cachedData?.lastSyncedAt]);
+
   // Sortierte und gefilterte Videos
   const sortedVideos = useMemo(() => {
-    let filtered = [...videos];
+    let filtered = [...videosFilteredByYear];
 
     // Suchfilter
     if (searchQuery.trim()) {
@@ -316,7 +372,7 @@ export function TVProduktionenContent({
     }
 
     return filtered;
-  }, [videos, sortBy, searchQuery]);
+  }, [videosFilteredByYear, sortBy, searchQuery]);
 
   return (
     <>
@@ -362,9 +418,19 @@ export function TVProduktionenContent({
         </section>
 
         {/* Statistics Section */}
-        {stats && (
+        {stats.totalVideos > 0 && (
           <section className="pb-12 md:pb-16">
             <Container>
+              {selectedYear && (
+                <motion.p
+                  key={selectedYear}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center text-sm text-primary font-medium mb-4"
+                >
+                  Statistiken für {selectedYear}
+                </motion.p>
+              )}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 <StatCard
                   icon={Play}
@@ -429,19 +495,47 @@ export function TVProduktionenContent({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-between items-center"
+              className="flex flex-col gap-4"
             >
-              {/* Search */}
-              <input
-                type="text"
-                placeholder="Videos durchsuchen..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-64 px-4 py-2 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
-              />
+              {/* Top row: Search and Year Filter */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                {/* Search */}
+                <input
+                  type="text"
+                  placeholder="Videos durchsuchen..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full sm:w-64 px-4 py-2 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
+                />
 
-              {/* Sort */}
-              <div className="flex items-center gap-2">
+                {/* Year Filter Dropdown */}
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Jahr:</span>
+                  <select
+                    value={selectedYear || ""}
+                    onChange={(e) =>
+                      setSelectedYear(e.target.value ? Number(e.target.value) : null)
+                    }
+                    className="px-3 py-2 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer appearance-none pr-8"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 0.75rem center",
+                    }}
+                  >
+                    <option value="">Alle Jahre</option>
+                    {availableYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Bottom row: Sort */}
+              <div className="flex items-center justify-center sm:justify-end gap-2">
                 <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Sortieren:</span>
                 <div className="flex gap-2">
@@ -475,7 +569,7 @@ export function TVProduktionenContent({
             <AnimatePresence mode="wait">
               {sortedVideos.length > 0 ? (
                 <motion.div
-                  key={`${sortBy}-${searchQuery}`}
+                  key={`${sortBy}-${searchQuery}-${selectedYear || "all"}`}
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
