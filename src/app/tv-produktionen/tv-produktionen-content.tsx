@@ -263,15 +263,12 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
           </div>
         </div>
         {/* Duration badge */}
-        <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white font-medium">
-          {video.duration}
+        <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white font-medium flex items-center gap-1.5">
+          {number && (
+            <span className="text-white/50">#{number}</span>
+          )}
+          <span>{video.duration}</span>
         </div>
-        {/* Number badge */}
-        {number && (
-          <div className="absolute top-2 left-2 bg-black/60 px-1.5 py-0.5 rounded text-[10px] text-white/60 font-medium">
-            #{number}
-          </div>
-        )}
       </div>
 
       {/* Content */}
