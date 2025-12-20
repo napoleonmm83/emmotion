@@ -714,6 +714,35 @@ Anzeige in der Card (Datumszeile, rechts):
 </div>
 ```
 
+#### Sanity Array _key Requirement
+
+Beim Speichern von Arrays in Sanity muss jedes Objekt eine `_key` Property haben:
+
+```typescript
+// FALSCH - gibt "Missing keys" Fehler im CMS
+const videos = videosData.map((video) => ({
+  youtubeId: video.youtubeId,
+  title: video.title,
+  // ...
+}));
+
+// RICHTIG - _key hinzufügen
+const videos = videosData.map((video) => ({
+  _key: video.youtubeId,  // Unique key (YouTube ID ideal)
+  youtubeId: video.youtubeId,
+  title: video.title,
+  // ...
+}));
+```
+
+**Fehlermeldung ohne _key:**
+```
+Missing keys - Some items in the list are missing their keys.
+This must be fixed in order to edit the list.
+```
+
+---
+
 #### Duplikat-Entfernung
 
 YouTube-Playlists können Videos mehrfach enthalten. Duplikate werden client-seitig entfernt:
