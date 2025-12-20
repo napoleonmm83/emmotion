@@ -192,6 +192,7 @@ export function ServicesSection({ data }: ServicesSectionProps) {
                 <Link
                   href={`/leistungen/${service.slug}`}
                   className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors group/link"
+                  aria-label={`Mehr erfahren über ${service.title}`}
                 >
                   Mehr erfahren
                   <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />

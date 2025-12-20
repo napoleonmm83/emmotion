@@ -136,6 +136,7 @@ export function AboutSection({ data }: AboutSectionProps) {
             <Link
               href="/ueber-mich"
               className="inline-block mt-8 px-8 py-4 gradient-primary text-foreground font-medium rounded-lg glow-primary glow-primary-hover transition-all duration-400"
+              aria-label="Mehr erfahren über Marcus und emmotion.ch"
             >
               Mehr erfahren
             </Link>

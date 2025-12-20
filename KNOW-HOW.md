@@ -1326,6 +1326,53 @@ const [hasError, setHasError] = useState(false);
 
 ---
 
+## Performance & PageSpeed Limitierungen
+
+### Bekannte Issues die NICHT behebbar sind
+
+Diese Issues werden von PageSpeed Insights gemeldet, sind aber Framework-bedingt und können ohne grössere Architekturänderungen nicht behoben werden:
+
+| Issue | Grösse | Ursache | Status |
+|-------|--------|---------|--------|
+| Render-blocking CSS | ~17 KiB | Next.js lädt CSS synchron um FOUC zu vermeiden | ❌ Framework-Design |
+| Legacy JS Polyfills | ~19 KiB | Next.js/Dependencies bundeln core-js (Array.at, Object.fromEntries, etc.) | ❌ Dependencies |
+| Unused JavaScript | ~87 KiB | React, Framer Motion, Radix UI Framework-Code | ⚠️ Nur mit Major Refactoring |
+| Cloudflare Cache | ~1 KiB | Third-party Turnstile hat keine Cache-Headers | ❌ Third-party |
+
+### Was optimiert werden KANN
+
+1. **Bilder im CMS optimieren** - Kleinere Auflösung oder höhere Komprimierung wählen
+2. **Preconnect-Hints** - Bereits implementiert für cdn.sanity.io und challenges.cloudflare.com
+3. **optimizePackageImports** - Bereits konfiguriert für Radix UI, Framer Motion, date-fns, etc.
+4. **Browserslist** - Konfiguriert für moderne Browser (package.json)
+
+### Warum Polyfills nicht entfernt werden können
+
+Die Polyfills (`Array.prototype.at`, `Object.fromEntries`, etc.) kommen aus:
+- Next.js Core Runtime
+- Sanity Client
+- Framer Motion
+
+Diese Bibliotheken bundeln ihre eigenen Polyfills unabhängig von der Browserslist-Konfiguration.
+
+### Performance-Konfiguration (next.config.ts)
+
+```typescript
+experimental: {
+  optimizePackageImports: [
+    "lucide-react",
+    "framer-motion",
+    "@radix-ui/react-*",
+    "@sanity/client",
+    "date-fns",
+    "zod",
+    "react-hook-form",
+  ],
+},
+```
+
+---
+
 ## Bexio API Integration
 
 ### API Versionen

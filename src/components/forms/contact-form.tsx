@@ -305,7 +305,7 @@ export function ContactForm({ className = "", variant = "default", settings }: C
           }
           required
         >
-          <SelectTrigger className="w-full bg-card border-border">
+          <SelectTrigger className="w-full bg-card border-border" aria-label="Betreff auswählen">
             <SelectValue placeholder="Bitte auswählen" />
           </SelectTrigger>
           <SelectContent>

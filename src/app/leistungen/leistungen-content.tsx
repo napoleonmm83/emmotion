@@ -199,7 +199,7 @@ export function LeistungenPageContent({ services: sanityServices, settings }: Le
             >
               {services.map((service, index) => (
                 <motion.div key={service.slug} variants={itemVariants}>
-                  <Link href={`/leistungen/${service.slug}`}>
+                  <Link href={`/leistungen/${service.slug}`} aria-label={`Mehr erfahren über ${service.title}`}>
                     <Card
                       className={`group hover:border-primary/50 transition-colors duration-400 ${
                         index % 2 === 0 ? "" : "md:flex-row-reverse"
