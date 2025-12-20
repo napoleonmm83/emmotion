@@ -52,7 +52,7 @@ export function VideoLightbox({
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-[90vw] w-[90vw] h-[85vh] p-0 bg-black border-none overflow-hidden flex flex-col">
+        <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
           {/* Screen reader only title */}
           <DialogTitle className="sr-only">{title}</DialogTitle>
 
@@ -64,18 +64,20 @@ export function VideoLightbox({
             <X className="w-6 h-6" />
           </button>
 
-          {/* Video Player - fills available space */}
-          <div className="flex-1 min-h-0">
-            <VideoPlayer
-              src={videoUrl}
-              poster={thumbnail}
-              title={title}
-              aspectRatio="video"
-              showControls
-              autoPlay
-              muted={false}
-              className="w-full h-full"
-            />
+          {/* Video Player - fills the lightbox */}
+          <div className="flex-1 min-h-0 flex items-center justify-center bg-black">
+            <div className="w-full h-full">
+              <VideoPlayer
+                src={videoUrl}
+                poster={thumbnail}
+                title={title}
+                aspectRatio="video"
+                showControls
+                autoPlay
+                muted={false}
+                className="w-full h-full [&>div]:h-full [&>div]:flex [&>div]:items-center [&>div]:justify-center"
+              />
+            </div>
           </div>
 
           {/* Title Bar */}

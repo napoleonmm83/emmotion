@@ -12,25 +12,36 @@ const sanityClient = createClient({
 });
 
 /**
- * Verify that request comes from Vercel Cron
- * Vercel automatically sends Authorization: Bearer <CRON_SECRET> header
+ * Verify that request comes from Vercel Cron or is a manual sync from CMS
  */
-function isAuthorizedCronRequest(request: NextRequest): boolean {
+function isAuthorizedRequest(request: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get("authorization");
 
-  // In development without CRON_SECRET, block all requests
-  if (!cronSecret) {
-    console.error("CRON_SECRET not configured - blocking request");
-    return false;
+  // Check for Vercel Cron auth header
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    return true;
   }
 
-  const authHeader = request.headers.get("authorization");
-  return authHeader === `Bearer ${cronSecret}`;
+  // Allow manual sync from CMS (same origin requests)
+  const isManualSync = request.nextUrl.searchParams.get("manual") === "true";
+  if (isManualSync) {
+    // Check referer to ensure request comes from our domain
+    const referer = request.headers.get("referer") || "";
+    const host = request.headers.get("host") || "";
+
+    // Allow if referer matches our host (studio.emmotion.ch or localhost)
+    if (referer.includes(host) || referer.includes("localhost") || referer.includes("emmotion.ch")) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export async function GET(request: NextRequest) {
-  // Verify cron authentication
-  if (!isAuthorizedCronRequest(request)) {
+  // Verify authentication
+  if (!isAuthorizedRequest(request)) {
     console.warn("Unauthorized YouTube sync access attempt");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
