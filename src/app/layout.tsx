@@ -256,6 +256,12 @@ export default async function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`}>
       <head>
+        {/* Preconnect für kritische Third-Party Origins */}
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="preconnect" href="https://challenges.cloudflare.com" />
+        <link rel="dns-prefetch" href="https://challenges.cloudflare.com" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
