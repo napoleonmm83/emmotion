@@ -33,7 +33,11 @@ export function YouTubeSyncButton() {
         ? "http://localhost:3000"
         : window.location.origin.replace("/studio", "");
 
-      const response = await fetch(`${baseUrl}/api/cron/sync-youtube?manual=true`);
+      const syncSecret = process.env.NEXT_PUBLIC_SYNC_SECRET;
+      const url = syncSecret
+        ? `${baseUrl}/api/cron/sync-youtube?secret=${syncSecret}`
+        : `${baseUrl}/api/cron/sync-youtube?manual=true`;
+      const response = await fetch(url);
       const data = await response.json();
 
       if (response.ok && data.success) {

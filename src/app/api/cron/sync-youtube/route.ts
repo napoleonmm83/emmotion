@@ -12,10 +12,11 @@ const sanityClient = createClient({
 });
 
 /**
- * Verify that request comes from Vercel Cron or is a manual sync from CMS
+ * Verify that request comes from Vercel Cron or is a manual sync with valid secret
  */
 function isAuthorizedRequest(request: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
+  const syncSecret = process.env.NEXT_PUBLIC_SYNC_SECRET;
   const authHeader = request.headers.get("authorization");
 
   // Check for Vercel Cron auth header
@@ -23,15 +24,12 @@ function isAuthorizedRequest(request: NextRequest): boolean {
     return true;
   }
 
-  // Allow manual sync from CMS (same origin requests)
-  const isManualSync = request.nextUrl.searchParams.get("manual") === "true";
-  if (isManualSync) {
-    // Check referer to ensure request comes from our domain
-    const referer = request.headers.get("referer") || "";
-    const host = request.headers.get("host") || "";
-
-    // Allow if referer matches our host (studio.emmotion.ch or localhost)
-    if (referer.includes(host) || referer.includes("localhost") || referer.includes("emmotion.ch")) {
+  // Check for manual sync with secret (used by CMS button)
+  const providedSecret = request.nextUrl.searchParams.get("secret");
+  if (providedSecret) {
+    // Accept either CRON_SECRET or NEXT_PUBLIC_SYNC_SECRET
+    if ((cronSecret && providedSecret === cronSecret) ||
+        (syncSecret && providedSecret === syncSecret)) {
       return true;
     }
   }
