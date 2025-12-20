@@ -18,9 +18,15 @@ const securityHeaders = [
     value: "strict-origin-when-cross-origin",
   },
   {
-    // Erzwingt HTTPS (wird von Vercel automatisch gesetzt, aber sicher ist sicher)
+    // Erzwingt HTTPS mit preload für HSTS-Liste
     key: "Strict-Transport-Security",
-    value: "max-age=31536000; includeSubDomains",
+    value: "max-age=31536000; includeSubDomains; preload",
+  },
+  {
+    // Cross-Origin-Opener-Policy für Isolation
+    // same-origin-allow-popups erlaubt OAuth/Payment Popups
+    key: "Cross-Origin-Opener-Policy",
+    value: "same-origin-allow-popups",
   },
   {
     // Einschränkung von Browser-Features

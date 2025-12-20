@@ -84,6 +84,7 @@ function NativeVideoPlayer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showControlsOverlay, setShowControlsOverlay] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -175,10 +176,18 @@ function NativeVideoPlayer({
         playsInline
         className="w-full h-full object-cover"
         onClick={togglePlay}
+        onError={() => setHasError(true)}
       />
 
-      {/* Play Button Overlay (when paused) */}
-      {!isPlaying && (
+      {/* Error fallback */}
+      {hasError && poster && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <img src={poster} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {/* Play Button Overlay (when paused and no error) */}
+      {!isPlaying && !hasError && (
         <div
           className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
           onClick={togglePlay}
@@ -189,8 +198,8 @@ function NativeVideoPlayer({
         </div>
       )}
 
-      {/* Controls Overlay */}
-      {showControls && (
+      {/* Controls Overlay (hidden on error) */}
+      {showControls && !hasError && (
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300",
