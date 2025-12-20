@@ -504,7 +504,7 @@ export function TVProduktionenContent({
               className="flex flex-col gap-4"
             >
               {/* Top row: Search and Year Filter */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                 {/* Search */}
                 <input
                   type="text"
@@ -540,7 +540,7 @@ export function TVProduktionenContent({
               </div>
 
               {/* Bottom row: Sort */}
-              <div className="flex items-center justify-center sm:justify-end gap-2">
+              <div className="flex items-center justify-start sm:justify-end gap-2">
                 <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Sortieren:</span>
                 <div className="flex gap-2">
