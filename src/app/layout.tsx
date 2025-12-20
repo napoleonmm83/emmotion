@@ -254,7 +254,8 @@ export default async function RootLayout({
   const structuredData = getStructuredData(settings);
 
   return (
-    <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`}>
+    // suppressHydrationWarning: Browser-Extensions und Theme-Scripts können html/body modifizieren
+    <html lang="de" className={`${inter.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
       <head>
         {/* Preconnect für kritische Third-Party Origins */}
         <link rel="preconnect" href="https://cdn.sanity.io" />
@@ -269,7 +270,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-background antialiased">
+      <body className="min-h-screen bg-background antialiased" suppressHydrationWarning>
         <CustomCursor />
         {children}
         <BackToTop />
