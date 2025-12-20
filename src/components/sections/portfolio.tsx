@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Film, Tv, Play, Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Container, SectionHeader, VideoThumbnail } from "@/components/shared";
+import { Container, SectionHeader, VideoThumbnail, YouTubeEmbed, isEmbeddableVideo } from "@/components/shared";
 
 interface Project {
   title: string;
@@ -61,13 +61,21 @@ function VideoLightbox({
           className="relative w-full max-w-6xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="aspect-video rounded-xl overflow-hidden shadow-2xl">
-            <video
-              src={videoUrl}
-              controls
-              autoPlay
-              className="w-full h-full object-cover"
-            />
+          <div className="aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
+            {isEmbeddableVideo(videoUrl) ? (
+              <YouTubeEmbed
+                url={videoUrl}
+                title={title}
+                className="w-full h-full"
+              />
+            ) : (
+              <video
+                src={videoUrl}
+                controls
+                autoPlay
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
           <p className="text-center text-foreground/60 mt-4 text-sm">{title}</p>
         </motion.div>
