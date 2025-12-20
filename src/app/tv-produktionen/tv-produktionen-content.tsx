@@ -672,7 +672,7 @@ export function TVProduktionenContent({
                       key={video.youtubeId}
                       video={video}
                       priority={index < 6}
-                      number={index + 1}
+                      number={sortedVideos.length - index}
                     />
                   ))}
                 </motion.div>
