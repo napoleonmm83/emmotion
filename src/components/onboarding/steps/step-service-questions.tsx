@@ -2,6 +2,15 @@
 
 import { Check, Clock, Layers, HelpCircle } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { Duration, Complexity } from "@/lib/onboarding-logic";
 
 interface Question {
@@ -77,12 +86,11 @@ export function StepServiceQuestions({
               {question.question}
               {question.required && " *"}
             </label>
-            <input
+            <Input
               type="text"
               value={(value as string) || ""}
               onChange={(e) => updateField(question.id, e.target.value)}
               placeholder={question.placeholder}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
             {question.helpText && (
               <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
@@ -100,12 +108,11 @@ export function StepServiceQuestions({
               {question.question}
               {question.required && " *"}
             </label>
-            <textarea
+            <Textarea
               value={(value as string) || ""}
               onChange={(e) => updateField(question.id, e.target.value)}
               placeholder={question.placeholder}
               rows={3}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
             />
             {question.helpText && (
               <p className="text-xs text-muted-foreground mt-1">{question.helpText}</p>
@@ -120,18 +127,21 @@ export function StepServiceQuestions({
               {question.question}
               {question.required && " *"}
             </label>
-            <select
+            <Select
               value={(value as string) || ""}
-              onChange={(e) => updateField(question.id, e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              onValueChange={(newValue) => updateField(question.id, newValue)}
             >
-              <option value="">{question.placeholder || "Bitte wählen..."}</option>
-              {question.options?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full bg-card border-border">
+                <SelectValue placeholder={question.placeholder || "Bitte wählen..."} />
+              </SelectTrigger>
+              <SelectContent>
+                {question.options?.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {question.helpText && (
               <p className="text-xs text-muted-foreground mt-1">{question.helpText}</p>
             )}
@@ -192,12 +202,11 @@ export function StepServiceQuestions({
               {question.question}
               {question.required && " *"}
             </label>
-            <input
+            <Input
               type="number"
               value={(value as number) || ""}
               onChange={(e) => updateField(question.id, parseInt(e.target.value) || 0)}
               placeholder={question.placeholder}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
             {question.helpText && (
               <p className="text-xs text-muted-foreground mt-1">{question.helpText}</p>

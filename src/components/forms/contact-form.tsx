@@ -3,6 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // CMS Contact Form Settings Interface
 interface ContactFormSettings {
@@ -171,9 +180,6 @@ export function ContactForm({ className = "", variant = "default", settings }: C
     }
   };
 
-  const inputClasses =
-    "w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors duration-300";
-
   if (status === "success") {
     return (
       <div className={`card-surface rounded-xl p-8 text-center ${className}`}>
@@ -216,14 +222,13 @@ export function ContactForm({ className = "", variant = "default", settings }: C
           >
             Name <span className="text-red-500">*</span>
           </label>
-          <input
+          <Input
             type="text"
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
-            className={inputClasses}
             placeholder={placeholders.name}
           />
         </div>
@@ -234,14 +239,13 @@ export function ContactForm({ className = "", variant = "default", settings }: C
           >
             E-Mail <span className="text-red-500">*</span>
           </label>
-          <input
+          <Input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
-            className={inputClasses}
             placeholder={placeholders.email}
           />
         </div>
@@ -256,13 +260,12 @@ export function ContactForm({ className = "", variant = "default", settings }: C
             >
               Telefon
             </label>
-            <input
+            <Input
               type="tel"
               id="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className={inputClasses}
               placeholder={placeholders.phone}
             />
           </div>
@@ -273,13 +276,12 @@ export function ContactForm({ className = "", variant = "default", settings }: C
             >
               Firma
             </label>
-            <input
+            <Input
               type="text"
               id="company"
               name="company"
               value={formData.company}
               onChange={handleChange}
-              className={inputClasses}
               placeholder={placeholders.company}
             />
           </div>
@@ -293,20 +295,26 @@ export function ContactForm({ className = "", variant = "default", settings }: C
         >
           Betreff <span className="text-red-500">*</span>
         </label>
-        <select
-          id="subject"
-          name="subject"
+        <Select
           value={formData.subject}
-          onChange={handleChange}
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, subject: value }))
+          }
           required
-          className={inputClasses}
         >
-          {subjectOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full bg-card border-border">
+            <SelectValue placeholder="Bitte auswählen" />
+          </SelectTrigger>
+          <SelectContent>
+            {subjectOptions
+              .filter((option) => option.value !== "")
+              .map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
@@ -316,14 +324,13 @@ export function ContactForm({ className = "", variant = "default", settings }: C
         >
           Nachricht <span className="text-red-500">*</span>
         </label>
-        <textarea
+        <Textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
           required
           rows={variant === "compact" ? 4 : 6}
-          className={`${inputClasses} resize-none`}
           placeholder={placeholders.message}
         />
       </div>

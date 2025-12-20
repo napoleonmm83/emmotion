@@ -2,6 +2,8 @@
 
 import { Calendar, MapPin, Wallet, FileText } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { ProjectDetails, BudgetRange } from "@/lib/onboarding-logic";
 import { BUDGET_LABELS } from "@/lib/onboarding-logic";
 
@@ -20,10 +22,6 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
   };
 
   const hasError = (field: string) => errors.includes(field);
-  const inputErrorClass = (field: string) =>
-    hasError(field)
-      ? "border-destructive focus:ring-destructive/50"
-      : "border-border focus:ring-primary/50";
 
   return (
     <div className="space-y-6">
@@ -33,12 +31,12 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
           <FileText className="w-4 h-4 inline-block mr-2" />
           Projektname *
         </label>
-        <input
+        <Input
           type="text"
           value={projectDetails.projectName}
           onChange={(e) => updateField("projectName", e.target.value)}
           placeholder="z.B. Imagefilm für Website, Eventdokumentation Firmenjubiläum"
-          className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("projectName")}`}
+          aria-invalid={hasError("projectName")}
         />
       </div>
 
@@ -47,12 +45,12 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
         <label className={`block text-sm font-medium mb-2 ${hasError("description") ? "text-destructive" : "text-foreground"}`}>
           Projektbeschreibung *
         </label>
-        <textarea
+        <Textarea
           value={projectDetails.description || ""}
           onChange={(e) => updateField("description", e.target.value)}
           placeholder="Beschreib kurz, was du dir vorstellst. Was soll das Video zeigen? Welche Botschaft soll vermittelt werden?"
           rows={4}
-          className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 resize-none ${inputErrorClass("description")}`}
+          aria-invalid={hasError("description")}
         />
       </div>
 
@@ -124,7 +122,7 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
           <MapPin className="w-4 h-4 inline-block mr-2" />
           Drehorte
         </label>
-        <input
+        <Input
           type="text"
           value={projectDetails.locations?.join(", ") || ""}
           onChange={(e) =>
@@ -134,7 +132,6 @@ export function StepProjectDetails({ projectDetails, onChange, errors = [] }: St
             )
           }
           placeholder="z.B. Firmensitz Vaduz, Produktionshalle, Outdoor"
-          className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
         <p className="text-xs text-muted-foreground mt-1">
           Mehrere Orte mit Komma trennen

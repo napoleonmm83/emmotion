@@ -12,6 +12,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   KonfiguratorInput,
   PriceResult,
@@ -207,7 +209,7 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
         <form onSubmit={handleSubmitRequest} className="space-y-4">
           <h4 className="font-medium text-foreground">Deine Kontaktdaten</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
+            <Input
               type="text"
               placeholder="Name *"
               required
@@ -215,9 +217,8 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
               onChange={(e) =>
                 setContactData({ ...contactData, name: e.target.value })
               }
-              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
             />
-            <input
+            <Input
               type="email"
               placeholder="E-Mail *"
               required
@@ -225,26 +226,23 @@ export function StepResult({ formData, priceResult }: StepResultProps) {
               onChange={(e) =>
                 setContactData({ ...contactData, email: e.target.value })
               }
-              className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
             />
           </div>
-          <input
+          <Input
             type="tel"
             placeholder="Telefon (optional)"
             value={contactData.phone}
             onChange={(e) =>
               setContactData({ ...contactData, phone: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
           />
-          <textarea
+          <Textarea
             placeholder="Zusätzliche Informationen zu deinem Projekt (optional)"
             rows={3}
             value={contactData.message}
             onChange={(e) =>
               setContactData({ ...contactData, message: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary resize-none"
           />
 
           {/* Cloudflare Turnstile */}

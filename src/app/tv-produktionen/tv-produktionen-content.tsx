@@ -8,12 +8,18 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/shared";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Play,
   Eye,
   ThumbsUp,
   MessageCircle,
   Calendar,
-  Clock,
   ExternalLink,
   ArrowUpDown,
   TrendingUp,
@@ -512,25 +518,24 @@ export function TVProduktionenContent({
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">Jahr:</span>
-                  <select
-                    value={selectedYear || ""}
-                    onChange={(e) =>
-                      setSelectedYear(e.target.value ? Number(e.target.value) : null)
+                  <Select
+                    value={selectedYear?.toString() || "all"}
+                    onValueChange={(value) =>
+                      setSelectedYear(value === "all" ? null : Number(value))
                     }
-                    className="px-3 py-2 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary transition-colors cursor-pointer appearance-none pr-8"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 0.75rem center",
-                    }}
                   >
-                    <option value="">Alle Jahre</option>
-                    {availableYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-[120px] bg-card border-border">
+                      <SelectValue placeholder="Alle Jahre" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Alle Jahre</SelectItem>
+                      {availableYears.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

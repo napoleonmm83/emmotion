@@ -1,6 +1,7 @@
 "use client";
 
 import { User, Building2, Mail, Phone, MapPin } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import type { ClientInfo } from "@/lib/onboarding-logic";
 
 interface StepContactInfoProps {
@@ -18,10 +19,6 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
   };
 
   const hasError = (field: string) => errors.includes(field);
-  const inputErrorClass = (field: string) =>
-    hasError(field)
-      ? "border-destructive focus:ring-destructive/50"
-      : "border-border focus:ring-primary/50";
 
   return (
     <div className="space-y-6">
@@ -36,12 +33,12 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             <User className="w-4 h-4 inline-block mr-2" />
             Name *
           </label>
-          <input
+          <Input
             type="text"
             value={clientInfo.name}
             onChange={(e) => updateField("name", e.target.value)}
             placeholder="Vor- und Nachname"
-            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("name")}`}
+            aria-invalid={hasError("name")}
           />
         </div>
         <div>
@@ -49,12 +46,11 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             <Building2 className="w-4 h-4 inline-block mr-2" />
             Firma
           </label>
-          <input
+          <Input
             type="text"
             value={clientInfo.company || ""}
             onChange={(e) => updateField("company", e.target.value)}
             placeholder="Firmenname (optional)"
-            className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
       </div>
@@ -66,12 +62,12 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             <Mail className="w-4 h-4 inline-block mr-2" />
             E-Mail *
           </label>
-          <input
+          <Input
             type="email"
             value={clientInfo.email}
             onChange={(e) => updateField("email", e.target.value)}
             placeholder="deine@email.ch"
-            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("email")}`}
+            aria-invalid={hasError("email")}
           />
         </div>
         <div id="field-phone">
@@ -79,12 +75,12 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             <Phone className="w-4 h-4 inline-block mr-2" />
             Telefon *
           </label>
-          <input
+          <Input
             type="tel"
             value={clientInfo.phone}
             onChange={(e) => updateField("phone", e.target.value)}
             placeholder="+41 79 123 45 67"
-            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("phone")}`}
+            aria-invalid={hasError("phone")}
           />
         </div>
       </div>
@@ -96,24 +92,24 @@ export function StepContactInfo({ clientInfo, onChange, errors = [] }: StepConta
             <MapPin className="w-4 h-4 inline-block mr-2" />
             Strasse / Nr. *
           </label>
-          <input
+          <Input
             type="text"
             value={clientInfo.street || ""}
             onChange={(e) => updateField("street", e.target.value)}
             placeholder="Musterstrasse 123"
-            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("street")}`}
+            aria-invalid={hasError("street")}
           />
         </div>
         <div id="field-zipCity">
           <label className={`block text-sm font-medium mb-2 ${hasError("zipCity") ? "text-destructive" : "text-foreground"}`}>
             PLZ / Ort *
           </label>
-          <input
+          <Input
             type="text"
             value={clientInfo.zipCity || ""}
             onChange={(e) => updateField("zipCity", e.target.value)}
             placeholder="9490 Vaduz"
-            className={`w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${inputErrorClass("zipCity")}`}
+            aria-invalid={hasError("zipCity")}
           />
         </div>
       </div>
