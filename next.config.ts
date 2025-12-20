@@ -129,8 +129,12 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-select",
       "@radix-ui/react-tabs",
       "@radix-ui/react-tooltip",
+      "@sanity/client",
+      "@sanity/image-url",
       "date-fns",
       "zod",
+      "react-hook-form",
+      "resend",
     ],
   },
 };
