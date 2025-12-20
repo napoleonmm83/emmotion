@@ -345,6 +345,52 @@ async function getService(slug: string): Promise<ServiceDetail | null> {
 
 ---
 
+### Hydration Mismatch Prevention (React #418)
+
+Third-party Widgets wie Cloudflare Turnstile injizieren dynamisch DOM-Elemente, was zu Hydration-Mismatches führt. Lösung: Komponente erst nach Mount rendern.
+
+```typescript
+"use client";
+
+import { useState, useEffect } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+
+export function FormWithTurnstile() {
+  const [isMounted, setIsMounted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <form>
+      {/* Andere Formular-Felder */}
+
+      {/* Turnstile NUR nach Mount rendern */}
+      {isMounted && (
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+          onSuccess={(token) => setTurnstileToken(token)}
+          options={{ theme: "auto" }}
+        />
+      )}
+
+      <button type="submit" disabled={!turnstileToken}>
+        Senden
+      </button>
+    </form>
+  );
+}
+```
+
+**Wichtig:**
+- `suppressHydrationWarning` unterdrückt nur Warnungen, nicht den eigentlichen Fehler
+- Das `isMounted` Pattern verhindert das Rendern auf dem Server komplett
+- Gilt für alle Widgets die dynamisch DOM manipulieren (Turnstile, reCAPTCHA, etc.)
+
+---
+
 ### Dynamischer Filter mit animierten Statistiken
 
 Pattern für Filter-Dropdowns mit dynamisch berechneten Statistiken (z.B. TV-Produktionen Jahresfilter).
@@ -1302,7 +1348,7 @@ Konfiguriert für Sanity CDN, YouTube Embeds, Turnstile, Vercel Blob, etc.
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy` - Browser-Features einschränken
 
-**Hinweis:** React Error #418 (Hydration Mismatch) kann durch Cloudflare Turnstile verursacht werden, da es dynamisch Inhalte injiziert. Dies ist ein bekanntes Verhalten und nicht kritisch.
+**Hinweis:** React Error #418 (Hydration Mismatch) wird durch das `isMounted` Pattern für Turnstile verhindert. Siehe [Hydration Mismatch Prevention](#hydration-mismatch-prevention-react-418).
 
 ---
 
