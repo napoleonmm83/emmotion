@@ -85,8 +85,8 @@ export function AboutSection({ data }: AboutSectionProps) {
         "Als gebürtiger Rheintaler kenne ich die Region und ihre Unternehmen bestens. Ob lokaler Handwerksbetrieb oder internationales Unternehmen in Liechtenstein – ich verstehe die individuellen Bedürfnisse und setze sie gekonnt um.",
       ];
 
-  // Stats aus CMS oder Fallback
-  const stats: Stat[] = data?.stats?.length
+  // Stats aus CMS oder Fallback, Jahre immer dynamisch berechnen
+  const rawStats: Stat[] = data?.stats?.length
     ? data.stats.map((stat, index) => {
         const parsed = parseStatValue(stat.value);
         return {
@@ -97,6 +97,14 @@ export function AboutSection({ data }: AboutSectionProps) {
         };
       })
     : getDefaultStats();
+
+  // Replace years value dynamically for any stat containing "Jahre"
+  const stats = rawStats.map((stat) => {
+    if (stat.label.toLowerCase().includes("jahre")) {
+      return { ...stat, value: getYearsOfExperience(), suffix: "+" };
+    }
+    return stat;
+  });
 
   return (
     <section id="ueber-mich" className="py-24 md:py-32 border-t border-border">

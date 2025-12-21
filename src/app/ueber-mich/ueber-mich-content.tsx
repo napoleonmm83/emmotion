@@ -199,7 +199,15 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
   const heroText =
     data?.heroText ||
     "Videograf mit TV-Erfahrung, spezialisiert auf authentische Unternehmensvideos. Ich bringe Ihre Geschichte auf den Punkt – professionell, persönlich und mit Leidenschaft.";
-  const stats = data?.stats?.length ? data.stats : getFallbackStats();
+  // Use CMS stats if available, but always calculate years dynamically
+  const rawStats = data?.stats?.length ? data.stats : getFallbackStats();
+  const stats = rawStats.map((stat) => {
+    // Replace years value dynamically for any stat containing "Jahre"
+    if (stat.label.toLowerCase().includes("jahre")) {
+      return { ...stat, value: `${getYearsOfExperience()}+` };
+    }
+    return stat;
+  });
   const values = data?.values?.length ? data.values : FALLBACK_VALUES;
   const timeline = data?.timeline?.length ? data.timeline : FALLBACK_TIMELINE;
   const whyWork = data?.whyWorkWithMe || FALLBACK_WHY_WORK;
