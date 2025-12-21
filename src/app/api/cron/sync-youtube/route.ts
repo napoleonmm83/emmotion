@@ -4,13 +4,16 @@ import { createClient } from "@sanity/client";
 import { put, list } from "@vercel/blob";
 import { fetchPlaylistData } from "@/lib/youtube";
 
-const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  apiVersion: "2024-01-01",
-  useCdn: false,
-  token: process.env.SANITY_API_TOKEN,
-});
+// Create Sanity client lazily to ensure environment variables are available
+function getSanityClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+    apiVersion: "2024-01-01",
+    useCdn: false,
+    token: process.env.SANITY_API_TOKEN,
+  });
+}
 
 /**
  * Verify that request comes from Vercel Cron or is a manual sync with valid secret
@@ -46,6 +49,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sanityClient = getSanityClient();
+
     // Get TV Productions settings from Sanity
     const tvSettings = await sanityClient.fetch<{
       _id: string;
