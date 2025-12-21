@@ -65,6 +65,33 @@ Bei UI-Komponenten wie Lightboxen, Modals, Formularen, Animationen etc.:
 
 ---
 
+## WICHTIG: Versions-Check bei Session-Start
+
+**Vor jeder Änderung sicherstellen, dass die aktuellste Version des Codes vorliegt!**
+
+Da an verschiedenen Geräten gearbeitet wird, muss zu Beginn jeder Claude Code Session geprüft werden:
+
+1. **Git Status prüfen:**
+   ```bash
+   git fetch origin
+   git status
+   ```
+
+2. **Bei Rückstand:** Falls "Your branch is behind", den Benutzer informieren:
+   > "⚠️ Dein lokaler Branch ist X Commits hinter origin/main. Bitte erst `git pull` ausführen, bevor wir Änderungen machen."
+
+3. **Bei uncommitted Changes:** Falls lokale Änderungen vorhanden:
+   > "⚠️ Es gibt uncommitted Changes. Sollen diese zuerst committed oder verworfen werden?"
+
+4. **Erst nach Sync:** Änderungen erst durchführen, wenn der lokale Branch aktuell ist
+
+**Automatische Checks:**
+- Bei Session-Start: `git fetch && git status`
+- Vor grösseren Änderungen: Kurzer Status-Check
+- Nach Abschluss: Commit und Push vorschlagen
+
+---
+
 ## PROJEKTÜBERSICHT
 
 **Projekt:** emmotion.ch – Website für Videoproduktion
