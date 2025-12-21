@@ -158,12 +158,15 @@ export async function GET(request: NextRequest) {
     }
 
     console.log(`Sanity token available: ${sanityToken.length} chars, starts with: ${sanityToken.substring(0, 4)}...`);
-    console.log(`Patching document: ${tvSettings._id} with lastSyncedAt: ${playlistData.lastSyncedAt}`);
+
+    // Use the published document ID (remove "drafts." prefix if present)
+    const publishedDocId = tvSettings._id.replace(/^drafts\./, "");
+    console.log(`Patching document: ${publishedDocId} (original: ${tvSettings._id}) with lastSyncedAt: ${playlistData.lastSyncedAt}`);
 
     // Update Sanity document with cached data
     try {
       const patchResult = await sanityClient
-        .patch(tvSettings._id)
+        .patch(publishedDocId)
         .set({
           cachedData: {
             lastSyncedAt: playlistData.lastSyncedAt,
@@ -204,7 +207,8 @@ export async function GET(request: NextRequest) {
         lastSyncedAt: playlistData.lastSyncedAt,
       },
       debug: {
-        documentId: tvSettings._id,
+        originalDocId: tvSettings._id,
+        patchedDocId: publishedDocId,
         tokenAvailable: !!sanityToken,
         tokenLength: sanityToken.length,
       },
