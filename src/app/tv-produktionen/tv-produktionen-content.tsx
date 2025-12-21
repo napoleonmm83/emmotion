@@ -93,6 +93,7 @@ interface TVProduktionenContentProps {
 }
 
 type SortOption = "date" | "views" | "likes";
+type SortDirection = "asc" | "desc";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -391,6 +392,7 @@ export function TVProduktionenContent({
   settings,
 }: TVProduktionenContentProps) {
   const [sortBy, setSortBy] = useState<SortOption>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -457,24 +459,25 @@ export function TVProduktionenContent({
       );
     }
 
-    // Sortierung
+    // Sortierung mit Richtung
+    const direction = sortDirection === "asc" ? 1 : -1;
     switch (sortBy) {
       case "views":
-        filtered.sort((a, b) => b.viewCount - a.viewCount);
+        filtered.sort((a, b) => (a.viewCount - b.viewCount) * direction);
         break;
       case "likes":
-        filtered.sort((a, b) => b.likeCount - a.likeCount);
+        filtered.sort((a, b) => (a.likeCount - b.likeCount) * direction);
         break;
       case "date":
       default:
         filtered.sort(
           (a, b) =>
-            new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+            (new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()) * direction
         );
     }
 
     return filtered;
-  }, [videosFilteredByYear, sortBy, searchQuery]);
+  }, [videosFilteredByYear, sortBy, sortDirection, searchQuery]);
 
   return (
     <>
@@ -638,7 +641,7 @@ export function TVProduktionenContent({
               </div>
 
               {/* Bottom row: Sort */}
-              <div className="flex items-center justify-start sm:justify-end gap-2">
+              <div className="flex items-center justify-start sm:justify-end gap-2 flex-wrap">
                 <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Sortieren:</span>
                 <div className="flex gap-2">
@@ -661,6 +664,15 @@ export function TVProduktionenContent({
                     </button>
                   ))}
                 </div>
+                {/* Sort Direction Toggle */}
+                <button
+                  onClick={() => setSortDirection(prev => prev === "desc" ? "asc" : "desc")}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 flex items-center gap-1.5 bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  title={sortDirection === "desc" ? "Absteigend (höchste zuerst)" : "Aufsteigend (niedrigste zuerst)"}
+                >
+                  <ArrowUpDown className={`w-3 h-3 transition-transform ${sortDirection === "asc" ? "rotate-180" : ""}`} />
+                  {sortDirection === "desc" ? "Absteigend" : "Aufsteigend"}
+                </button>
               </div>
             </motion.div>
           </Container>
@@ -672,7 +684,7 @@ export function TVProduktionenContent({
             <AnimatePresence mode="wait">
               {sortedVideos.length > 0 ? (
                 <motion.div
-                  key={`${sortBy}-${searchQuery}-${selectedYear || "all"}`}
+                  key={`${sortBy}-${sortDirection}-${searchQuery}-${selectedYear || "all"}`}
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
