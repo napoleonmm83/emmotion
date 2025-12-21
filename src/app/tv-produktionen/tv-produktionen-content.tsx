@@ -14,11 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Play,
@@ -366,64 +361,74 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
         {cardContent}
       </motion.a>
 
-      {/* Lightbox Dialog */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        {/* Buttons positioned outside DialogContent */}
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vh] pointer-events-none z-[51]">
-          <div className="absolute -top-2 -right-14 flex flex-col gap-2 pointer-events-auto">
-            {/* Close Button */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
-              title="Schliessen"
+      {/* Framer Motion Lightbox */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-md p-4"
+            onClick={() => setIsOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative w-full max-w-6xl"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-5 h-5" />
-            </button>
-            {/* Share Button */}
-            <button
-              onClick={handleShare}
-              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
-              title={copied ? "Link kopiert!" : "Teilen"}
-            >
-              {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-        <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
-          {/* Screen reader only title */}
-          <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
+              {/* Buttons outside lightbox - positioned to the right */}
+              <div className="absolute -top-2 -right-14 flex flex-col gap-2 z-50">
+                {/* Close Button */}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+                  title="Schliessen"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                {/* Share Button */}
+                <button
+                  onClick={handleShare}
+                  className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+                  title={copied ? "Link kopiert!" : "Teilen"}
+                >
+                  {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+                </button>
+              </div>
 
-          {/* Video Player - fills the lightbox */}
-          <div className="flex-1 min-h-0 flex items-center justify-center bg-black">
-            <div className="w-full h-full">
-              <VideoPlayer
-                src={youtubeUrl}
-                poster={imgSrc}
-                title={video.title}
-                aspectRatio="video"
-                showControls
-                className="w-full h-full [&>div]:h-full [&>div]:flex [&>div]:items-center [&>div]:justify-center"
-              />
-            </div>
-          </div>
+              {/* Video Container */}
+              <div className="aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
+                <VideoPlayer
+                  src={youtubeUrl}
+                  poster={imgSrc}
+                  title={video.title}
+                  aspectRatio="video"
+                  showControls
+                  className="w-full h-full"
+                />
+              </div>
 
-          {/* Title Bar */}
-          <div className="p-4 bg-black/90 flex-shrink-0">
-            <h3 className="text-lg font-medium text-white">{safeTitle}</h3>
-            <div className="flex items-center gap-4 text-sm text-white/60 mt-1">
-              <span className="flex items-center gap-1">
-                <Eye className="w-4 h-4" />
-                {formatNumber(safeViewCount)} Views
-              </span>
-              <span className="flex items-center gap-1">
-                <ThumbsUp className="w-4 h-4" />
-                {formatNumber(safeLikeCount)} Likes
-              </span>
-              <span>{safeDuration}</span>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+              {/* Title Bar */}
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-medium text-foreground">{safeTitle}</h3>
+                <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground mt-1">
+                  <span className="flex items-center gap-1">
+                    <Eye className="w-4 h-4" />
+                    {formatNumber(safeViewCount)} Views
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <ThumbsUp className="w-4 h-4" />
+                    {formatNumber(safeLikeCount)} Likes
+                  </span>
+                  <span>{safeDuration}</span>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
