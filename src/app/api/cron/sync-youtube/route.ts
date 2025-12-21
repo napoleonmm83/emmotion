@@ -148,13 +148,17 @@ export async function GET(request: NextRequest) {
     }));
 
     // Check if Sanity token is available
-    if (!process.env.SANITY_API_TOKEN) {
+    const sanityToken = process.env.SANITY_API_TOKEN;
+    if (!sanityToken) {
       console.error("SANITY_API_TOKEN is not set - cannot write to Sanity");
       return NextResponse.json({
         success: false,
         error: "SANITY_API_TOKEN nicht konfiguriert",
       }, { status: 500 });
     }
+
+    console.log(`Sanity token available: ${sanityToken.length} chars, starts with: ${sanityToken.substring(0, 4)}...`);
+    console.log(`Patching document: ${tvSettings._id} with lastSyncedAt: ${playlistData.lastSyncedAt}`);
 
     // Update Sanity document with cached data
     try {
@@ -171,7 +175,7 @@ export async function GET(request: NextRequest) {
           },
         })
         .commit();
-      console.log("Sanity patch result:", patchResult._id);
+      console.log("Sanity patch result:", JSON.stringify(patchResult, null, 2));
     } catch (sanityError) {
       console.error("Sanity patch failed:", sanityError);
       return NextResponse.json({
@@ -198,6 +202,11 @@ export async function GET(request: NextRequest) {
         totalLikes: playlistData.totalLikes,
         totalComments: playlistData.totalComments,
         lastSyncedAt: playlistData.lastSyncedAt,
+      },
+      debug: {
+        documentId: tvSettings._id,
+        tokenAvailable: !!sanityToken,
+        tokenLength: sanityToken.length,
       },
     });
   } catch (error) {
