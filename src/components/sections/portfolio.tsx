@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Film, Tv, Play, Eye } from "lucide-react";
+import { X, ArrowRight, Film, Tv, Play, Eye, Share2, Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, SectionHeader, VideoThumbnail, YouTubeEmbed, isEmbeddableVideo } from "@/components/shared";
@@ -37,7 +37,37 @@ function VideoLightbox({
   videoUrl: string;
   title: string;
 }) {
+  const [copied, setCopied] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleShare = async () => {
+    const shareUrl = videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")
+      ? videoUrl
+      : window.location.href;
+
+    // Try native share first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          url: shareUrl,
+        });
+        return;
+      } catch {
+        // User cancelled or error, fall back to clipboard
+      }
+    }
+
+    // Fall back to clipboard
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard failed silently
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -48,12 +78,6 @@ function VideoLightbox({
         className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-md p-4"
         onClick={onClose}
       >
-        <button
-          className="absolute top-6 right-6 p-3 rounded-full bg-foreground/10 text-foreground hover:bg-foreground/20 transition-colors"
-          onClick={onClose}
-        >
-          <X size={24} />
-        </button>
         <motion.div
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
@@ -61,6 +85,26 @@ function VideoLightbox({
           className="relative w-full max-w-6xl"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Buttons outside lightbox - positioned to the right */}
+          <div className="absolute -top-2 -right-14 flex flex-col gap-2 z-50">
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+              title="Schliessen"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {/* Share Button */}
+            <button
+              onClick={handleShare}
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors backdrop-blur-sm"
+              title={copied ? "Link kopiert!" : "Teilen"}
+            >
+              {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+            </button>
+          </div>
+
           <div className="aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
             {isEmbeddableVideo(videoUrl) ? (
               <YouTubeEmbed
