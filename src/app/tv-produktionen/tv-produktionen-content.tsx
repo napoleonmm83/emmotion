@@ -190,11 +190,13 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
 }
 
 function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("de-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // Use UTC methods to prevent hydration mismatches between server and client
+  // (server might run in different timezone)
+  const date = new Date(dateString);
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = date.getUTCFullYear();
+  return `${day}.${month}.${year}`;
 }
 
 function StatCard({
