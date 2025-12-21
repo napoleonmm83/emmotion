@@ -6,11 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Calculate years of TV experience starting from July 18, 2013
+ * Calculate years of TV experience starting from July 18, 2023
  * Returns the number of complete years
  */
 export function getYearsOfExperience(): number {
-  const startDate = new Date("2013-07-18");
+  const startDate = new Date("2023-07-18");
   const now = new Date();
 
   let years = now.getFullYear() - startDate.getFullYear();
