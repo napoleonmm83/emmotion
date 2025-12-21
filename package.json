@@ -19,6 +19,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@marsidev/react-turnstile": "^1.4.0",
+    "@planetary/sanity-plugin-preflight": "^1.1.1",
     "@portabletext/react": "^6.0.0",
     "@portabletext/types": "^4.0.0",
     "@radix-ui/react-accordion": "^1.2.11",

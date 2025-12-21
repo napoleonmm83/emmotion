@@ -1,5 +1,7 @@
-import type { StructureResolver } from "sanity/structure";
+import type { StructureResolver, DefaultDocumentNodeResolver } from "sanity/structure";
 import { DeleteAllSubmissions } from "../components/DeleteAllSubmissions";
+import { Preflight, DeadLinks, SEOAudit } from "@planetary/sanity-plugin-preflight";
+import { RocketIcon } from "@sanity/icons";
 
 /**
  * Benutzerdefinierte Sanity Studio Struktur
@@ -172,3 +174,40 @@ export const structure: StructureResolver = (S) =>
             .title("Website Einstellungen")
         ),
     ]);
+
+/**
+ * Default Document Node mit Preflight SEO Plugin
+ * Fügt einen "Preflight" Tab zu relevanten Dokumenttypen hinzu
+ */
+export const defaultDocumentNode: DefaultDocumentNodeResolver = (S, { schemaType }) => {
+  // Dokumenttypen, die den Preflight-Check erhalten sollen
+  const preflightSchemaTypes = [
+    "service",
+    "project",
+    "homePage",
+    "aboutPage",
+    "portfolioPage",
+    "contactPage",
+    "konfiguratorPage",
+    "legalPage",
+    "faq",
+  ];
+
+  if (preflightSchemaTypes.includes(schemaType)) {
+    return S.document().views([
+      // Standard Editor
+      S.view.form(),
+      // Preflight mit Dead Links und SEO Audit
+      S.view
+        .component(
+          Preflight({
+            plugins: [DeadLinks(), SEOAudit()],
+          })
+        )
+        .title("Preflight")
+        .icon(RocketIcon),
+    ]);
+  }
+
+  return S.document().views([S.view.form()]);
+};
