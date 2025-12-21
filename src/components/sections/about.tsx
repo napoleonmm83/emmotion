@@ -25,7 +25,7 @@ const statIcons: LucideIcon[] = [Tv, Award, Users, MapPin];
 
 function getDefaultStats(): Stat[] {
   return [
-    { icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre TV-Erfahrung" },
+    { icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre Erfahrung" },
     { icon: Award, value: 100, suffix: "+", label: "Projekte umgesetzt" },
     { icon: Users, value: 50, suffix: "+", label: "Zufriedene Kunden" },
     { icon: MapPin, value: 3, suffix: "", label: "Regionen abgedeckt" },
@@ -103,7 +103,7 @@ export function AboutSection({ data }: AboutSectionProps) {
   // Always add Jahre stat at the beginning if not in CMS
   const baseStats: Stat[] = hasJahresStat
     ? cmsStats
-    : [{ icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre TV-Erfahrung" }, ...cmsStats];
+    : [{ icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre Erfahrung" }, ...cmsStats];
 
   // Use fallback if no stats at all, otherwise use baseStats with dynamic Jahre
   const rawStats = baseStats.length ? baseStats : getDefaultStats();
