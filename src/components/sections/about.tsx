@@ -86,7 +86,7 @@ export function AboutSection({ data }: AboutSectionProps) {
       ];
 
   // Stats aus CMS oder Fallback, Jahre immer dynamisch berechnen
-  const rawStats: Stat[] = data?.stats?.length
+  const cmsStats: Stat[] = data?.stats?.length
     ? data.stats.map((stat, index) => {
         const parsed = parseStatValue(stat.value);
         return {
@@ -96,7 +96,17 @@ export function AboutSection({ data }: AboutSectionProps) {
           label: stat.label,
         };
       })
-    : getDefaultStats();
+    : [];
+
+  const hasJahresStat = cmsStats.some((stat) => stat.label.toLowerCase().includes("jahre"));
+
+  // Always add Jahre stat at the beginning if not in CMS
+  const baseStats: Stat[] = hasJahresStat
+    ? cmsStats
+    : [{ icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre TV-Erfahrung" }, ...cmsStats];
+
+  // Use fallback if no stats at all, otherwise use baseStats with dynamic Jahre
+  const rawStats = baseStats.length ? baseStats : getDefaultStats();
 
   // Replace years value dynamically for any stat containing "Jahre"
   const stats = rawStats.map((stat) => {

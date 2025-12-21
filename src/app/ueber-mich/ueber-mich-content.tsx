@@ -199,8 +199,17 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
   const heroText =
     data?.heroText ||
     "Videograf mit TV-Erfahrung, spezialisiert auf authentische Unternehmensvideos. Ich bringe Ihre Geschichte auf den Punkt – professionell, persönlich und mit Leidenschaft.";
-  // Use CMS stats if available, but always calculate years dynamically
-  const rawStats = data?.stats?.length ? data.stats : getFallbackStats();
+  // Use CMS stats if available, always ensure Jahre stat is present
+  const cmsStats = data?.stats?.length ? data.stats : [];
+  const hasJahresStat = cmsStats.some((stat) => stat.label.toLowerCase().includes("jahre"));
+
+  // Always add Jahre stat at the beginning if not in CMS
+  const baseStats = hasJahresStat
+    ? cmsStats
+    : [{ value: `${getYearsOfExperience()}+`, label: "Jahre Erfahrung" }, ...cmsStats];
+
+  // Use fallback if no stats at all, otherwise use baseStats with dynamic Jahre
+  const rawStats = baseStats.length ? baseStats : getFallbackStats();
   const stats = rawStats.map((stat) => {
     // Replace years value dynamically for any stat containing "Jahre"
     if (stat.label.toLowerCase().includes("jahre")) {
