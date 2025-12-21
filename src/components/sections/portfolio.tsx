@@ -111,7 +111,8 @@ function formatNumber(num: number): string {
   if (num >= 1000) {
     return Math.round(num / 1000) + "K";
   }
-  return num.toLocaleString("de-CH");
+  // Use regex-based formatting instead of toLocaleString to avoid hydration mismatch
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 }
 
 export function PortfolioSection({ data, tvPreview }: PortfolioSectionProps) {
