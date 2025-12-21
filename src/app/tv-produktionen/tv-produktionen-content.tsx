@@ -368,12 +368,9 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
 
       {/* Lightbox Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
-          {/* Screen reader only title */}
-          <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
-
-          {/* Buttons outside lightbox - positioned to the right */}
-          <div className="absolute -top-2 -right-14 flex flex-col gap-2 z-50">
+        {/* Buttons positioned outside DialogContent */}
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vh] pointer-events-none z-[51]">
+          <div className="absolute -top-2 -right-14 flex flex-col gap-2 pointer-events-auto">
             {/* Close Button */}
             <button
               onClick={() => setIsOpen(false)}
@@ -391,6 +388,10 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
               {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
             </button>
           </div>
+        </div>
+        <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
+          {/* Screen reader only title */}
+          <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
 
           {/* Video Player - fills the lightbox */}
           <div className="flex-1 min-h-0 flex items-center justify-center bg-black">
