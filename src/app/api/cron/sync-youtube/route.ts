@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@sanity/client";
 import { put, list } from "@vercel/blob";
 import { fetchPlaylistData } from "@/lib/youtube";
@@ -159,6 +160,10 @@ export async function GET(request: NextRequest) {
     console.log(
       `YouTube sync complete: ${playlistData.totalVideos} videos, ${playlistData.totalViews.toLocaleString()} views`
     );
+
+    // Revalidate the TV productions page to show updated data immediately
+    revalidatePath("/tv-produktionen");
+    console.log("Revalidated /tv-produktionen page");
 
     return NextResponse.json({
       success: true,
