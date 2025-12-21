@@ -157,11 +157,8 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    console.log(`Sanity token available: ${sanityToken.length} chars, starts with: ${sanityToken.substring(0, 4)}...`);
-
     // Use the published document ID (remove "drafts." prefix if present)
     const publishedDocId = tvSettings._id.replace(/^drafts\./, "");
-    console.log(`Patching document: ${publishedDocId} (original: ${tvSettings._id}) with lastSyncedAt: ${playlistData.lastSyncedAt}`);
 
     // Update Sanity document with cached data
     try {
@@ -178,7 +175,7 @@ export async function GET(request: NextRequest) {
           },
         })
         .commit();
-      console.log("Sanity patch result:", JSON.stringify(patchResult, null, 2));
+      console.log("Sanity patch result:", patchResult._id);
     } catch (sanityError) {
       console.error("Sanity patch failed:", sanityError);
       return NextResponse.json({
@@ -205,12 +202,6 @@ export async function GET(request: NextRequest) {
         totalLikes: playlistData.totalLikes,
         totalComments: playlistData.totalComments,
         lastSyncedAt: playlistData.lastSyncedAt,
-      },
-      debug: {
-        originalDocId: tvSettings._id,
-        patchedDocId: publishedDocId,
-        tokenAvailable: !!sanityToken,
-        tokenLength: sanityToken.length,
       },
     });
   } catch (error) {
