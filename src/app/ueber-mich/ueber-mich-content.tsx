@@ -22,6 +22,7 @@ import { Card } from "@/components/ui/card";
 import { urlFor } from "@sanity/lib/image";
 import { PortableText } from "@sanity/lib/portable-text";
 import type { PortableTextBlock } from "@portabletext/types";
+import { getYearsOfExperience } from "@/lib/utils";
 
 // Icon mapping
 const iconMap: Record<string, LucideIcon> = {
@@ -36,12 +37,14 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 // Fallback data
-const FALLBACK_STATS = [
-  { value: "10+", label: "Jahre Erfahrung" },
-  { value: "100+", label: "Projekte" },
-  { value: "TV", label: "Qualitätsstandard" },
-  { value: "100%", label: "Persönlich" },
-];
+function getFallbackStats() {
+  return [
+    { value: `${getYearsOfExperience()}+`, label: "Jahre Erfahrung" },
+    { value: "100+", label: "Projekte" },
+    { value: "TV", label: "Qualitätsstandard" },
+    { value: "100%", label: "Persönlich" },
+  ];
+}
 
 const FALLBACK_VALUES = [
   {
@@ -196,7 +199,7 @@ export function UeberMichContent({ data, settings }: UeberMichContentProps) {
   const heroText =
     data?.heroText ||
     "Videograf mit TV-Erfahrung, spezialisiert auf authentische Unternehmensvideos. Ich bringe Ihre Geschichte auf den Punkt – professionell, persönlich und mit Leidenschaft.";
-  const stats = data?.stats?.length ? data.stats : FALLBACK_STATS;
+  const stats = data?.stats?.length ? data.stats : getFallbackStats();
   const values = data?.values?.length ? data.values : FALLBACK_VALUES;
   const timeline = data?.timeline?.length ? data.timeline : FALLBACK_TIMELINE;
   const whyWork = data?.whyWorkWithMe || FALLBACK_WHY_WORK;

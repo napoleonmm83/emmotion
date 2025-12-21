@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container, AnimatedCounter } from "@/components/shared";
 import { Card } from "@/components/ui/card";
+import { getYearsOfExperience } from "@/lib/utils";
 
 interface StatFromCMS {
   value: string;
@@ -22,12 +23,14 @@ interface Stat {
 // Icon mapping für Stats
 const statIcons: LucideIcon[] = [Tv, Award, Users, MapPin];
 
-const defaultStats: Stat[] = [
-  { icon: Tv, value: 10, suffix: "+", label: "Jahre TV-Erfahrung" },
-  { icon: Award, value: 100, suffix: "+", label: "Projekte umgesetzt" },
-  { icon: Users, value: 50, suffix: "+", label: "Zufriedene Kunden" },
-  { icon: MapPin, value: 3, suffix: "", label: "Regionen abgedeckt" },
-];
+function getDefaultStats(): Stat[] {
+  return [
+    { icon: Tv, value: getYearsOfExperience(), suffix: "+", label: "Jahre TV-Erfahrung" },
+    { icon: Award, value: 100, suffix: "+", label: "Projekte umgesetzt" },
+    { icon: Users, value: 50, suffix: "+", label: "Zufriedene Kunden" },
+    { icon: MapPin, value: 3, suffix: "", label: "Regionen abgedeckt" },
+  ];
+}
 
 // Parse CMS stats (z.B. "10+" -> { value: 10, suffix: "+" })
 function parseStatValue(valueStr: string): { value: number; suffix: string } {
@@ -93,7 +96,7 @@ export function AboutSection({ data }: AboutSectionProps) {
           label: stat.label,
         };
       })
-    : defaultStats;
+    : getDefaultStats();
 
   return (
     <section id="ueber-mich" className="py-24 md:py-32 border-t border-border">
