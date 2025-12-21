@@ -31,6 +31,7 @@ import {
   TrendingUp,
   Filter,
   X,
+  ListOrdered,
 } from "lucide-react";
 
 interface Video {
@@ -642,7 +643,7 @@ export function TVProduktionenContent({
 
               {/* Bottom row: Sort */}
               <div className="flex items-center justify-start sm:justify-end gap-2 flex-wrap">
-                <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                <ListOrdered className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Sortieren:</span>
                 <div className="flex gap-2">
                   {[
