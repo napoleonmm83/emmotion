@@ -232,8 +232,15 @@ function StatCard({
 }
 
 function VideoCard({ video, priority = false, number }: { video: Video; priority?: boolean; number?: number }) {
+  // Defensive: ensure all fields are strings/numbers to prevent hydration errors
+  const safeTitle = typeof video.title === "string" ? video.title : String(video.title || "");
+  const safeDuration = typeof video.duration === "string" ? video.duration : String(video.duration || "");
+  const safeViewCount = typeof video.viewCount === "number" ? video.viewCount : 0;
+  const safeLikeCount = typeof video.likeCount === "number" ? video.likeCount : 0;
+  const safeCommentCount = typeof video.commentCount === "number" ? video.commentCount : 0;
+
   const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
-  const [imgSrc, setImgSrc] = useState(video.thumbnailUrl);
+  const [imgSrc, setImgSrc] = useState(video.thumbnailUrl || "");
   const [imgError, setImgError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -252,7 +259,7 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
       <div className="relative aspect-video overflow-hidden bg-muted">
         <Image
           src={imgSrc}
-          alt={video.title}
+          alt={safeTitle}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -268,29 +275,29 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
         </div>
         {/* Duration badge */}
         <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white font-medium">
-          {video.duration}
+          {safeDuration}
         </div>
       </div>
 
       {/* Content */}
       <CardContent className="p-4">
         <h3 className="font-semibold text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
-          {video.title}
+          {safeTitle}
         </h3>
 
         {/* Stats */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
             <Eye className="w-4 h-4" />
-            {formatNumber(video.viewCount)}
+            {formatNumber(safeViewCount)}
           </span>
           <span className="flex items-center gap-1">
             <ThumbsUp className="w-4 h-4" />
-            {formatNumber(video.likeCount)}
+            {formatNumber(safeLikeCount)}
           </span>
           <span className="flex items-center gap-1">
             <MessageCircle className="w-4 h-4" />
-            {formatNumber(video.commentCount)}
+            {formatNumber(safeCommentCount)}
           </span>
         </div>
 
@@ -334,7 +341,7 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="w-[70vw] h-[70vh] !max-w-none p-0 bg-black border-none overflow-hidden flex flex-col" showCloseButton={false}>
           {/* Screen reader only title */}
-          <DialogTitle className="sr-only">{video.title}</DialogTitle>
+          <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
 
           {/* Close Button */}
           <button
@@ -360,17 +367,17 @@ function VideoCard({ video, priority = false, number }: { video: Video; priority
 
           {/* Title Bar */}
           <div className="p-4 bg-black/90 flex-shrink-0">
-            <h3 className="text-lg font-medium text-white">{video.title}</h3>
+            <h3 className="text-lg font-medium text-white">{safeTitle}</h3>
             <div className="flex items-center gap-4 text-sm text-white/60 mt-1">
               <span className="flex items-center gap-1">
                 <Eye className="w-4 h-4" />
-                {formatNumber(video.viewCount)} Views
+                {formatNumber(safeViewCount)} Views
               </span>
               <span className="flex items-center gap-1">
                 <ThumbsUp className="w-4 h-4" />
-                {formatNumber(video.likeCount)} Likes
+                {formatNumber(safeLikeCount)} Likes
               </span>
-              <span>{video.duration}</span>
+              <span>{safeDuration}</span>
             </div>
           </div>
         </DialogContent>
@@ -405,10 +412,11 @@ export function TVProduktionenContent({
   }, [tvData.cachedData?.videos]);
 
   // Verfügbare Jahre aus den Videos extrahieren (absteigend sortiert)
+  // Use UTC to ensure consistent year extraction between server and client
   const availableYears = useMemo(() => {
     const years = new Set<number>();
     videos.forEach((video) => {
-      const year = new Date(video.publishedAt).getFullYear();
+      const year = new Date(video.publishedAt).getUTCFullYear();
       years.add(year);
     });
     return Array.from(years).sort((a, b) => b - a);
@@ -418,7 +426,7 @@ export function TVProduktionenContent({
   const videosFilteredByYear = useMemo(() => {
     if (!selectedYear) return videos;
     return videos.filter((video) => {
-      const year = new Date(video.publishedAt).getFullYear();
+      const year = new Date(video.publishedAt).getUTCFullYear();
       return year === selectedYear;
     });
   }, [videos, selectedYear]);
