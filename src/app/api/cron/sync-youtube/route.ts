@@ -142,20 +142,39 @@ export async function GET(request: NextRequest) {
       ...video,
     }));
 
+    // Check if Sanity token is available
+    if (!process.env.SANITY_API_TOKEN) {
+      console.error("SANITY_API_TOKEN is not set - cannot write to Sanity");
+      return NextResponse.json({
+        success: false,
+        error: "SANITY_API_TOKEN nicht konfiguriert",
+      }, { status: 500 });
+    }
+
     // Update Sanity document with cached data
-    await sanityClient
-      .patch(tvSettings._id)
-      .set({
-        cachedData: {
-          lastSyncedAt: playlistData.lastSyncedAt,
-          totalVideos: playlistData.totalVideos,
-          totalViews: playlistData.totalViews,
-          totalLikes: playlistData.totalLikes,
-          totalComments: playlistData.totalComments,
-          videos: videosWithKeys,
-        },
-      })
-      .commit();
+    try {
+      const patchResult = await sanityClient
+        .patch(tvSettings._id)
+        .set({
+          cachedData: {
+            lastSyncedAt: playlistData.lastSyncedAt,
+            totalVideos: playlistData.totalVideos,
+            totalViews: playlistData.totalViews,
+            totalLikes: playlistData.totalLikes,
+            totalComments: playlistData.totalComments,
+            videos: videosWithKeys,
+          },
+        })
+        .commit();
+      console.log("Sanity patch result:", patchResult._id);
+    } catch (sanityError) {
+      console.error("Sanity patch failed:", sanityError);
+      return NextResponse.json({
+        success: false,
+        error: "Sanity Update fehlgeschlagen",
+        details: sanityError instanceof Error ? sanityError.message : "Unknown error",
+      }, { status: 500 });
+    }
 
     console.log(
       `YouTube sync complete: ${playlistData.totalVideos} videos, ${playlistData.totalViews.toLocaleString()} views`
