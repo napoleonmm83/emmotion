@@ -121,7 +121,9 @@ function formatNumber(num: number): string {
   if (num >= 1000) {
     return (num / 1000).toFixed(1) + "K";
   }
-  return num.toLocaleString("de-CH");
+  // Use consistent formatting without locale-dependent toLocaleString
+  // to prevent hydration mismatches
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
 }
 
 function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
@@ -382,6 +384,12 @@ export function TVProduktionenContent({
   const [sortBy, setSortBy] = useState<SortOption>("date");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatch for locale-dependent formatting
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Duplikate entfernen (falls Video mehrfach in Playlist)
   const videos = useMemo(() => {
@@ -549,7 +557,9 @@ export function TVProduktionenContent({
                   className="text-center text-xs text-muted-foreground mt-4"
                 >
                   Letzte Aktualisierung:{" "}
-                  {new Date(stats.lastSyncedAt).toLocaleString("de-CH")}
+                  {isMounted
+                    ? new Date(stats.lastSyncedAt).toLocaleString("de-CH")
+                    : "–"}
                 </motion.p>
               )}
             </Container>
