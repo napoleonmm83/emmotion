@@ -53,7 +53,6 @@ async function fetchTaxRates(): Promise<Array<{ id: number; value: number; name:
     });
 
     if (!response.ok) {
-      console.error("Error fetching tax rates:", response.status);
       return [];
     }
 
@@ -66,10 +65,8 @@ async function fetchTaxRates(): Promise<Array<{ id: number; value: number; name:
 
     // Filter for sales taxes only
     const salesTaxes = taxes.filter(t => t.type === "sales_tax" || t.type === "not_taxable_turnover");
-    console.log("Available Bexio tax rates:", salesTaxes.map(t => `${t.id}: ${t.value}% (${t.name})`).join(", "));
     return salesTaxes;
-  } catch (error) {
-    console.error("Error fetching tax rates:", error);
+  } catch {
     return [];
   }
 }
@@ -112,9 +109,6 @@ export async function createInvoice(
   // Get valid tax ID (fetch from API if not in env)
   const taxId = await getValidTaxId();
 
-  if (!taxId) {
-    console.warn("No valid tax_id found - invoice creation may fail");
-  }
 
   const today = new Date();
   const dueDate = new Date(today);
@@ -169,8 +163,6 @@ export async function createInvoice(
   if (bankAccountId) {
     invoiceData.bank_account_id = bankAccountId;
   }
-
-  console.log("Creating Bexio invoice with data:", JSON.stringify(invoiceData, null, 2));
 
   const invoice = await client.post<BexioInvoice>("/kb_invoice", invoiceData);
   return invoice;
@@ -250,10 +242,8 @@ export async function sendInvoiceByEmail(
   // Step 1: Issue the invoice first (required before sending)
   try {
     await client.post(`/kb_invoice/${invoiceId}/issue`);
-    console.log(`Invoice ${invoiceId} issued successfully`);
-  } catch (issueError) {
+  } catch {
     // If already issued, this is fine - continue with send
-    console.log(`Invoice ${invoiceId} issue skipped (may already be issued)`);
   }
 
   // Step 2: Prepare email with [Network Link] placeholder (REQUIRED by Bexio API)
@@ -286,10 +276,8 @@ emmotion.ch`;
   // Step 3: Send via email
   try {
     await client.post(`/kb_invoice/${invoiceId}/send`, emailData);
-    console.log(`Invoice ${invoiceId} sent via Bexio email to ${params.recipientEmail}`);
     return { sent: true, issued: true };
-  } catch (sendError) {
-    console.error("Bexio /send endpoint failed:", sendError);
+  } catch {
     // Invoice is already issued, just couldn't send email
     return { sent: false, issued: true };
   }
@@ -304,8 +292,7 @@ export async function markInvoiceAsSent(invoiceId: number): Promise<boolean> {
   try {
     await client.post(`/kb_invoice/${invoiceId}/issue`);
     return true;
-  } catch (error) {
-    console.error("Error marking invoice as sent:", error);
+  } catch {
     return false;
   }
 }

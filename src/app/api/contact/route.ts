@@ -126,7 +126,6 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check
     if (body.website && body.website.length > 0) {
-      console.log("Honeypot triggered, ignoring submission");
       return NextResponse.json({ success: true, message: "Nachricht gesendet" });
     }
 
@@ -134,7 +133,6 @@ export async function POST(request: NextRequest) {
     if (body._timestamp) {
       const submissionTime = Date.now() - body._timestamp;
       if (submissionTime < MIN_SUBMISSION_TIME) {
-        console.log("Form submitted too quickly, likely a bot");
         return NextResponse.json({ success: true, message: "Nachricht gesendet" });
       }
     }
@@ -174,7 +172,6 @@ export async function POST(request: NextRequest) {
     ];
 
     if (spamPatterns.some((pattern) => pattern.test(sanitizedData.message))) {
-      console.log("Spam pattern detected, ignoring submission");
       return NextResponse.json({ success: true, message: "Nachricht gesendet" });
     }
 
@@ -208,14 +205,10 @@ export async function POST(request: NextRequest) {
           }),
         });
 
-        if (error) {
-          console.error("Resend error:", error);
-        } else {
+        if (!error) {
           emailSent = true;
-          console.log("Email notification sent successfully via Resend");
         }
       } catch (emailError) {
-        console.error("Failed to send email notification:", emailError);
         await notifyError({
           context: "Kontaktformular E-Mail fehlgeschlagen",
           error: emailError,
@@ -227,10 +220,6 @@ export async function POST(request: NextRequest) {
           },
         });
       }
-    } else if (!emailSettings?.enabled) {
-      console.log("Email disabled in CMS - skipping email notification");
-    } else {
-      console.log("RESEND_API_KEY not set - skipping email notification");
     }
 
     // Save to Sanity
@@ -249,9 +238,6 @@ export async function POST(request: NextRequest) {
       };
 
       await sanityClient.create(document);
-      console.log("Contact submission saved to Sanity");
-    } else {
-      console.warn("SANITY_API_TOKEN not set - submission not saved");
     }
 
     // Fetch success message from contact page settings
@@ -276,7 +262,6 @@ export async function POST(request: NextRequest) {
       message: successMessage,
     });
   } catch (error) {
-    console.error("Contact form error:", error);
     await notifyError({
       context: "Kritischer Fehler Kontaktformular",
       error,

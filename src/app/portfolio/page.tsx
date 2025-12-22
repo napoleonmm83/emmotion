@@ -75,8 +75,7 @@ async function getProjects() {
         ? new Date(project.publishedAt).getFullYear().toString()
         : "2024",
     }));
-  } catch (error) {
-    console.error("Error fetching projects:", error);
+  } catch {
     return null;
   }
 }

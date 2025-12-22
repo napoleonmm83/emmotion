@@ -74,8 +74,8 @@ async function updateTestResult(message: string) {
         "testEmail.lastTestDate": new Date().toISOString(),
       })
       .commit();
-  } catch (error) {
-    console.error("Failed to update test result:", error);
+  } catch {
+    // Failed to update test result
   }
 }
 
@@ -184,7 +184,6 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error("Resend test error:", error);
       const result = {
         success: false,
         error: `Fehler beim Senden: ${error.message}`
@@ -203,7 +202,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error("Email test error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler";
     const result = {
       success: false,

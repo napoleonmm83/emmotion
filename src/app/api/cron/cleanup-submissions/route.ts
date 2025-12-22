@@ -21,7 +21,6 @@ function isAuthorizedCronRequest(request: NextRequest): boolean {
 
   // In development without CRON_SECRET, block all requests
   if (!cronSecret) {
-    console.error("CRON_SECRET not configured - blocking request");
     return false;
   }
 
@@ -32,7 +31,6 @@ function isAuthorizedCronRequest(request: NextRequest): boolean {
 export async function GET(request: NextRequest) {
   // Verify cron authentication
   if (!isAuthorizedCronRequest(request)) {
-    console.warn("Unauthorized cron access attempt");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -63,15 +61,12 @@ export async function GET(request: NextRequest) {
     }
     await transaction.commit();
 
-    console.log(`Cleaned up ${oldSubmissions.length} old contact submissions`);
-
     return NextResponse.json({
       success: true,
       message: `${oldSubmissions.length} Anfragen gelöscht (älter als ${RETENTION_DAYS} Tage)`,
       deleted: oldSubmissions.length,
     });
-  } catch (error) {
-    console.error("Cleanup error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Cleanup fehlgeschlagen" },
       { status: 500 }

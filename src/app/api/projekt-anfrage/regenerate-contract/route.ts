@@ -25,7 +25,6 @@ function isAuthorizedWebhook(request: NextRequest): boolean {
 
   // Require webhook secret in production
   if (!webhookSecret) {
-    console.error("SANITY_WEBHOOK_SECRET not configured - blocking request");
     return false;
   }
 
@@ -35,7 +34,6 @@ function isAuthorizedWebhook(request: NextRequest): boolean {
     request.headers.get("x-sanity-webhook-secret");
 
   if (receivedSecret !== webhookSecret) {
-    console.warn("Webhook secret mismatch");
     return false;
   }
 
@@ -213,10 +211,8 @@ export async function POST(request: NextRequest) {
           contentType: "application/pdf",
         });
         newPdfUrl = blob.url;
-        console.log("Corrected PDF uploaded to:", newPdfUrl);
       }
-    } catch (pdfError) {
-      console.error("PDF generation error:", pdfError);
+    } catch {
       return NextResponse.json({ error: "PDF generation failed" }, { status: 500 });
     }
 
@@ -257,9 +253,7 @@ export async function POST(request: NextRequest) {
             companyInfo: companyInfo || undefined,
           }),
         });
-        console.log("Correction notification sent to:", project.clientInfo.email);
-      } catch (emailError) {
-        console.error("Email sending error:", emailError);
+      } catch {
         // Don't fail the whole request for email errors
       }
     }
@@ -270,8 +264,7 @@ export async function POST(request: NextRequest) {
       newPdfUrl,
       documentId,
     });
-  } catch (error) {
-    console.error("Contract regeneration error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Ein Fehler ist aufgetreten" },
       { status: 500 }

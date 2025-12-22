@@ -36,8 +36,6 @@ export class BexioClient {
       } catch {
         errorData = { message: errorText };
       }
-      // Log full error details for debugging
-      console.error("Bexio API Error Details:", JSON.stringify(errorData, null, 2));
       throw new BexioApiError(
         response.status,
         errorData.message || `Bexio API error: ${response.status}`,

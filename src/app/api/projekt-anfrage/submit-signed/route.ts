@@ -89,8 +89,7 @@ async function getContractTemplate() {
       ...result.template,
       companyInfo,
     };
-  } catch (error) {
-    console.error("Error fetching contract template:", error);
+  } catch {
     return null;
   }
 }
@@ -222,12 +221,8 @@ export async function POST(request: NextRequest) {
           contentType: "application/pdf",
         });
         pdfUrl = blob.url;
-        console.log("PDF uploaded to:", pdfUrl);
-      } else {
-        console.warn("BLOB_READ_WRITE_TOKEN not set - PDF not stored");
       }
     } catch (pdfError) {
-      console.error("PDF generation error:", pdfError);
       await notifyError({
         context: "PDF-Generierung fehlgeschlagen",
         error: pdfError,
@@ -288,9 +283,7 @@ export async function POST(request: NextRequest) {
 
         const result = await sanityClient.create(document);
         sanityDocId = result._id;
-        console.log("Project onboarding saved to Sanity:", sanityDocId);
       } catch (sanityError) {
-        console.error("Sanity save error:", sanityError);
         await notifyError({
           context: "Sanity Speichern fehlgeschlagen",
           error: sanityError,
@@ -324,9 +317,6 @@ export async function POST(request: NextRequest) {
         });
         bexioContact = contact;
         bexioContactIsNew = isNew;
-        console.log(
-          `Bexio contact ${isNew ? "created" : "found"}: ID ${contact.id}`
-        );
 
         // Create deposit invoice
         const serviceName = SERVICE_LABELS[formData.serviceType] || formData.serviceType;
@@ -338,7 +328,6 @@ export async function POST(request: NextRequest) {
           depositAmount: pricing.depositAmount,
           depositPercentage: pricing.depositPercentage,
         });
-        console.log(`Bexio invoice created: ${bexioInvoice.document_nr}`);
 
         // Send invoice by email via Bexio
         // Note: Message must contain [Network Link] placeholder for Bexio to work
@@ -350,11 +339,6 @@ export async function POST(request: NextRequest) {
         });
         bexioInvoiceSent = sendResult.sent;
         const bexioInvoiceIssued = sendResult.issued;
-        if (sendResult.sent) {
-          console.log(`Bexio invoice sent via email to: ${formData.clientInfo.email}`);
-        } else if (sendResult.issued) {
-          console.log(`Bexio invoice ${bexioInvoice.document_nr} marked as issued (send manually from Bexio)`);
-        }
 
         // Update Sanity document with Bexio data
         if (sanityDocId && process.env.SANITY_API_TOKEN) {
@@ -372,12 +356,9 @@ export async function POST(request: NextRequest) {
             })
             .commit();
         }
-      } catch (bexioError) {
-        console.error("Bexio integration error:", bexioError);
+      } catch {
         // Continue without Bexio - don't fail the whole request
       }
-    } else {
-      console.log("Bexio integration skipped - API token not configured");
     }
 
     // Send emails
@@ -423,14 +404,12 @@ export async function POST(request: NextRequest) {
         });
 
         emailsSent = true;
-        console.log("Emails sent successfully");
 
         // Update Sanity document with email status
         if (sanityDocId && process.env.SANITY_API_TOKEN) {
           await sanityClient.patch(sanityDocId).set({ emailsSent: true }).commit();
         }
       } catch (emailError) {
-        console.error("Email sending error:", emailError);
         await notifyError({
           context: "E-Mail-Versand fehlgeschlagen",
           error: emailError,
@@ -443,8 +422,6 @@ export async function POST(request: NextRequest) {
           },
         });
       }
-    } else {
-      console.log("Email disabled or RESEND_API_KEY not set");
     }
 
     return NextResponse.json({
@@ -463,7 +440,6 @@ export async function POST(request: NextRequest) {
         : null,
     });
   } catch (error) {
-    console.error("Project onboarding submission error:", error);
     await notifyError({
       context: "Kritischer Fehler bei Projektanfrage",
       error,

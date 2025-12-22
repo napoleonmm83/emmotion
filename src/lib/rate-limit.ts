@@ -135,8 +135,7 @@ async function redisRateLimit(
       remaining: config.limit - currentCount - 1,
       resetIn: config.window,
     };
-  } catch (error) {
-    console.error("Redis rate limit error, falling back to in-memory:", error);
+  } catch {
     // Fallback to in-memory on Redis error
     return inMemoryRateLimit(identifier, config);
   }

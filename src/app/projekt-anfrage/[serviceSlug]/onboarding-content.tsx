@@ -290,8 +290,7 @@ export function OnboardingContent({
 
       // Redirect to confirmation page
       router.push("/projekt-anfrage/bestaetigung");
-    } catch (error) {
-      console.error("Error submitting:", error);
+    } catch {
       alert("Ein Fehler ist aufgetreten. Bitte versuche es erneut.");
     } finally {
       setIsSubmitting(false);

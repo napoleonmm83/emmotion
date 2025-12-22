@@ -39,7 +39,6 @@ function isValidOrigin(request: Request): boolean {
   // Muss aus dem Studio kommen
   const isFromStudio = referer.includes("/studio");
   if (!isFromStudio && process.env.NODE_ENV !== "development") {
-    console.warn("Upload attempt not from studio:", referer);
     return false;
   }
 
@@ -66,7 +65,6 @@ export async function POST(request: Request): Promise<NextResponse> {
   // 1. Rate Limiting prüfen (Redis-backed with in-memory fallback)
   const rateLimitResult = await rateLimitBlobUpload(ip);
   if (!rateLimitResult.success) {
-    console.warn(`Rate limit exceeded for IP: ${ip}`);
     return NextResponse.json(
       { error: "Zu viele Uploads. Bitte warte eine Stunde." },
       {
@@ -81,7 +79,6 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // 2. Origin validieren
   if (!isValidOrigin(request)) {
-    console.warn(`Invalid origin for upload from IP: ${ip}`);
     return NextResponse.json(
       { error: "Nicht autorisiert" },
       { status: 403 }
@@ -90,7 +87,6 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // 3. Optional: Upload Secret prüfen
   if (!hasValidSecret(request)) {
-    console.warn(`Invalid upload secret from IP: ${ip}`);
     return NextResponse.json(
       { error: "Nicht autorisiert" },
       { status: 403 }
@@ -116,14 +112,13 @@ export async function POST(request: Request): Promise<NextResponse> {
           maximumSizeInBytes: 200 * 1024 * 1024,
         };
       },
-      onUploadCompleted: async ({ blob }) => {
-        console.log(`Video uploaded by ${ip}:`, blob.url);
+      onUploadCompleted: async () => {
+        // Upload completed
       },
     });
 
     return NextResponse.json(jsonResponse);
-  } catch (error) {
-    console.error("Blob upload error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Upload fehlgeschlagen" },
       { status: 500 }

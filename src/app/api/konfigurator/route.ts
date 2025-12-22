@@ -193,19 +193,12 @@ export async function POST(request: NextRequest) {
           }),
         });
 
-        if (error) {
-          console.error("Resend error:", error);
-        } else {
+        if (!error) {
           emailSent = true;
-          console.log("Konfigurator email sent successfully via Resend");
         }
-      } catch (emailError) {
-        console.error("Failed to send konfigurator email:", emailError);
+      } catch {
+        // Failed to send email
       }
-    } else if (!emailSettings?.enabled) {
-      console.log("Email disabled in CMS - skipping email notification");
-    } else {
-      console.log("RESEND_API_KEY not set - skipping email notification");
     }
 
     // Save to Sanity
@@ -235,15 +228,13 @@ ${sanitizedMessage ? `Zusätzliche Nachricht:\n${sanitizedMessage}` : ""}
       };
 
       await sanityClient.create(document);
-      console.log("Konfigurator submission saved to Sanity");
     }
 
     return NextResponse.json({
       success: true,
       message: "Anfrage erfolgreich gesendet",
     });
-  } catch (error) {
-    console.error("Konfigurator error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Ein Fehler ist aufgetreten." },
       { status: 500 }

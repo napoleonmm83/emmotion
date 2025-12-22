@@ -14,15 +14,12 @@ export async function verifyTurnstileToken(token: string, ip?: string): Promise<
   if (!TURNSTILE_SECRET_KEY) {
     // Fail secure in production, allow in development
     if (process.env.NODE_ENV === "production") {
-      console.error("TURNSTILE_SECRET_KEY not set in production - blocking request");
       return false;
     }
-    console.warn("TURNSTILE_SECRET_KEY not set - skipping verification in development");
     return true;
   }
 
   if (!token) {
-    console.warn("No Turnstile token provided");
     return false;
   }
 
@@ -45,13 +42,11 @@ export async function verifyTurnstileToken(token: string, ip?: string): Promise<
     const result: TurnstileVerifyResponse = await response.json();
 
     if (!result.success) {
-      console.warn("Turnstile verification failed:", result["error-codes"]);
       return false;
     }
 
     return true;
-  } catch (error) {
-    console.error("Turnstile verification error:", error);
+  } catch {
     return false;
   }
 }

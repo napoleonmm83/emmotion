@@ -78,8 +78,7 @@ async function getProjectBySlug(slug: string) {
           }
         : undefined,
     };
-  } catch (error) {
-    console.error("Error fetching project:", error);
+  } catch {
     return null;
   }
 }
@@ -104,8 +103,7 @@ async function getAllProjects() {
         ? new Date(project.publishedAt).getFullYear().toString()
         : "2024",
     }));
-  } catch (error) {
-    console.error("Error fetching projects:", error);
+  } catch {
     return [];
   }
 }

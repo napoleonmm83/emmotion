@@ -61,8 +61,7 @@ async function getTVProductionsData(): Promise<TVProductionsData | null> {
   try {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     return data || null;
-  } catch (error) {
-    console.error("Error fetching TV productions:", error);
+  } catch {
     return null;
   }
 }

@@ -22,7 +22,6 @@ export async function notifyError({
 }: ErrorNotifyOptions): Promise<void> {
   // Skip if RESEND_API_KEY is not configured
   if (!process.env.RESEND_API_KEY) {
-    console.warn("[notifyError] RESEND_API_KEY not configured, skipping notification");
     return;
   }
 
@@ -69,10 +68,8 @@ Diese E-Mail wurde automatisch von emmotion.ch gesendet.
       subject: `${severityEmoji} [${severity.toUpperCase()}] ${context}`,
       text: emailContent,
     });
-    console.log(`[notifyError] Notification sent for: ${context}`);
-  } catch (sendError) {
+  } catch {
     // Fail silently - we don't want error notification to cause more errors
-    console.error("[notifyError] Failed to send notification:", sendError);
   }
 }
 

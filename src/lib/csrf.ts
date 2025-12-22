@@ -28,7 +28,6 @@ export function validateOrigin(request: Request): boolean {
 
   // In production, require valid origin
   if (!origin && !referer) {
-    console.warn("CSRF: No origin or referer header");
     return false;
   }
 
@@ -42,10 +41,6 @@ export function validateOrigin(request: Request): boolean {
     // RegExp pattern
     return allowed.test(sourceUrl);
   });
-
-  if (!isAllowed) {
-    console.warn(`CSRF: Invalid origin: ${sourceUrl}`);
-  }
 
   return isAllowed;
 }

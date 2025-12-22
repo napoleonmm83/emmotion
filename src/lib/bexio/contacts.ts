@@ -39,8 +39,7 @@ export async function searchContactByEmail(
     }
 
     return null;
-  } catch (error) {
-    console.error("Error searching contact by email:", error);
+  } catch {
     return null;
   }
 }
@@ -67,8 +66,7 @@ export async function searchContactByName(
       searchCriteria
     );
     return results || [];
-  } catch (error) {
-    console.error("Error searching contact by name:", error);
+  } catch {
     return [];
   }
 }
@@ -137,18 +135,15 @@ async function getBexioUserId(): Promise<number | null> {
     });
 
     if (!response.ok) {
-      console.error("Error fetching Bexio users:", response.status);
       return null;
     }
 
     const users = await response.json() as Array<{ id: number; email: string }>;
     if (users && users.length > 0) {
-      console.log(`Found Bexio user: ${users[0].id} (${users[0].email})`);
       return users[0].id;
     }
     return null;
-  } catch (error) {
-    console.error("Error fetching Bexio users:", error);
+  } catch {
     return null;
   }
 }
@@ -234,8 +229,6 @@ export async function createContact(
     Object.entries(contactData).filter(([, v]) => v !== undefined)
   );
 
-  console.log("Creating Bexio contact with data:", JSON.stringify(cleanedData, null, 2));
-
   const contact = await client.post<BexioContact>("/contact", cleanedData);
   return contact;
 }
@@ -251,12 +244,10 @@ export async function findOrCreateContact(
   const existingContact = await searchContactByEmail(params.email);
 
   if (existingContact) {
-    console.log(`Found existing Bexio contact: ${existingContact.id}`);
     return { contact: existingContact, isNew: false };
   }
 
   // Create new contact
-  console.log(`Creating new Bexio contact for: ${params.email}`);
   const newContact = await createContact(params);
   return { contact: newContact, isNew: true };
 }

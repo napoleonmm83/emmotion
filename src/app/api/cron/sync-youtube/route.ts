@@ -44,7 +44,6 @@ function isAuthorizedRequest(request: NextRequest): boolean {
 export async function GET(request: NextRequest) {
   // Verify authentication
   if (!isAuthorizedRequest(request)) {
-    console.warn("Unauthorized YouTube sync access attempt");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -80,7 +79,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch data from YouTube
-    console.log(`Syncing YouTube playlist: ${tvSettings.playlistId}`);
     const playlistData = await fetchPlaylistData(tvSettings.playlistId);
 
     // Get existing blobs to avoid re-uploading
@@ -95,7 +93,7 @@ export async function GET(request: NextRequest) {
         }
       }
     } catch {
-      console.log("No existing blobs found or blob list failed");
+      // No existing blobs found or blob list failed
     }
 
     // Upload thumbnails to Vercel Blob
@@ -113,7 +111,6 @@ export async function GET(request: NextRequest) {
           // Download thumbnail from YouTube
           const response = await fetch(video.thumbnailUrl);
           if (!response.ok) {
-            console.log(`Failed to fetch thumbnail for ${video.youtubeId}`);
             return video;
           }
 
@@ -129,13 +126,11 @@ export async function GET(request: NextRequest) {
             }
           );
 
-          console.log(`Uploaded thumbnail for ${video.youtubeId}`);
           return {
             ...video,
             thumbnailUrl: blob.url,
           };
-        } catch (error) {
-          console.error(`Error uploading thumbnail for ${video.youtubeId}:`, error);
+        } catch {
           return video; // Keep original URL if upload fails
         }
       })
@@ -150,7 +145,6 @@ export async function GET(request: NextRequest) {
     // Check if Sanity token is available
     const sanityToken = process.env.SANITY_API_TOKEN;
     if (!sanityToken) {
-      console.error("SANITY_API_TOKEN is not set - cannot write to Sanity");
       return NextResponse.json({
         success: false,
         error: "SANITY_API_TOKEN nicht konfiguriert",
@@ -175,9 +169,8 @@ export async function GET(request: NextRequest) {
           },
         })
         .commit();
-      console.log("Sanity patch result:", patchResult._id);
+      void patchResult; // Suppress unused variable warning
     } catch (sanityError) {
-      console.error("Sanity patch failed:", sanityError);
       return NextResponse.json({
         success: false,
         error: "Sanity Update fehlgeschlagen",
@@ -185,13 +178,8 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    console.log(
-      `YouTube sync complete: ${playlistData.totalVideos} videos, ${playlistData.totalViews.toLocaleString()} views`
-    );
-
     // Revalidate the TV productions page to show updated data immediately
     revalidatePath("/tv-produktionen");
-    console.log("Revalidated /tv-produktionen page");
 
     return NextResponse.json({
       success: true,
@@ -205,7 +193,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("YouTube sync error:", error);
     return NextResponse.json(
       {
         error: "YouTube-Sync fehlgeschlagen",

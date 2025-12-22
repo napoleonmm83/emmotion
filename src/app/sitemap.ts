@@ -96,8 +96,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
     }
-  } catch (error) {
-    console.error("Error fetching services for sitemap:", error);
+  } catch {
+    // Continue with empty service pages
   }
 
   // Dynamische Projekt-Seiten
@@ -114,8 +114,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
     }
-  } catch (error) {
-    console.error("Error fetching projects for sitemap:", error);
+  } catch {
+    // Continue with empty project pages
   }
 
   // Legal Pages (Impressum, Datenschutz)
@@ -132,8 +132,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.3,
       }));
     }
-  } catch (error) {
-    console.error("Error fetching legal pages for sitemap:", error);
+  } catch {
+    // Continue with empty legal pages
   }
 
   return [...staticPages, ...servicePages, ...projectPages, ...legalPages];

@@ -52,8 +52,7 @@ export async function getDefaultBankAccount(): Promise<BexioBankAccount | null> 
     const accounts = await getBankAccounts();
     const activeAccount = accounts.find((a) => a.is_active);
     return activeAccount || accounts[0] || null;
-  } catch (error) {
-    console.error("Error fetching bank accounts:", error);
+  } catch {
     return null;
   }
 }
@@ -73,8 +72,7 @@ export async function getDefaultPaymentType(): Promise<BexioPaymentType | null> 
   try {
     const types = await getPaymentTypes();
     return types[0] || null;
-  } catch (error) {
-    console.error("Error fetching payment types:", error);
+  } catch {
     return null;
   }
 }
@@ -98,8 +96,7 @@ export async function getStandardTaxRate(): Promise<BexioTax | null> {
       (t) => t.is_active && t.value === "8.1"
     );
     return standardRate || taxes.find((t) => t.is_active) || null;
-  } catch (error) {
-    console.error("Error fetching tax rates:", error);
+  } catch {
     return null;
   }
 }
@@ -144,12 +141,6 @@ export async function getInvoiceDefaults(): Promise<{
     taxId: taxRate?.id || null,
     fetchedAt: Date.now(),
   };
-
-  console.log("Bexio defaults fetched:", {
-    bankAccountId: cachedSettings.bankAccountId,
-    paymentTypeId: cachedSettings.paymentTypeId,
-    taxId: cachedSettings.taxId,
-  });
 
   return {
     bankAccountId: cachedSettings.bankAccountId,
