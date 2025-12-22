@@ -6,6 +6,8 @@ import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
+// Suppress hydration warning for this component (Framer Motion layoutId can cause SSR mismatches)
+
 // Navigation für Startseite (Scroll-Anker zu Sektionen)
 const homeNavItems = [
   { name: "Leistungen", href: "#leistungen" },
@@ -31,6 +33,8 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  // Prevent hydration mismatch - layoutId animations only after mount
+  const [isMounted, setIsMounted] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -38,6 +42,11 @@ export function Header() {
     damping: 30,
     restDelta: 0.001,
   });
+
+  // Set mounted state to enable layoutId animations after hydration
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -129,7 +138,8 @@ export function Header() {
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
-                      layoutId="underline"
+                      // Only use layoutId after mount to prevent hydration mismatch
+                      layoutId={isMounted ? "underline" : undefined}
                       className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
                     />
                   )}
@@ -147,7 +157,8 @@ export function Header() {
                   {item.name}
                   {isActive(item.href) && (
                     <motion.div
-                      layoutId="underline"
+                      // Only use layoutId after mount to prevent hydration mismatch
+                      layoutId={isMounted ? "underline" : undefined}
                       className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
                     />
                   )}

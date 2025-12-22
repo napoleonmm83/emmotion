@@ -117,11 +117,15 @@ export function StepSignature({
     onSubmit(signatureDataUrl);
   }, [hasSignature, onSubmit]);
 
-  const today = new Date().toLocaleDateString("de-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // Memoize date to prevent hydration mismatch - only calculate on client after mount
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString("de-CH", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }));
+  }, []);
 
   return (
     <div className="space-y-6">
