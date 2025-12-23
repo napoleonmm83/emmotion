@@ -599,7 +599,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export async function generateStaticParams() {
+async function getAllServiceSlugs() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Service-Slugs - 60s revalidate
   try {
     const sanityServices = await client.fetch<Array<{ slug: string }>>(servicesQuery);
     if (sanityServices && sanityServices.length > 0) {
@@ -610,10 +612,13 @@ export async function generateStaticParams() {
   } catch {
     // Fall back to default services
   }
-
   return defaultServices.map((service) => ({
     slug: service.slug,
   }));
+}
+
+export async function generateStaticParams() {
+  return getAllServiceSlugs();
 }
 
 export default async function ServicePage({ params }: PageProps) {
