@@ -1,4 +1,3 @@
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OnboardingContent } from "./onboarding-content";
@@ -10,7 +9,8 @@ import {
   contractTemplateQuery,
 } from "@sanity/lib/queries";
 import { SERVICE_LABELS, type ServiceType } from "@/lib/onboarding-logic";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ serviceSlug: string }>;
@@ -44,8 +44,6 @@ export async function generateStaticParams() {
 }
 
 async function getServiceData(slug: string) {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Service-Daten - 60s revalidate
   try {
     return await client.fetch(serviceBySlugQuery, { slug });
   } catch {
@@ -54,8 +52,6 @@ async function getServiceData(slug: string) {
 }
 
 async function getQuestionnaire(serviceSlug: string) {
-  "use cache";
-  cacheLife(CACHE_PROFILES.onboarding); // Fragebogen muss aktuell sein - 2min revalidate
   try {
     return await client.fetch(onboardingQuestionnaireQuery, { serviceSlug });
   } catch {
@@ -64,8 +60,6 @@ async function getQuestionnaire(serviceSlug: string) {
 }
 
 async function getContractTemplate() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.onboarding); // Vertragsvorlage muss aktuell sein - 2min revalidate
   try {
     return await client.fetch(contractTemplateQuery);
   } catch {
@@ -74,8 +68,6 @@ async function getContractTemplate() {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {

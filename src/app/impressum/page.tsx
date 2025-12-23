@@ -1,11 +1,11 @@
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LegalPageContent } from "@/components/legal";
 import { client } from "@sanity/lib/client";
 import { legalPageBySlugQuery, settingsQuery } from "@sanity/lib/queries";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Impressum | emmotion.ch",
@@ -38,8 +38,6 @@ interface Settings {
 }
 
 async function getImpressumData() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.static); // Rechtliche Seiten ändern selten - 24h revalidate
   try {
     const data = await client.fetch(legalPageBySlugQuery, { slug: "impressum" });
     return data;
@@ -49,8 +47,6 @@ async function getImpressumData() {
 }
 
 async function getSettings(): Promise<Settings | null> {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     const data = await client.fetch(settingsQuery);
     return data || null;

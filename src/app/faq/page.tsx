@@ -1,11 +1,11 @@
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FAQContent } from "./faq-content";
 import { client } from "@sanity/lib/client";
 import { faqsQuery, settingsQuery } from "@sanity/lib/queries";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "FAQ | emmotion.ch",
@@ -220,8 +220,6 @@ const FALLBACK_FAQS = [
 ];
 
 async function getFAQs() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // FAQs - 60s revalidate
   try {
     const faqs = await client.fetch(faqsQuery);
     return faqs && faqs.length > 0 ? faqs : FALLBACK_FAQS;
@@ -255,8 +253,6 @@ function generateFAQSchema(faqs: typeof FALLBACK_FAQS) {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {

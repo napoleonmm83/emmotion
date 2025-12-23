@@ -1,11 +1,11 @@
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ContactPageContent } from "./contact-content";
 import { client } from "@sanity/lib/client";
 import { settingsQuery, contactPageQuery } from "@sanity/lib/queries";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 // Default SEO
 const defaultSeo = {
@@ -36,8 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     const data = await client.fetch(settingsQuery);
     return data || null;
@@ -47,8 +45,6 @@ async function getSettings() {
 }
 
 async function getContactPageData() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Kontaktseiten-Daten - 60s revalidate
   try {
     const data = await client.fetch(contactPageQuery);
     return data || null;

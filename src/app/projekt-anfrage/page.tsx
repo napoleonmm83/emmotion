@@ -1,10 +1,10 @@
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { ProjektAnfrageContent } from "./projekt-anfrage-content";
 import { client } from "@sanity/lib/client";
 import { settingsQuery, servicesQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Projekt anfragen | emmotion.ch",
@@ -28,8 +28,6 @@ interface SanityService {
 }
 
 async function getServices() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Services sind regulärer CMS-Inhalt - 60s revalidate
   try {
     const services = await client.fetch<SanityService[]>(servicesQuery);
     if (!services || services.length === 0) return null;
@@ -50,8 +48,6 @@ async function getServices() {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {

@@ -1,10 +1,10 @@
-import { cacheLife } from "next/cache";
 import { Metadata } from "next";
 import { LeistungenPageContent } from "./leistungen-content";
 import { client } from "@sanity/lib/client";
 import { servicesQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Leistungen",
@@ -29,8 +29,6 @@ interface SanityService {
 }
 
 async function getServices() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Services - 60s revalidate
   try {
     const services = await client.fetch<SanityService[]>(servicesQuery);
     if (!services || services.length === 0) return null;
@@ -52,8 +50,6 @@ async function getServices() {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {

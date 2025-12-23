@@ -1,4 +1,3 @@
-import { cacheLife } from "next/cache";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import {
@@ -13,11 +12,10 @@ import {
 import { client } from "@sanity/lib/client";
 import { aboutPageQuery, homePageQuery, featuredTestimonialsQuery, featuredProjectsQuery, servicesQuery, settingsQuery, tvProductionsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
-import { CACHE_PROFILES } from "@/lib/cache";
+
+export const revalidate = 60;
 
 async function getHomePageData() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Homepage-Daten - 60s revalidate
   try {
     const data = await client.fetch(homePageQuery);
     if (!data) return null;
@@ -51,8 +49,6 @@ async function getHomePageData() {
 }
 
 async function getAboutData() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // About-Daten - 60s revalidate
   try {
     const data = await client.fetch(aboutPageQuery);
     if (!data) return null;
@@ -81,8 +77,6 @@ interface SanityTestimonial {
 }
 
 async function getTestimonials() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Testimonials - 60s revalidate
   try {
     const data = await client.fetch<SanityTestimonial[]>(featuredTestimonialsQuery);
     if (!data || data.length === 0) return null;
@@ -109,8 +103,6 @@ interface SanityFeaturedProject {
 }
 
 async function getFeaturedProjects() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Featured Projects - 60s revalidate
   try {
     const data = await client.fetch<SanityFeaturedProject[]>(featuredProjectsQuery);
     if (!data || data.length === 0) return null;
@@ -139,8 +131,6 @@ interface SanityService {
 }
 
 async function getServices() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.cms); // Services - 60s revalidate
   try {
     const data = await client.fetch<SanityService[]>(servicesQuery);
     if (!data || data.length === 0) return null;
@@ -158,8 +148,6 @@ async function getServices() {
 }
 
 async function getSettings() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     const data = await client.fetch(settingsQuery);
     return data || null;
@@ -182,8 +170,6 @@ interface TVProductionsData {
 }
 
 async function getTVProductionsPreview() {
-  "use cache";
-  cacheLife(CACHE_PROFILES.external); // YouTube-Daten via Cron - 5min revalidate
   try {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     if (!data?.enabled || !data.cachedData?.videos?.length) return null;
