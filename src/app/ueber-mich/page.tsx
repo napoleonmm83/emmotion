@@ -1,12 +1,13 @@
-// Seite alle 60 Sekunden revalidieren für CMS-Updates
-export const revalidate = 60;
-
+import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { UeberMichContent } from "./ueber-mich-content";
 import { client } from "@sanity/lib/client";
 import { aboutPageQuery, settingsQuery } from "@sanity/lib/queries";
+import { CACHE_PROFILES } from "@/lib/cache";
 
 async function getAboutData() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Über-mich-Daten - 60s revalidate
   try {
     const data = await client.fetch(aboutPageQuery);
     return data;
@@ -16,6 +17,8 @@ async function getAboutData() {
 }
 
 async function getSettings() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {

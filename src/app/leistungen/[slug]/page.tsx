@@ -1,12 +1,11 @@
-// Seite alle 60 Sekunden revalidieren für CMS-Updates
-export const revalidate = 60;
-
+import { cacheLife } from "next/cache";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageContent } from "./service-content";
 import { client } from "@sanity/lib/client";
 import { serviceBySlugQuery, servicesQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
+import { CACHE_PROFILES } from "@/lib/cache";
 
 export interface ServiceDetail {
   iconName: string;
@@ -536,6 +535,8 @@ interface SanityService {
 }
 
 async function getSettings() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {
@@ -544,6 +545,8 @@ async function getSettings() {
 }
 
 async function getServiceBySlug(slug: string): Promise<ServiceDetail | null> {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Service-Daten - 60s revalidate
   try {
     const sanityService = await client.fetch<SanityService>(serviceBySlugQuery, { slug });
 

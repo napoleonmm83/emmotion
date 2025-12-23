@@ -1,11 +1,10 @@
-// Seite alle 60 Sekunden revalidieren für CMS-Updates
-export const revalidate = 60;
-
+import { cacheLife } from "next/cache";
 import { Metadata } from "next";
 import { PortfolioPageContent } from "./portfolio-content";
 import { client } from "@sanity/lib/client";
 import { projectsQuery, portfolioPageQuery, settingsQuery, tvProductionsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
+import { CACHE_PROFILES } from "@/lib/cache";
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -57,6 +56,8 @@ interface PortfolioPageData {
 }
 
 async function getProjects() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Portfolio-Projekte - 60s revalidate
   try {
     const projects = await client.fetch<SanityProject[]>(projectsQuery);
     if (!projects || projects.length === 0) return null;
@@ -81,6 +82,8 @@ async function getProjects() {
 }
 
 async function getPortfolioPageData(): Promise<PortfolioPageData | null> {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Portfolio-Seiten-Daten - 60s revalidate
   try {
     const data = await client.fetch(portfolioPageQuery);
     return data || null;
@@ -90,6 +93,8 @@ async function getPortfolioPageData(): Promise<PortfolioPageData | null> {
 }
 
 async function getSettings() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     const data = await client.fetch(settingsQuery);
     return data || null;
@@ -112,6 +117,8 @@ interface TVProductionsData {
 }
 
 async function getTVProductionsPreview() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.external); // YouTube-Daten via Cron - 5min revalidate
   try {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     if (!data?.enabled || !data.cachedData?.videos?.length) return null;

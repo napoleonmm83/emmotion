@@ -1,10 +1,9 @@
-// Seite alle 60 Sekunden revalidieren für CMS-Updates
-export const revalidate = 60;
-
+import { cacheLife } from "next/cache";
 import { Metadata } from "next";
 import { TVProduktionenContent } from "./tv-produktionen-content";
 import { client } from "@sanity/lib/client";
 import { tvProductionsQuery, settingsQuery } from "@sanity/lib/queries";
+import { CACHE_PROFILES } from "@/lib/cache";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tvData = await getTVProductionsData();
@@ -58,6 +57,8 @@ interface TVProductionsData {
 }
 
 async function getTVProductionsData(): Promise<TVProductionsData | null> {
+  "use cache";
+  cacheLife(CACHE_PROFILES.external); // YouTube-Daten via Cron - 5min revalidate
   try {
     const data = await client.fetch<TVProductionsData>(tvProductionsQuery);
     return data || null;
@@ -67,6 +68,8 @@ async function getTVProductionsData(): Promise<TVProductionsData | null> {
 }
 
 async function getSettings() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     const data = await client.fetch(settingsQuery);
     return data || null;

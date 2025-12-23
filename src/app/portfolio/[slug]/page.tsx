@@ -1,12 +1,11 @@
-// Seite alle 60 Sekunden revalidieren für CMS-Updates
-export const revalidate = 60;
-
+import { cacheLife } from "next/cache";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectPageContent } from "./project-content";
 import { client } from "@sanity/lib/client";
 import { projectBySlugQuery, projectsQuery, settingsQuery } from "@sanity/lib/queries";
 import { urlFor } from "@sanity/lib/image";
+import { CACHE_PROFILES } from "@/lib/cache";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -48,6 +47,8 @@ interface SanityProjectListItem {
 }
 
 async function getProjectBySlug(slug: string) {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Projekt-Details - 60s revalidate
   try {
     const project = await client.fetch<SanityProject>(projectBySlugQuery, { slug });
     if (!project) return null;
@@ -84,6 +85,8 @@ async function getProjectBySlug(slug: string) {
 }
 
 async function getAllProjects() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.cms); // Projekt-Liste - 60s revalidate
   try {
     const projects = await client.fetch<SanityProjectListItem[]>(projectsQuery);
     if (!projects || projects.length === 0) return [];
@@ -109,6 +112,8 @@ async function getAllProjects() {
 }
 
 async function getSettings() {
+  "use cache";
+  cacheLife(CACHE_PROFILES.settings); // Site-Einstellungen - 10min revalidate
   try {
     return await client.fetch(settingsQuery);
   } catch {
