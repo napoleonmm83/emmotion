@@ -68,8 +68,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Next.js 16: Cache Components für explizites Caching mit "use cache"
-  cacheComponents: true,
+  // Next.js 16: Cache Components temporär deaktiviert wegen Build-Problemen
+  // TODO: Re-enable once caching issues are resolved
+  // cacheComponents: true,
   // Differenzierte Cache-Profile basierend auf Content-Typ
   cacheLife: {
     // Statische/rechtliche Seiten (Impressum, Datenschutz) - ändern sehr selten
