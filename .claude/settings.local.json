@@ -127,7 +127,8 @@
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "Bash(NEXT_TURBOPACK=0 npx next build:*)",
-      "Bash(mdfind:*)"
+      "Bash(mdfind:*)",
+      "Bash(wc:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
