@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ContactPageContent } from "./contact-content";
-import { client } from "@sanity/lib/client";
-import { settingsQuery, contactPageQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
+import { getSettings, getContactPage } from "@sanity/lib/data";
 
 // Default SEO
 const defaultSeo = {
@@ -15,12 +13,7 @@ const defaultSeo = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  let pageData;
-  try {
-    pageData = await client.fetch(contactPageQuery);
-  } catch {
-    pageData = null;
-  }
+  const pageData = await getContactPage();
 
   const title = pageData?.seo?.metaTitle || defaultSeo.title;
   const description = pageData?.seo?.metaDescription || defaultSeo.description;
@@ -35,28 +28,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-async function getSettings() {
-  try {
-    const data = await client.fetch(settingsQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
 
-async function getContactPageData() {
-  try {
-    const data = await client.fetch(contactPageQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-export default async function KontaktPage() {
+async function KontaktContent() {
   const [settings, pageData] = await Promise.all([
     getSettings(),
-    getContactPageData(),
+    getContactPage(),
   ]);
 
   return (
@@ -67,5 +46,42 @@ export default async function KontaktPage() {
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function KontaktSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-20">
+        <div className="container py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-4">
+              <div className="h-12 w-64 bg-muted animate-pulse rounded" />
+              <div className="h-6 w-full bg-muted animate-pulse rounded" />
+              <div className="h-48 bg-muted animate-pulse rounded-lg" />
+            </div>
+            <div className="h-96 bg-muted animate-pulse rounded-lg" />
+          </div>
+        </div>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function KontaktPage() {
+  return (
+    <Suspense fallback={<KontaktSkeleton />}>
+      <KontaktContent />
+    </Suspense>
   );
 }

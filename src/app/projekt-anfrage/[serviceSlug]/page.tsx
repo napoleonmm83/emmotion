@@ -1,16 +1,14 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { OnboardingContent } from "./onboarding-content";
-import { client } from "@sanity/lib/client";
 import {
-  serviceBySlugQuery,
-  settingsQuery,
-  onboardingQuestionnaireQuery,
-  contractTemplateQuery,
-} from "@sanity/lib/queries";
+  getServiceBySlug,
+  getOnboardingQuestionnaire,
+  getContractTemplate,
+  getSettings,
+} from "@sanity/lib/data";
 import { SERVICE_LABELS, type ServiceType } from "@/lib/onboarding-logic";
-
-export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ serviceSlug: string }>;
@@ -24,6 +22,10 @@ const validSlugs: ServiceType[] = [
   "produktvideo",
   "postproduktion",
 ];
+
+// =============================================================================
+// METADATA
+// =============================================================================
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { serviceSlug } = await params;
@@ -39,53 +41,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// =============================================================================
+// STATIC PARAMS
+// =============================================================================
+
 export async function generateStaticParams() {
   return validSlugs.map((slug) => ({ serviceSlug: slug }));
 }
 
-async function getServiceData(slug: string) {
-  try {
-    return await client.fetch(serviceBySlugQuery, { slug });
-  } catch {
-    return null;
-  }
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+interface OnboardingPageContentProps {
+  serviceSlug: string;
 }
 
-async function getQuestionnaire(serviceSlug: string) {
-  try {
-    return await client.fetch(onboardingQuestionnaireQuery, { serviceSlug });
-  } catch {
-    return null;
-  }
-}
-
-async function getContractTemplate() {
-  try {
-    return await client.fetch(contractTemplateQuery);
-  } catch {
-    return null;
-  }
-}
-
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
-
-export default async function ServiceOnboardingPage({ params }: PageProps) {
-  const { serviceSlug } = await params;
-
+async function OnboardingPageContent({ serviceSlug }: OnboardingPageContentProps) {
   // Validate slug
   if (!validSlugs.includes(serviceSlug as ServiceType)) {
     notFound();
   }
 
   const [service, questionnaire, contractTemplate, settings] = await Promise.all([
-    getServiceData(serviceSlug),
-    getQuestionnaire(serviceSlug),
+    getServiceBySlug(serviceSlug),
+    getOnboardingQuestionnaire(serviceSlug),
     getContractTemplate(),
     getSettings(),
   ]);
@@ -98,5 +78,51 @@ export default async function ServiceOnboardingPage({ params }: PageProps) {
       contractTemplate={contractTemplate}
       settings={settings}
     />
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function OnboardingSkeleton() {
+  return (
+    <div className="min-h-screen">
+      {/* Header Skeleton */}
+      <div className="py-8 bg-muted/20">
+        <div className="container">
+          <div className="h-8 w-48 bg-muted animate-pulse rounded mb-2" />
+          <div className="h-4 w-64 bg-muted animate-pulse rounded" />
+        </div>
+      </div>
+      {/* Form Skeleton */}
+      <div className="container py-12">
+        <div className="max-w-2xl mx-auto">
+          <div className="space-y-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                <div className="h-12 bg-muted animate-pulse rounded-lg" />
+              </div>
+            ))}
+            <div className="h-12 bg-muted animate-pulse rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default async function ServiceOnboardingPage({ params }: PageProps) {
+  const { serviceSlug } = await params;
+
+  return (
+    <Suspense fallback={<OnboardingSkeleton />}>
+      <OnboardingPageContent serviceSlug={serviceSlug} />
+    </Suspense>
   );
 }

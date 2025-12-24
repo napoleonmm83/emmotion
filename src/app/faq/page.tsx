@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { FAQContent } from "./faq-content";
-import { client } from "@sanity/lib/client";
-import { faqsQuery, settingsQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
+import { getFaqs, getSettings } from "@sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "FAQ | emmotion.ch",
@@ -18,7 +16,10 @@ export const metadata: Metadata = {
   },
 };
 
-// Fallback FAQs when no data in Sanity
+// =============================================================================
+// FALLBACK DATA
+// =============================================================================
+
 const FALLBACK_FAQS = [
   {
     _id: "fallback-1",
@@ -219,16 +220,12 @@ const FALLBACK_FAQS = [
   },
 ];
 
-async function getFAQs() {
-  try {
-    const faqs = await client.fetch(faqsQuery);
-    return faqs && faqs.length > 0 ? faqs : FALLBACK_FAQS;
-  } catch {
-    return FALLBACK_FAQS;
-  }
-}
+// =============================================================================
+// HELPERS
+// =============================================================================
 
-// Extract plain text from Portable Text blocks
+type FAQItem = typeof FALLBACK_FAQS[number];
+
 function extractPlainText(blocks: Array<{ children?: Array<{ text?: string }> }>): string {
   return blocks
     .map((block) => block.children?.map((child) => child.text || "").join("") || "")
@@ -236,8 +233,7 @@ function extractPlainText(blocks: Array<{ children?: Array<{ text?: string }> }>
     .trim();
 }
 
-// Generate Schema.org FAQ structured data
-function generateFAQSchema(faqs: typeof FALLBACK_FAQS) {
+function generateFAQSchema(faqs: FAQItem[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -252,16 +248,17 @@ function generateFAQSchema(faqs: typeof FALLBACK_FAQS) {
   };
 }
 
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
 
-export default async function FAQPage() {
-  const [faqs, settings] = await Promise.all([getFAQs(), getSettings()]);
+async function FAQPageContent() {
+  const [faqsData, settings] = await Promise.all([getFaqs(), getSettings()]);
+
+  const faqs = (faqsData && Array.isArray(faqsData) && faqsData.length > 0)
+    ? faqsData as FAQItem[]
+    : FALLBACK_FAQS;
+
   const faqSchema = generateFAQSchema(faqs);
 
   return (
@@ -276,5 +273,40 @@ export default async function FAQPage() {
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function FAQSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-20 pb-16">
+        <div className="container max-w-4xl">
+          <div className="h-12 w-48 bg-muted animate-pulse rounded mb-8" />
+          <div className="space-y-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function FAQPage() {
+  return (
+    <Suspense fallback={<FAQSkeleton />}>
+      <FAQPageContent />
+    </Suspense>
   );
 }

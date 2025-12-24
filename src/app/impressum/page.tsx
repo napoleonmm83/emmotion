@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LegalPageContent } from "@/components/legal";
-import { client } from "@sanity/lib/client";
-import { legalPageBySlugQuery, settingsQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
+import { getLegalPage, getSettings } from "@sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "Impressum | emmotion.ch",
@@ -17,7 +15,10 @@ export const metadata: Metadata = {
   },
 };
 
-// Fallback Kontaktdaten
+// =============================================================================
+// TYPES & DEFAULTS
+// =============================================================================
+
 const defaultContact = {
   email: "hallo@emmotion.ch",
   phone: "+41 79 723 29 24",
@@ -37,23 +38,9 @@ interface Settings {
   };
 }
 
-async function getImpressumData() {
-  try {
-    const data = await client.fetch(legalPageBySlugQuery, { slug: "impressum" });
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-async function getSettings(): Promise<Settings | null> {
-  try {
-    const data = await client.fetch(settingsQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// FALLBACK CONTENT
+// =============================================================================
 
 function ImpressumFallback({ settings }: { settings: Settings | null }) {
   const contact = {
@@ -170,9 +157,13 @@ function ImpressumFallback({ settings }: { settings: Settings | null }) {
   );
 }
 
-export default async function ImpressumPage() {
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+async function ImpressumContent() {
   const [pageData, settings] = await Promise.all([
-    getImpressumData(),
+    getLegalPage("impressum"),
     getSettings(),
   ]);
 
@@ -184,10 +175,45 @@ export default async function ImpressumPage() {
           title={pageData?.title || "Impressum"}
           content={pageData?.content || null}
           lastUpdated={pageData?.lastUpdated}
-          fallbackContent={<ImpressumFallback settings={settings} />}
+          fallbackContent={<ImpressumFallback settings={settings as Settings} />}
         />
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function ImpressumSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-20 pb-16">
+        <div className="container max-w-4xl">
+          <div className="h-12 w-48 bg-muted animate-pulse rounded mb-8" />
+          <div className="space-y-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-4 w-full bg-muted animate-pulse rounded" />
+            ))}
+          </div>
+        </div>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function ImpressumPage() {
+  return (
+    <Suspense fallback={<ImpressumSkeleton />}>
+      <ImpressumContent />
+    </Suspense>
   );
 }

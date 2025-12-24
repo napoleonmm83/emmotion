@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter, Bebas_Neue } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { BackToTop, CustomCursor, CookieConsent } from "@/components/shared";
-import { client } from "@sanity/lib/client";
-import { seoSettingsQuery } from "@sanity/lib/queries";
+import { getSeoSettings } from "@sanity/lib/data";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,10 +29,10 @@ const defaultSeo = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Hole SEO-Einstellungen aus Sanity
+  // Hole SEO-Einstellungen aus Sanity (gecached)
   let settings;
   try {
-    settings = await client.fetch(seoSettingsQuery);
+    settings = await getSeoSettings();
   } catch {
     settings = null;
   }
@@ -243,10 +243,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Hole Settings für Structured Data
+  // Hole Settings für Structured Data (gecached)
   let settings: StructuredDataSettings | null = null;
   try {
-    settings = await client.fetch(seoSettingsQuery);
+    settings = await getSeoSettings();
   } catch {
     settings = null;
   }

@@ -1,29 +1,10 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { UeberMichContent } from "./ueber-mich-content";
-import { client } from "@sanity/lib/client";
-import { aboutPageQuery, settingsQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
-
-async function getAboutData() {
-  try {
-    const data = await client.fetch(aboutPageQuery);
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
+import { getAboutPage, getSettings } from "@sanity/lib/data";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getAboutData();
+  const data = await getAboutPage();
 
   return {
     title: data?.seo?.metaTitle || "Über mich | emmotion.ch",
@@ -39,8 +20,51 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function UeberMichPage() {
-  const [aboutData, settings] = await Promise.all([getAboutData(), getSettings()]);
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+async function UeberMichPageContent() {
+  const [aboutData, settings] = await Promise.all([
+    getAboutPage(),
+    getSettings(),
+  ]);
 
   return <UeberMichContent data={aboutData} settings={settings} />;
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function UeberMichSkeleton() {
+  return (
+    <div className="min-h-screen">
+      {/* Hero Skeleton */}
+      <div className="py-16 md:py-24 bg-muted/20">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="aspect-[4/5] bg-muted animate-pulse rounded-lg" />
+            <div className="space-y-4">
+              <div className="h-12 w-64 bg-muted animate-pulse rounded" />
+              <div className="h-6 w-full bg-muted animate-pulse rounded" />
+              <div className="h-6 w-3/4 bg-muted animate-pulse rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function UeberMichPage() {
+  return (
+    <Suspense fallback={<UeberMichSkeleton />}>
+      <UeberMichPageContent />
+    </Suspense>
+  );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Linkedin, Youtube, Mail, MapPin } from "lucide-react";
+import { CopyrightYear } from "./copyright-year";
 
 const navigation = [
   { name: "Leistungen", href: "/leistungen" },
@@ -168,7 +169,7 @@ export function Footer({ settings }: FooterProps) {
         {/* Bottom */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} {footer.copyrightName}. Alle Rechte vorbehalten.
+            © <CopyrightYear /> {footer.copyrightName}. Alle Rechte vorbehalten.
           </p>
           <div className="flex gap-6">
             <Link

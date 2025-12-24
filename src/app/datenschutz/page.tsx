@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LegalPageContent } from "@/components/legal";
-import { client } from "@sanity/lib/client";
-import { legalPageBySlugQuery, settingsQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
+import { getLegalPage, getSettings } from "@sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "Datenschutz | emmotion.ch",
@@ -17,7 +15,10 @@ export const metadata: Metadata = {
   },
 };
 
-// Fallback Kontaktdaten
+// =============================================================================
+// TYPES & DEFAULTS
+// =============================================================================
+
 const defaultContact = {
   email: "hallo@emmotion.ch",
   phone: "+41 79 723 29 24",
@@ -37,25 +38,10 @@ interface Settings {
   };
 }
 
-async function getDatenschutzData() {
-  try {
-    const data = await client.fetch(legalPageBySlugQuery, { slug: "datenschutz" });
-    return data;
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// FALLBACK CONTENT
+// =============================================================================
 
-async function getSettings(): Promise<Settings | null> {
-  try {
-    const data = await client.fetch(settingsQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-// Placeholder content while CMS data is not yet available
 function DatenschutzFallback({ settings }: { settings: Settings | null }) {
   const contact = {
     email: settings?.contact?.email || defaultContact.email,
@@ -358,9 +344,13 @@ function DatenschutzFallback({ settings }: { settings: Settings | null }) {
   );
 }
 
-export default async function DatenschutzPage() {
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+async function DatenschutzContent() {
   const [pageData, settings] = await Promise.all([
-    getDatenschutzData(),
+    getLegalPage("datenschutz"),
     getSettings(),
   ]);
 
@@ -372,10 +362,45 @@ export default async function DatenschutzPage() {
           title={pageData?.title || "Datenschutzerklärung"}
           content={pageData?.content || null}
           lastUpdated={pageData?.lastUpdated}
-          fallbackContent={<DatenschutzFallback settings={settings} />}
+          fallbackContent={<DatenschutzFallback settings={settings as Settings} />}
         />
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function DatenschutzSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-20 pb-16">
+        <div className="container max-w-4xl">
+          <div className="h-12 w-64 bg-muted animate-pulse rounded mb-8" />
+          <div className="space-y-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-4 w-full bg-muted animate-pulse rounded" />
+            ))}
+          </div>
+        </div>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function DatenschutzPage() {
+  return (
+    <Suspense fallback={<DatenschutzSkeleton />}>
+      <DatenschutzContent />
+    </Suspense>
   );
 }

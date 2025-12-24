@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageContent } from "./service-content";
-import { client } from "@sanity/lib/client";
-import { serviceBySlugQuery, servicesQuery, settingsQuery } from "@sanity/lib/queries";
+import { getServiceBySlug, getServices, getSettings } from "@sanity/lib/data";
 import { urlFor } from "@sanity/lib/image";
-
-export const revalidate = 60;
 
 export interface ServiceDetail {
   iconName: string;
@@ -516,6 +514,10 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// =============================================================================
+// DATA TRANSFORMATION HELPERS
+// =============================================================================
+
 interface SanityService {
   _id: string;
   title: string;
@@ -534,49 +536,39 @@ interface SanityService {
   seo?: { metaTitle?: string; metaDescription?: string };
 }
 
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
-
-async function getServiceBySlug(slug: string): Promise<ServiceDetail | null> {
-  try {
-    const sanityService = await client.fetch<SanityService>(serviceBySlugQuery, { slug });
-
-    if (!sanityService) {
-      // Fall back to default services
-      return defaultServices.find((s) => s.slug === slug) || null;
-    }
-
-    return {
-      iconName: sanityService.icon || "Film",
-      title: sanityService.title,
-      slug: sanityService.slug,
-      shortDescription: sanityService.shortDescription || "",
-      description: sanityService.description || sanityService.shortDescription || "",
-      image: sanityService.featuredImage?.asset
-        ? urlFor(sanityService.featuredImage).width(1200).height(800).url()
-        : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
-      priceFrom: sanityService.priceFrom || 0,
-      idealFor: sanityService.idealFor || [],
-      benefits: sanityService.benefits || [],
-      process: sanityService.process || [],
-      faq: sanityService.faq || [],
-      exampleVideos: sanityService.exampleVideos || [],
-      relatedProjects: sanityService.relatedProjects?.map((p) => p.slug) || [],
-    };
-  } catch {
-    // Fall back to default services on error
+function transformServiceDetail(data: SanityService | null, slug: string): ServiceDetail | null {
+  if (!data) {
+    // Fall back to default services
     return defaultServices.find((s) => s.slug === slug) || null;
   }
+
+  return {
+    iconName: data.icon || "Film",
+    title: data.title,
+    slug: data.slug,
+    shortDescription: data.shortDescription || "",
+    description: data.description || data.shortDescription || "",
+    image: data.featuredImage?.asset
+      ? urlFor(data.featuredImage).width(1200).height(800).url()
+      : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
+    priceFrom: data.priceFrom || 0,
+    idealFor: data.idealFor || [],
+    benefits: data.benefits || [],
+    process: data.process || [],
+    faq: data.faq || [],
+    exampleVideos: data.exampleVideos || [],
+    relatedProjects: data.relatedProjects?.map((p) => p.slug) || [],
+  };
 }
+
+// =============================================================================
+// METADATA
+// =============================================================================
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const serviceData = await getServiceBySlug(slug);
+  const service = transformServiceDetail(serviceData as SanityService, slug);
 
   if (!service) {
     return {
@@ -595,16 +587,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// =============================================================================
+// STATIC PARAMS
+// =============================================================================
+
 async function getAllServiceSlugs() {
-  try {
-    const sanityServices = await client.fetch<Array<{ slug: string }>>(servicesQuery);
-    if (sanityServices && sanityServices.length > 0) {
-      return sanityServices.map((service) => ({
-        slug: service.slug,
-      }));
-    }
-  } catch {
-    // Fall back to default services
+  const sanityServices = await getServices();
+  if (sanityServices && Array.isArray(sanityServices) && sanityServices.length > 0) {
+    return (sanityServices as Array<{ slug: string }>).map((service) => ({
+      slug: service.slug,
+    }));
   }
   return defaultServices.map((service) => ({
     slug: service.slug,
@@ -615,13 +607,68 @@ export async function generateStaticParams() {
   return getAllServiceSlugs();
 }
 
-export default async function ServicePage({ params }: PageProps) {
-  const { slug } = await params;
-  const [service, settings] = await Promise.all([getServiceBySlug(slug), getSettings()]);
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+interface ServiceContentProps {
+  slug: string;
+}
+
+async function ServiceContent({ slug }: ServiceContentProps) {
+  const [serviceData, settings] = await Promise.all([
+    getServiceBySlug(slug),
+    getSettings(),
+  ]);
+
+  const service = transformServiceDetail(serviceData as SanityService, slug);
 
   if (!service) {
     notFound();
   }
 
   return <ServicePageContent service={service} settings={settings} />;
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function ServiceSkeleton() {
+  return (
+    <div className="min-h-screen">
+      {/* Hero Skeleton */}
+      <div className="py-16 md:py-24 bg-muted/20">
+        <div className="container">
+          <div className="h-12 w-64 bg-muted animate-pulse rounded mb-4" />
+          <div className="h-6 w-96 bg-muted animate-pulse rounded" />
+        </div>
+      </div>
+      {/* Content Skeleton */}
+      <div className="container py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+          <div className="space-y-4">
+            <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+            <div className="h-4 w-full bg-muted animate-pulse rounded" />
+            <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default async function ServicePage({ params }: PageProps) {
+  const { slug } = await params;
+
+  return (
+    <Suspense fallback={<ServiceSkeleton />}>
+      <ServiceContent slug={slug} />
+    </Suspense>
+  );
 }

@@ -70,6 +70,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Next.js 16: React Compiler für automatische Memoization
   reactCompiler: true,
+  // Next.js 16: Cache Components für explizites Caching via 'use cache' Direktive
+  cacheComponents: true,
+  // Turbopack: Explizites Root-Verzeichnis (verhindert Lockfile-Konflikte)
+  turbopack: {
+    root: __dirname,
+  },
   // Security Headers für alle Routen
   async headers() {
     return [

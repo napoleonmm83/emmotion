@@ -1,26 +1,22 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, Mail, CreditCard, Calendar, ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container, TrackPageView } from "@/components/shared";
-import { client } from "@sanity/lib/client";
-import { settingsQuery } from "@sanity/lib/queries";
+import { getSettings } from "@sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "Anfrage bestätigt | emmotion.ch",
   description: "Deine Projektanfrage wurde erfolgreich eingereicht.",
 };
 
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
 
-export default async function BestaetigungPage() {
+async function BestaetigungContent() {
   const settings = await getSettings();
 
   return (
@@ -144,5 +140,52 @@ export default async function BestaetigungPage() {
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function BestaetigungSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-24 pb-16">
+        <Container>
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-muted animate-pulse" />
+            <div className="h-10 w-80 mx-auto bg-muted animate-pulse rounded mb-4" />
+            <div className="h-6 w-96 mx-auto bg-muted animate-pulse rounded mb-8" />
+            <div className="bg-card rounded-xl p-6 md:p-8 border border-border">
+              <div className="space-y-6">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
+                    <div className="flex-1">
+                      <div className="h-5 w-32 bg-muted animate-pulse rounded mb-2" />
+                      <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function BestaetigungPage() {
+  return (
+    <Suspense fallback={<BestaetigungSkeleton />}>
+      <BestaetigungContent />
+    </Suspense>
   );
 }

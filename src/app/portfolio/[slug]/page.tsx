@@ -1,15 +1,17 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectPageContent } from "./project-content";
-import { client } from "@sanity/lib/client";
-import { projectBySlugQuery, projectsQuery, settingsQuery } from "@sanity/lib/queries";
+import { getProjectBySlug, getProjects, getSettings } from "@sanity/lib/data";
 import { urlFor } from "@sanity/lib/image";
-
-export const revalidate = 60;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+// =============================================================================
+// DATA TRANSFORMATION HELPERS
+// =============================================================================
 
 interface SanityProject {
   _id: string;
@@ -46,78 +48,65 @@ interface SanityProjectListItem {
   publishedAt?: string;
 }
 
-async function getProjectBySlug(slug: string) {
-  try {
-    const project = await client.fetch<SanityProject>(projectBySlugQuery, { slug });
-    if (!project) return null;
+function transformProjectDetail(data: SanityProject | null, slug: string) {
+  if (!data) return null;
 
-    return {
-      title: project.title,
-      slug: project.slug?.current || slug,
-      client: project.client || "",
-      category: project.category?.title || "Videoproduktion",
-      categorySlug: project.category?.slug?.current || "imagefilm",
-      industry: project.industry || "Dienstleistung",
-      videoUrl: project.videoUrl || "",
-      thumbnail: project.thumbnail?.asset
-        ? urlFor(project.thumbnail).width(1200).height(675).url()
-        : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
-      year: project.publishedAt
-        ? new Date(project.publishedAt).getFullYear().toString()
-        : "2024",
-      challenge: project.challenge,
-      solution: project.solution,
-      result: project.result,
-      testimonial: project.testimonial
-        ? {
-            quote: project.testimonial.quote,
-            name: project.testimonial.author,
-            role: project.testimonial.position || "",
-            company: project.testimonial.company || "",
-          }
-        : undefined,
-    };
-  } catch {
-    return null;
-  }
+  return {
+    title: data.title,
+    slug: data.slug?.current || slug,
+    client: data.client || "",
+    category: data.category?.title || "Videoproduktion",
+    categorySlug: data.category?.slug?.current || "imagefilm",
+    industry: data.industry || "Dienstleistung",
+    videoUrl: data.videoUrl || "",
+    thumbnail: data.thumbnail?.asset
+      ? urlFor(data.thumbnail).width(1200).height(675).url()
+      : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80",
+    year: data.publishedAt
+      ? new Date(data.publishedAt).getFullYear().toString()
+      : "2024",
+    challenge: data.challenge,
+    solution: data.solution,
+    result: data.result,
+    testimonial: data.testimonial
+      ? {
+          quote: data.testimonial.quote,
+          name: data.testimonial.author,
+          role: data.testimonial.position || "",
+          company: data.testimonial.company || "",
+        }
+      : undefined,
+  };
 }
 
-async function getAllProjects() {
-  try {
-    const projects = await client.fetch<SanityProjectListItem[]>(projectsQuery);
-    if (!projects || projects.length === 0) return [];
+function transformProjectsList(data: SanityProjectListItem[] | null) {
+  if (!data || data.length === 0) return [];
 
-    return projects.map((project) => ({
-      title: project.title,
-      slug: project.slug?.current || "",
-      client: project.client || "",
-      category: project.category || "Videoproduktion",
-      categorySlug: project.categorySlug || "imagefilm",
-      industry: project.industry || "Dienstleistung",
-      videoUrl: project.videoUrl || "",
-      thumbnail: project.thumbnail?.asset
-        ? urlFor(project.thumbnail).width(800).height(600).url()
-        : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80",
-      year: project.publishedAt
-        ? new Date(project.publishedAt).getFullYear().toString()
-        : "2024",
-    }));
-  } catch {
-    return [];
-  }
+  return data.map((project) => ({
+    title: project.title,
+    slug: project.slug?.current || "",
+    client: project.client || "",
+    category: project.category || "Videoproduktion",
+    categorySlug: project.categorySlug || "imagefilm",
+    industry: project.industry || "Dienstleistung",
+    videoUrl: project.videoUrl || "",
+    thumbnail: project.thumbnail?.asset
+      ? urlFor(project.thumbnail).width(800).height(600).url()
+      : "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80",
+    year: project.publishedAt
+      ? new Date(project.publishedAt).getFullYear().toString()
+      : "2024",
+  }));
 }
 
-async function getSettings() {
-  try {
-    return await client.fetch(settingsQuery);
-  } catch {
-    return null;
-  }
-}
+// =============================================================================
+// METADATA
+// =============================================================================
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const projectData = await getProjectBySlug(slug);
+  const project = transformProjectDetail(projectData as SanityProject, slug);
 
   if (!project) {
     return {
@@ -136,26 +125,86 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// =============================================================================
+// STATIC PARAMS
+// =============================================================================
+
 export async function generateStaticParams() {
-  const projects = await getAllProjects();
+  const projectsData = await getProjects();
+  const projects = transformProjectsList(projectsData as SanityProjectListItem[]);
   return projects.map((project) => ({
     slug: project.slug,
   }));
 }
 
-export default async function ProjectPage({ params }: PageProps) {
-  const { slug } = await params;
-  const [project, settings] = await Promise.all([getProjectBySlug(slug), getSettings()]);
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
+
+interface ProjectContentProps {
+  slug: string;
+}
+
+async function ProjectContent({ slug }: ProjectContentProps) {
+  const [projectData, settings, projectsData] = await Promise.all([
+    getProjectBySlug(slug),
+    getSettings(),
+    getProjects(),
+  ]);
+
+  const project = transformProjectDetail(projectData as SanityProject, slug);
 
   if (!project) {
     notFound();
   }
 
-  // Get related projects (same category, excluding current)
-  const allProjects = await getAllProjects();
+  const allProjects = transformProjectsList(projectsData as SanityProjectListItem[]);
   const relatedProjects = allProjects
     .filter((p) => p.categorySlug === project.categorySlug && p.slug !== project.slug)
     .slice(0, 3);
 
-  return <ProjectPageContent project={project} relatedProjects={relatedProjects} settings={settings} />;
+  return (
+    <ProjectPageContent
+      project={project}
+      relatedProjects={relatedProjects}
+      settings={settings}
+    />
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function ProjectSkeleton() {
+  return (
+    <div className="min-h-screen">
+      {/* Video Skeleton */}
+      <div className="aspect-video bg-muted animate-pulse" />
+      {/* Content Skeleton */}
+      <div className="container py-12">
+        <div className="h-10 w-96 bg-muted animate-pulse rounded mb-4" />
+        <div className="h-6 w-48 bg-muted animate-pulse rounded mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default async function ProjectPage({ params }: PageProps) {
+  const { slug } = await params;
+
+  return (
+    <Suspense fallback={<ProjectSkeleton />}>
+      <ProjectContent slug={slug} />
+    </Suspense>
+  );
 }

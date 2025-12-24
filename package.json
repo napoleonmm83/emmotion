@@ -11,10 +11,10 @@
     "not IE 11"
   ],
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

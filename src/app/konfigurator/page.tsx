@@ -1,11 +1,9 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { KonfiguratorPageContent } from "./konfigurator-content";
-import { client } from "@sanity/lib/client";
-import { konfiguratorPageQuery, settingsQuery } from "@sanity/lib/queries";
-
-export const revalidate = 60;
+import { getKonfiguratorPage, getSettings } from "@sanity/lib/data";
 
 export const metadata: Metadata = {
   title: "Video-Konfigurator | emmotion.ch",
@@ -18,47 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
-interface KonfiguratorPageData {
-  hero?: {
-    title?: string;
-    subtitle?: string;
-  };
-  benefits?: Array<{
-    icon?: string;
-    title?: string;
-    description?: string;
-  }>;
-  infoSection?: {
-    title?: string;
-    description?: string;
-  };
-  steps?: Array<{
-    title?: string;
-    description?: string;
-  }>;
-}
+// =============================================================================
+// ASYNC CONTENT COMPONENT
+// =============================================================================
 
-async function getKonfiguratorPageData(): Promise<KonfiguratorPageData | null> {
-  try {
-    const data = await client.fetch(konfiguratorPageQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-async function getSettings() {
-  try {
-    const data = await client.fetch(settingsQuery);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-export default async function KonfiguratorPage() {
+async function KonfiguratorContent() {
   const [pageData, settings] = await Promise.all([
-    getKonfiguratorPageData(),
+    getKonfiguratorPage(),
     getSettings(),
   ]);
 
@@ -70,5 +34,39 @@ export default async function KonfiguratorPage() {
       </main>
       <Footer settings={settings} />
     </>
+  );
+}
+
+// =============================================================================
+// LOADING SKELETON
+// =============================================================================
+
+function KonfiguratorSkeleton() {
+  return (
+    <>
+      <Header />
+      <main className="pt-20">
+        <div className="container py-16">
+          <div className="max-w-4xl mx-auto">
+            <div className="h-12 w-64 bg-muted animate-pulse rounded mb-4 mx-auto" />
+            <div className="h-6 w-96 bg-muted animate-pulse rounded mb-12 mx-auto" />
+            <div className="h-96 bg-muted animate-pulse rounded-lg" />
+          </div>
+        </div>
+      </main>
+      <footer className="h-64 bg-muted/10 animate-pulse" />
+    </>
+  );
+}
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+export default function KonfiguratorPage() {
+  return (
+    <Suspense fallback={<KonfiguratorSkeleton />}>
+      <KonfiguratorContent />
+    </Suspense>
   );
 }
