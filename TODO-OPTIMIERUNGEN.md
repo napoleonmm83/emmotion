@@ -1,6 +1,6 @@
 # Offene Optimierungen – emmotion.ch
 
-> Stand: 22.12.2024
+> Stand: 24.12.2024
 
 ---
 
@@ -60,27 +60,7 @@
 
 ## Mittel (Code-Qualität)
 
-### 4. Studio Page noindex
-- **Status:** Offen
-- **Beschreibung:** Sanity Studio von Suchmaschinen ausschliessen
-- **Datei:** `src/app/studio/[[...tool]]/page.tsx`
-- **Lösung:**
-```tsx
-export const metadata: Metadata = {
-  robots: { index: false, follow: false }
-};
-```
-
-### 5. Home Page explizite Metadata
-- **Status:** Offen
-- **Beschreibung:** `generateMetadata()` für Home Page hinzufügen statt nur von Layout zu erben
-- **Datei:** `src/app/page.tsx`
-
-### 6. Fehlende `sizes` Attribute
-- **Status:** Offen
-- **Beschreibung:** `sizes` Attribut bei TV-Preview Image hinzufügen
-- **Datei:** `src/components/sections/portfolio.tsx` (Zeile ~195)
-- **Lösung:** `sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"`
+*Alle Punkte erledigt!*
 
 ---
 
@@ -95,17 +75,29 @@ export const metadata: Metadata = {
   - `tv-filters.tsx` – Filter Logic
   - `tv-stats.tsx` – Statistiken
 
-### 8. Doppelte Fetch-Logik extrahieren
-- **Status:** Offen
-- **Beschreibung:** `getProjects()` und `getSettings()` in shared lib extrahieren
-- **Betroffene Dateien:**
-  - `src/app/portfolio/page.tsx`
-  - `src/app/portfolio/[slug]/page.tsx`
-- **Ziel:** `src/lib/portfolio-queries.ts`
-
 ---
 
 ## Erledigt
+
+### ✅ Next.js 16 cacheComponents Migration
+- **Datum:** 24.12.2024
+- **Beschreibung:** Alle Pages auf Suspense + cached Data Layer migriert, Sanity Webhook für sofortige Revalidierung
+
+### ✅ Studio Page noindex
+- **Datum:** 24.12.2024
+- **Beschreibung:** `robots: { index: false, follow: false }` in Studio Layout
+
+### ✅ Home Page explizite Metadata
+- **Datum:** 24.12.2024
+- **Beschreibung:** Explizite Metadata für Homepage statt nur Layout-Vererbung
+
+### ✅ sizes Attribute
+- **Datum:** 24.12.2024
+- **Beschreibung:** Alle Images mit `fill` haben jetzt `sizes` Attribute
+
+### ✅ Doppelte Fetch-Logik extrahieren
+- **Datum:** 24.12.2024
+- **Beschreibung:** Mit cacheComponents erledigt - alle Fetches zentral in `sanity/lib/data.ts`
 
 ### ✅ Console Logs entfernen
 - **Datum:** 22.12.2024

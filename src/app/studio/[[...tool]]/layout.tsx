@@ -1,6 +1,10 @@
 export const metadata = {
   title: "Sanity Studio | emmotion.ch",
   description: "Content Management für emmotion.ch",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function StudioLayout({

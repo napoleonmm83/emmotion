@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import {
@@ -20,6 +21,22 @@ import {
   getTvProductions,
 } from "@sanity/lib/data";
 import { urlFor } from "@sanity/lib/image";
+
+// =============================================================================
+// METADATA
+// =============================================================================
+
+export const metadata: Metadata = {
+  title: "emmotion.ch | Videoproduktion mit TV-Erfahrung",
+  description:
+    "Professionelle Videoproduktion für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz. Imagefilme, Eventvideos, Social Media Content und mehr.",
+  openGraph: {
+    title: "emmotion.ch | Videoproduktion mit TV-Erfahrung",
+    description:
+      "Professionelle Videoproduktion für Unternehmen im Rheintal, Liechtenstein und der Ostschweiz.",
+    type: "website",
+  },
+};
 
 // =============================================================================
 // DATA TRANSFORMATION HELPERS
