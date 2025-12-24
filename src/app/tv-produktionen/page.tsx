@@ -63,6 +63,55 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // =============================================================================
+// VIDEO OBJECT SCHEMA
+// =============================================================================
+
+function generateVideoListSchema(tvData: TVProductionsData) {
+  if (!tvData.cachedData?.videos?.length) return null;
+
+  const videos = tvData.cachedData.videos.slice(0, 30); // Limit to 30 for schema
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: tvData.title || "TV Produktionen",
+    description: tvData.subtitle || "Videoproduktionen für TV Rheintal",
+    numberOfItems: tvData.cachedData.totalVideos,
+    itemListElement: videos.map((video, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "VideoObject",
+        name: video.title,
+        description: video.description?.slice(0, 200) || video.title,
+        thumbnailUrl: video.thumbnailUrl,
+        uploadDate: video.publishedAt,
+        duration: video.duration,
+        contentUrl: `https://www.youtube.com/watch?v=${video.youtubeId}`,
+        embedUrl: `https://www.youtube.com/embed/${video.youtubeId}`,
+        interactionStatistic: [
+          {
+            "@type": "InteractionCounter",
+            interactionType: "https://schema.org/WatchAction",
+            userInteractionCount: video.viewCount,
+          },
+          {
+            "@type": "InteractionCounter",
+            interactionType: "https://schema.org/LikeAction",
+            userInteractionCount: video.likeCount,
+          },
+        ],
+        publisher: {
+          "@type": "Organization",
+          name: tvData.channelInfo?.channelName || "TV Rheintal",
+          url: tvData.channelInfo?.channelUrl,
+        },
+      },
+    })),
+  };
+}
+
+// =============================================================================
 // ASYNC CONTENT COMPONENT
 // =============================================================================
 
@@ -88,7 +137,19 @@ async function TVProduktionenPageContent() {
     );
   }
 
-  return <TVProduktionenContent tvData={typedTvData} settings={settings} />;
+  const videoListSchema = generateVideoListSchema(typedTvData);
+
+  return (
+    <>
+      {videoListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoListSchema) }}
+        />
+      )}
+      <TVProduktionenContent tvData={typedTvData} settings={settings} />
+    </>
+  );
 }
 
 // =============================================================================

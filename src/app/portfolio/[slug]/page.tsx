@@ -138,6 +138,47 @@ export async function generateStaticParams() {
 }
 
 // =============================================================================
+// VIDEO OBJECT SCHEMA
+// =============================================================================
+
+function generateVideoObjectSchema(project: {
+  title: string;
+  slug: string;
+  client: string;
+  category: string;
+  videoUrl: string;
+  thumbnail: string;
+  year: string;
+  challenge?: string;
+}) {
+  // Only generate schema if project has a video
+  if (!project.videoUrl) return null;
+
+  const description = project.challenge
+    ? `${project.category} für ${project.client}: ${project.challenge}`
+    : `${project.category} für ${project.client}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: project.title,
+    description: description.slice(0, 300),
+    thumbnailUrl: project.thumbnail,
+    uploadDate: `${project.year}-01-01`,
+    contentUrl: project.videoUrl,
+    embedUrl: project.videoUrl,
+    publisher: {
+      "@type": "Organization",
+      name: "emmotion.ch",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://emmotion.ch/logo.png",
+      },
+    },
+  };
+}
+
+// =============================================================================
 // ASYNC CONTENT COMPONENT
 // =============================================================================
 
@@ -163,12 +204,22 @@ async function ProjectContent({ slug }: ProjectContentProps) {
     .filter((p) => p.categorySlug === project.categorySlug && p.slug !== project.slug)
     .slice(0, 3);
 
+  const videoSchema = generateVideoObjectSchema(project);
+
   return (
-    <ProjectPageContent
-      project={project}
-      relatedProjects={relatedProjects}
-      settings={settings}
-    />
+    <>
+      {videoSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoSchema) }}
+        />
+      )}
+      <ProjectPageContent
+        project={project}
+        relatedProjects={relatedProjects}
+        settings={settings}
+      />
+    </>
   );
 }
 

@@ -6,55 +6,7 @@
 
 ## Hoch (SEO-Boost)
 
-### 1. VideoObject Schema hinzufügen
-- **Status:** Offen
-- **Beschreibung:** Schema.org VideoObject Markup für Portfolio-Projekte und TV-Produktionen hinzufügen für Rich Results in Google
-- **Dateien:**
-  - `src/app/portfolio/[slug]/page.tsx`
-  - `src/app/tv-produktionen/page.tsx`
-- **Beispiel:**
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "VideoObject",
-  "name": "Projekt Titel",
-  "description": "...",
-  "thumbnailUrl": "...",
-  "uploadDate": "2024-01-01",
-  "duration": "PT2M30S",
-  "contentUrl": "..."
-}
-```
-
-### 2. FAQPage Schema hinzufügen
-- **Status:** Offen
-- **Beschreibung:** Schema.org FAQPage Markup auf `/faq` Seite für Rich Results
-- **Datei:** `src/app/faq/page.tsx`
-- **Beispiel:**
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Frage hier?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Antwort hier."
-      }
-    }
-  ]
-}
-```
-
-### 3. OG Images für Dynamic Pages
-- **Status:** Offen
-- **Beschreibung:** Dynamische Open Graph Images für bessere Social Media Previews
-- **Neue Dateien erstellen:**
-  - `src/app/portfolio/[slug]/opengraph-image.tsx`
-  - `src/app/leistungen/[slug]/opengraph-image.tsx`
-- **Referenz:** https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image
+*Alle Punkte erledigt!*
 
 ---
 
@@ -78,6 +30,21 @@
 ---
 
 ## Erledigt
+
+### ✅ VideoObject Schema
+- **Datum:** 24.12.2024
+- **Beschreibung:** Schema.org VideoObject für Portfolio-Projekte und ItemList mit VideoObjects für TV-Produktionen
+- **Dateien:** `src/app/portfolio/[slug]/page.tsx`, `src/app/tv-produktionen/page.tsx`
+
+### ✅ FAQPage Schema
+- **Datum:** 24.12.2024
+- **Beschreibung:** Schema.org FAQPage Markup auf `/faq` Seite (war bereits implementiert)
+- **Datei:** `src/app/faq/page.tsx`
+
+### ✅ Dynamische OG Images
+- **Datum:** 24.12.2024
+- **Beschreibung:** Dynamische Open Graph Images für Portfolio und Leistungen Seiten
+- **Dateien:** `src/app/portfolio/[slug]/opengraph-image.tsx`, `src/app/leistungen/[slug]/opengraph-image.tsx`
 
 ### ✅ Next.js 16 cacheComponents Migration
 - **Datum:** 24.12.2024
